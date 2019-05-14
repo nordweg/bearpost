@@ -1,5 +1,9 @@
 require 'rails_helper'
+require 'capybara/rails'
 
 RSpec.describe "home/index.html.erb", type: :view do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "Displays the app name" do
+    visit "/"
+    expect(page).to have_content 'BearPost'
+  end
 end

@@ -10,9 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20190513202331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "packages", force: :cascade do |t|
+    t.integer "shipment_id"
+    t.string "tracking_number"
+    t.float "heigth"
+    t.float "width"
+    t.float "depth"
+    t.float "weight"
+    t.float "items_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shipments", force: :cascade do |t|
+    t.string "status"
+    t.datetime "shipped_at"
+    t.string "shipment_number"
+    t.string "order_number"
+    t.float "cost"
+    t.string "carrier_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "invoice_series"
+    t.integer "invoice_number"
+  end
 
 end
