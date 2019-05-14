@@ -62,15 +62,15 @@ t.string   :name
 t.string   :last_name
 t.string   :email
 t.string   :phone
-t.string   :cpf         # ?????
-
+t.string   :cpf
 t.string   :street
 t.string   :number
 t.string   :complement
 t.string   :neighborhood
 t.string   :cep
-t.string   :city        # IBGE City Code?
-t.string   :state       # State abbreviation? State ID?
+t.string   :city
+t.string   :city_code
+t.string   :state
 
 # Recipient Address Fields
 
