@@ -12,4 +12,19 @@
 //
 //= require rails-ujs
 //= require turbolinks
+
+// Keen Global Mandatory Vendors
+//= require jquery/dist/jquery.js
+//= require popper.js/dist/umd/popper.js
+//= require bootstrap/dist/js/bootstrap.min.js
+//= require js-cookie/src/js.cookie.js
+//= require moment/min/moment.min.js
+//= require tooltip.js/dist/umd/tooltip.min.js
+//= require perfect-scrollbar/dist/perfect-scrollbar.js
+//= require sticky-js/dist/sticky.min.js
+//= require wnumb/wNumb.js
+
+// Keen Global Theme Bundle (used by all pages)
+//= require keen/scripts.bundle.js
+
 //= require_tree .
