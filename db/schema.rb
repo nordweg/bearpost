@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190513202331) do
+ActiveRecord::Schema.define(version: 20190514184503) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 20190513202331) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "reverse_shipments", force: :cascade do |t|
+    t.string "authorization_code"
+    t.string "authorization_code_expiration_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "shipments", force: :cascade do |t|
     t.string "status"
     t.datetime "shipped_at"
@@ -38,6 +45,32 @@ ActiveRecord::Schema.define(version: 20190513202331) do
     t.datetime "updated_at", null: false
     t.integer "invoice_series"
     t.integer "invoice_number"
+    t.string "sender_first_name"
+    t.string "sender_last_name"
+    t.string "sender_email"
+    t.string "sender_phone"
+    t.string "sender_cpf"
+    t.string "sender_street"
+    t.string "sender_number"
+    t.string "sender_complement"
+    t.string "sender_neighborhood"
+    t.string "sender_cep"
+    t.string "sender_city"
+    t.string "sender_city_code"
+    t.string "sender_state"
+    t.string "recipient_first_name"
+    t.string "recipient_last_name"
+    t.string "recipient_email"
+    t.string "recipient_phone"
+    t.string "recipient_cpf"
+    t.string "recipient_street"
+    t.string "recipient_number"
+    t.string "recipient_complement"
+    t.string "recipient_neighborhood"
+    t.string "recipient_cep"
+    t.string "recipient_city"
+    t.string "recipient_city_code"
+    t.string "recipient_state"
   end
 
 end

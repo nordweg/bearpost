@@ -1,14 +1,97 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Bearpost</title>
-    <%= csrf_meta_tags %>
+<head>
+  <title>Bearpost</title>
+  <%= csrf_meta_tags %>
 
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+  <!-- Bootstrap 4 -->
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
 
-  <body>
-    <%= yield %>
-  </body>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+  <!--begin::Fonts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+  <script>
+  WebFont.load({
+    google: {
+      "families": ["Poppins:300,400,500,600,700"]
+    },
+    active: function() {
+      sessionStorage.fonts = true;
+    }
+  });
+  </script>
+  <!--end::Fonts -->
+</head>
+
+<body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed">
+  <!-- begin:: Root -->
+  <div class="kt-grid kt-grid--hor kt-grid--root">
+
+    <!-- begin:: Page -->
+    <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
+
+      <%= render 'aside' %>
+
+      <!-- begin:: Wrapper -->
+      <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
+
+        <%= render 'header' %>
+
+        <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+
+          <%= render 'subheader' %>
+
+          <!-- begin:: Content -->
+          <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+            <%= yield %>
+          </div>
+
+
+        </div> <!-- end:: Content -->
+
+      </div> <!-- end:: Wrapper -->
+
+    </div> <!-- end:: Page -->
+
+  </div> <!-- end:: Root -->
+
+  <!-- begin::Global Config(global config for global JS sciprts) -->
+  <script>
+  var KTAppOptions = {
+    "colors": {
+      "state": {
+        "brand": "#5d78ff",
+        "metal": "#c4c5d6",
+        "light": "#ffffff",
+        "accent": "#00c5dc",
+        "primary": "#5867dd",
+        "success": "#34bfa3",
+        "info": "#36a3f7",
+        "warning": "#ffb822",
+        "danger": "#fd3995",
+        "focus": "#9816f4"
+      },
+      "base": {
+        "label": [
+          "#c5cbe3",
+          "#a1a8c3",
+          "#3d4465",
+          "#3e4466"
+        ],
+        "shape": [
+          "#f0f3ff",
+          "#d9dffa",
+          "#afb4d4",
+          "#646c9a"
+        ]
+      }
+    }
+  };
+  </script>
+  <!-- end::Global Config -->
+</body>
 </html>
