@@ -80,3 +80,9 @@ rails g controller Home index
 # Resetting DB before tests
 rake db:test:prepare
 rake db:reset
+
+# Scaffold a Controller with all crud actions for an existing table
+rails g scaffold_controller Shipment
+
+# Scaffold a Model with a field (all crud actions, tests, routes)
+rails g scaffold Shipment shipment_number:string --skip-migration
