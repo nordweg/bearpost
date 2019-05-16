@@ -1,0 +1,2 @@
+class ReverseShipment < Shipment
+end
