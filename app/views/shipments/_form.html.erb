@@ -2,11 +2,6 @@
 
 <%= form_for shipment do |form| %>
 <div class="kt-portlet">
-  <div class="kt-portlet__head">
-    <div class="kt-portlet__head-label">
-      <h3 class="kt-portlet__head-title">Novo Envio</h3>
-    </div>
-  </div>
   <!--begin::Form-->
   <form class="kt-form">
     <div class="kt-portlet__body">
@@ -29,21 +24,68 @@
             <%= form.text_field :recipient_email, class: "form-control" %>
             <span class="form-text text-muted">We'll never share your email with anyone else</span>
           </div>
+          <div class="form-group">
+            <label>Telefone:</label>
+            <%= form.text_field :recipient_phone, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>CPF:</label>
+            <%= form.text_field :recipient_cpf, class: "form-control" %>
+          </div>
+          <h3 class="kt-section__title">2. Endereço:</h3>
+          <div class="form-group">
+            <label>Rua:</label>
+            <%= form.text_field :recipient_street, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Número:</label>
+            <%= form.text_field :recipient_number, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Complemento:</label>
+            <%= form.text_field :recipient_complement, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Bairro:</label>
+            <%= form.text_field :recipient_neighborhood, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Cep:</label>
+            <%= form.text_field :recipient_cep, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Cidade:</label>
+            <%= form.text_field :recipient_city, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Estado:</label>
+            <%= form.text_field :recipient_state, class: "form-control" %>
+          </div>
         </div>
 
         <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg"></div>
 
-        <h3 class="kt-section__title">2. Envio:</h3>
+        <h3 class="kt-section__title">3. Envio:</h3>
         <div class="kt-section__body">
           <div class="form-group">
             <label>Número do envio:</label>
             <%= form.text_field :shipment_number, class: "form-control" %>
-            <span class="form-text text-muted">We'll never share your email with anyone else</span>
+          </div>
+          <div class="form-group">
+            <label>Número do pedido:</label>
+            <%= form.text_field :order_number, class: "form-control" %>
           </div>
           <div class="form-group">
             <label>Transportadora:</label>
             <%= form.text_field :carrier_name, class: "form-control" %>
-            <span class="form-text text-muted">We'll never share your email with anyone else</span>
+          </div>
+          <div class="form-group">
+            <label>Série da nota fiscal:</label>
+            <%= form.number_field :invoice_series, class: "form-control" %>
+          </div>
+          <div class="form-group">
+            <label>Número da nota fiscal:</label>
+            <%= form.number_field :invoice_number, class: "form-control" %>
           </div>
         </div>
 
