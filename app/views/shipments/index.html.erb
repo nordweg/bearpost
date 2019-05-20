@@ -20,10 +20,11 @@
       </div>
       <div class="kt-portlet__body">
         <div class="kt-portlet__content">
-          <table class="table table-head-noborder">
+          <table class="table table-hover table-head-noborder">
             <thead>
               <tr>
                 <th>#</th>
+                <th>Cidade</th>
                 <th>Nome</th>
                 <th>Enviado em</th>
                 <th>Status</th>
@@ -32,10 +33,11 @@
             <tbody>
               <% @shipments.each do |shipment| %>
               <tr>
-                <td><%= shipment.shipment_number %></td>
-                <td><%= link_to 'Show', shipment %></td>
-                <td><%= link_to 'Edit', edit_shipment_path(shipment) %></td>
-                <td><%= link_to 'Destroy', shipment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+                <td><%= link_to shipment.shipment_number, shipment %></td>
+                <td><%= shipment.recipient_city %></td>
+                <td><%= shipment.full_name %></td>
+                <td><%= shipment.shipped_at.try(:to_date) %></td>
+                <td><%= shipment.status %></td>
               </tr>
               <% end %>
             </tbody>
