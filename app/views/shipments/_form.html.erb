@@ -1,0 +1,98 @@
+<%= form_for shipment do |form| %>
+<% if shipment.errors.any? %>
+<div id="error_explanation">
+  <h2><%= pluralize(shipment.errors.count, "error") %> prohibited this shipment from being saved:</h2>
+
+  <ul>
+    <% shipment.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+
+<div class="field">
+  <%= form.label :shipment_number %>
+  <%= form.text_field :shipment_number, id: :shipment_shipment_number %>
+</div>
+
+<div class="actions">
+  <%= form.submit %>
+</div>
+<% end %>
+
+<%= form_for shipment do |form| %>
+
+<div class="kt-portlet">
+  <div class="kt-portlet__head">
+    <div class="kt-portlet__head-label">
+      <h3 class="kt-portlet__head-title">Novo Envio</h3>
+    </div>
+  </div>
+  <!--begin::Form-->
+  <form class="kt-form">
+    <div class="kt-portlet__body">
+      <div class="kt-section">
+
+        <h3 class="kt-section__title">1. Destinatário:</h3>
+        <div class="kt-section__body">
+          <div class="form-group row">
+            <div class="col-lg-6">
+              <label>Nome:</label>
+              <%= form.text_field :recipient_first_name, class: "form-control" %>
+            </div>
+            <div class="col-lg-6">
+              <label>Sobrenome:</label>
+              <%= form.text_field :recipient_last_name, class: "form-control" %>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <%= form.text_field :recipient_email, class: "form-control" %>
+            <span class="form-text text-muted">We'll never share your email with anyone else</span>
+          </div>
+        </div>
+
+        <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg"></div>
+
+        <h3 class="kt-section__title">2. Envio:</h3>
+        <div class="kt-section__body">
+          <div class="form-group">
+            <label>Número do envio:</label>
+            <%= form.text_field :shipment_number, class: "form-control" %>
+            <span class="form-text text-muted">We'll never share your email with anyone else</span>
+          </div>
+          <div class="form-group">
+            <label>Transportadora:</label>
+            <%= form.text_field :carrier_name, class: "form-control" %>
+            <span class="form-text text-muted">We'll never share your email with anyone else</span>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="kt-portlet__foot">
+      <div class="kt-form__actions">
+        <button type="reset" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+
+    <div class="kt-portlet__foot">
+      <div class="kt-form__actions">
+        <div class="row justify-content-md-center">
+          <div class="col-lg-6 text-center">
+            <%= form.submit "Criar envio", class:"btn btn-primary" %>
+            <button type="reset" class="btn btn-secondary">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+  <!--end::Form-->
+</div>
+
+<% end %>

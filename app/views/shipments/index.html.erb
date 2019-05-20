@@ -1,0 +1,47 @@
+<p id="notice"><%= notice %></p>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Envios
+          </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+          <div class="kt-portlet__head-wrapper">
+            <a href="/shipments/new" class="btn btn-brand btn-bold btn-upper btn-font-sm">
+              <i class="la la-plus"></i>
+              New Record
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <table class="table table-head-noborder">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Enviado em</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @shipments.each do |shipment| %>
+              <tr>
+                <td><%= shipment.shipment_number %></td>
+                <td><%= link_to 'Show', shipment %></td>
+                <td><%= link_to 'Edit', edit_shipment_path(shipment) %></td>
+                <td><%= link_to 'Destroy', shipment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
