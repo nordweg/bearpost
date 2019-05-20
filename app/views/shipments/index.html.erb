@@ -11,10 +11,10 @@
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
-            <a href="/shipments/new" class="btn btn-brand btn-bold btn-upper btn-font-sm">
+            <%= link_to new_shipment_path, class: "btn btn-brand btn-bold btn-upper btn-font-sm" do %>
               <i class="la la-plus"></i>
-              New Record
-            </a>
+              Novo envio
+            <% end %>
           </div>
         </div>
       </div>

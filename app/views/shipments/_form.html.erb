@@ -1,28 +1,6 @@
-<%= form_for shipment do |form| %>
-<% if shipment.errors.any? %>
-<div id="error_explanation">
-  <h2><%= pluralize(shipment.errors.count, "error") %> prohibited this shipment from being saved:</h2>
-
-  <ul>
-    <% shipment.errors.full_messages.each do |message| %>
-    <li><%= message %></li>
-    <% end %>
-  </ul>
-</div>
-<% end %>
-
-<div class="field">
-  <%= form.label :shipment_number %>
-  <%= form.text_field :shipment_number, id: :shipment_shipment_number %>
-</div>
-
-<div class="actions">
-  <%= form.submit %>
-</div>
-<% end %>
+<%= render 'flash_messages', object: shipment %>
 
 <%= form_for shipment do |form| %>
-
 <div class="kt-portlet">
   <div class="kt-portlet__head">
     <div class="kt-portlet__head-label">
@@ -70,13 +48,6 @@
         </div>
 
 
-      </div>
-    </div>
-
-    <div class="kt-portlet__foot">
-      <div class="kt-form__actions">
-        <button type="reset" class="btn btn-primary">Submit</button>
-        <button type="reset" class="btn btn-secondary">Cancel</button>
       </div>
     </div>
 
