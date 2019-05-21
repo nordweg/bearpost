@@ -5,9 +5,14 @@
       <%= yield :subheader_title %>
     </h3>
   </div>
-  <% if content_for?(:subheader_links) %>
+
+
+  flaticon-interface-11
+
+  <!-- Link de opções (Editar, apagar) -->
   <div class="kt-subheader__toolbar">
     <div class="kt-subheader__wrapper">
+      <% if content_for?(:subheader_links) %>
       <div class="btn-group">
         <button type="button" class="btn btn-pill btn-outline-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Opções
@@ -16,8 +21,8 @@
           <%= yield :subheader_links %>
         </div>
       </div>
+      <% end %>
     </div>
   </div>
-  <% end %>
 </div>
 <!-- end:: Subheader -->

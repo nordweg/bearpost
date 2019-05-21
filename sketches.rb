@@ -1,5 +1,4 @@
 #  BASE
-
 module Carrier
   class Base
     def get_authorization_code
@@ -25,6 +24,14 @@ module Carrier
   class Azul < Carrier::Base
     SHIPPING_CARRIERS << ["Carrier::Azul"]
     REVERSE_SHIPPING_CARRIERS << ["Carrier::Azul"]
+  end
+end
+
+# Exemplo de preferences
+# https://github.com/spree-contrib/spree_social/blob/master/app/models/spree/social_configuration.rb
+module Spree
+  class SocialConfiguration < Preferences::Configuration
+    preference :path_prefix, :string, default: 'users'
   end
 end
 
