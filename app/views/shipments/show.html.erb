@@ -1,78 +1,10 @@
-<div class="kt-portlet">
-  <div class="kt-portlet__head">
-    <div class="kt-portlet__head-label">
-      <h3 class="kt-portlet__head-title">
-        Envio <%= @shipment.shipment_number %>
-      </h3>
-    </div>
-    <div class="kt-portlet__head-toolbar">
-      <div class="kt-portlet__head-group">
-        <div class="btn-group">
-          <button type="button" class="btn btn-pill btn-outline-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Opções
-          </button>
-          <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-            <%= link_to 'Editar', edit_shipment_path(@shipment), class:"dropdown-item" %>
-            <div class="dropdown-divider"></div>
-            <%= link_to 'Apagar', @shipment, class:"dropdown-item", method: :delete, data: { confirm: "Tem certeza que deseja apagar o envio #{@shipment.shipment_number}?" } %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="kt-portlet__body">
-    <div class="kt-portlet__content">
+<% content_for :subheader_title do %>
+Envio #<%= @shipment.shipment_number %>
+<% end %>
 
-      <h4>Envio</h4>
-      <div class="row">
-        <div class="col-md-6">
-          <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-            <tbody>
-              <tr>
-                <th style="width:30%">Número do envio:</th>
-                <td><%= @shipment.shipment_number %></td>
-              </tr>
-              <tr>
-                <th>Número do pedido:</th>
-                <td><%= @shipment.order_number %></td>
-              </tr>
-              <tr>
-                <th>Transportadora:</th>
-                <td><%= @shipment.carrier_name %></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-6">
-          <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-            <tbody>
-              <tr>
-                <th style="width:30%">Série da nota fiscal:</th>
-                <td><%= @shipment.invoice_series %></td>
-              </tr>
-              <tr>
-                <th>Número da nota fiscal:</th>
-                <td><%= @shipment.invoice_number %></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <h4>Destinatário</h4>
-          <%= render "address" %>
-        </div>
-        <div class="col-md-6">
-          <h4>Remetente</h4>
-          <%= render "address" %>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<h3>Pacotes</h3>
+<% content_for :subheader_links do %>
+<%= link_to "Editar", edit_shipment_path(@shipment), class: "dropdown-item" %>
+<% end %>
 
 <div class="row">
 
@@ -81,14 +13,173 @@
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
-            Pacote R122
+            Envio <%= @shipment.shipment_number %>
           </h3>
         </div>
+      </div>
+
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+            <tbody>
+              <tr>
+                <th>Número do pedido</th>
+                <td><%= @shipment.order_number %></td>
+              </tr>
+              <tr>
+                <th>Transportadora</th>
+                <td><%= @shipment.carrier_name %></td>
+              </tr>
+              <tr>
+                <th>Série da nota fiscal</th>
+                <td><%= @shipment.invoice_series %></td>
+              </tr>
+              <tr>
+                <th>Número da nota fiscal</th>
+                <td><%= @shipment.invoice_number %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="kt-portlet kt-portlet--height-fluid">
+      <div class="kt-portlet__head kt-portlet__head--noborder">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">Histograma</h3>
+        </div>
         <div class="kt-portlet__head-toolbar">
-          <div class="kt-portlet__head-group">
-            <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md"><i class="la la-cog"></i></button>&nbsp;
-            <button type="button" class="btn btn-default btn-sm btn-bold btn-upper">Preview</button>
+          <div class="kt-portlet__head-toolbar-wrapper">
+            <div class="dropdown dropdown-inline">
+              <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="flaticon-more-1"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right">
+                <ul class="kt-nav">
+                  <li class="kt-nav__section kt-nav__section--first">
+                    <span class="kt-nav__section-text">Export Tools</span>
+                  </li>
+                  <li class="kt-nav__item">
+                    <a href="#" class="kt-nav__link">
+                      <i class="kt-nav__link-icon la la-print"></i>
+                      <span class="kt-nav__link-text">Print</span>
+                    </a>
+                  </li>
+                  <li class="kt-nav__item">
+                    <a href="#" class="kt-nav__link">
+                      <i class="kt-nav__link-icon la la-copy"></i>
+                      <span class="kt-nav__link-text">Copy</span>
+                    </a>
+                  </li>
+                  <li class="kt-nav__item">
+                    <a href="#" class="kt-nav__link">
+                      <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                      <span class="kt-nav__link-text">Excel</span>
+                    </a>
+                  </li>
+                  <li class="kt-nav__item">
+                    <a href="#" class="kt-nav__link">
+                      <i class="kt-nav__link-icon la la-file-text-o"></i>
+                      <span class="kt-nav__link-text">CSV</span>
+                    </a>
+                  </li>
+                  <li class="kt-nav__item">
+                    <a href="#" class="kt-nav__link">
+                      <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                      <span class="kt-nav__link-text">PDF</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
+      <div class="kt-portlet__body kt-portlet__body--fluid">
+        <div class="kt-widget-19">
+          <div class="kt-widget-19__title">
+            <div class="kt-widget-19__label"><small>R$</small><%= sprintf('%.2f', @shipment.cost) if @shipment.cost %></div>
+            <img class="kt-widget-19__bg" src="/keen/misc/iconbox_bg.png" alt="bg">
+          </div>
+          <div class="kt-widget-19__data">
+            <!--Doc: For the chart bars you can use state helper classes: kt-bg-success, kt-bg-info, kt-bg-danger. Refer: components/custom/colors.html -->
+            <div class="kt-widget-19__chart">
+              <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-45" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="45"></div></div>
+              <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-95" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="95"></div></div>
+              <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-63" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="63"></div></div>
+              <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-11" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="11"></div></div>
+              <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-46" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="46"></div></div>
+              <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-88" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="88"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Destinatário
+          </h3>
+        </div>
+      </div>
+
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <%= render "address" %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-md-6">
+
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Remetente
+          </h3>
+        </div>
+      </div>
+
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <%= render "address" %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="row">
+
+  <div class="col-md-6 text-center">
+    <%= link_to "#", class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
+    <i class="flaticon2-plus"></i> Novo pacote
+    <% end %>
+  </div>
+
+  <div class="col-md-6">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Histórico
+          </h3>
         </div>
       </div>
       <div class="kt-portlet__body">
@@ -216,11 +307,4 @@
       </div>
     </div>
   </div>
-
-  <div class="col-md-6 text-center m-auto">
-    <%= link_to "#", class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
-    <i class="flaticon2-plus"></i> Novo pacote
-    <% end %>
-  </div>
-
 </div>

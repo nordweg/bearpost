@@ -1,4 +1,6 @@
-<p id="notice"><%= notice %></p>
+<% content_for :subheader_title do %>
+Envios
+<% end %>
 
 <div class="row">
   <div class="col-lg-12">
@@ -6,14 +8,14 @@
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
-            Envios
+            Envios recentes
           </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
             <%= link_to new_shipment_path, class: "btn btn-brand btn-bold btn-upper btn-font-sm" do %>
-              <i class="la la-plus"></i>
-              Novo envio
+            <i class="la la-plus"></i>
+            Novo envio
             <% end %>
           </div>
         </div>
@@ -24,8 +26,8 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Cidade</th>
                 <th>Nome</th>
+                <th>Cidade</th>
                 <th>Enviado em</th>
                 <th>Status</th>
               </tr>
@@ -33,11 +35,11 @@
             <tbody>
               <% @shipments.each do |shipment| %>
               <tr>
-                <td><%= link_to shipment.shipment_number, shipment %></td>
-                <td><%= shipment.recipient_city %></td>
-                <td><%= shipment.full_name %></td>
-                <td><%= shipment.shipped_at.try(:to_date) %></td>
-                <td><%= shipment.status %></td>
+                  <td><%= link_to shipment.shipment_number, shipment, class: "kt-link" %></td>
+                  <td><%= shipment.full_name %></td>
+                  <td><%= shipment.recipient_city %></td>
+                  <td><%= shipment.shipped_at.try(:to_date) %></td>
+                  <td><%= shipment.status %></td>
               </tr>
               <% end %>
             </tbody>
