@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
-
-  resources :packages
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'home#index'
 
+  get 'settings', to: "settings#index"
+
+  resources :accounts
+  resources :packages
   resources :shipments
 end

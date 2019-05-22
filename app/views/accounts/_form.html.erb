@@ -1,0 +1,30 @@
+<%= form_for account do |form| %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="kt-portlet ">
+      <div class="kt-portlet__body">
+        <div class="kt-section">
+          <div class="kt-section__body">
+            <div class="form-group">
+              <%= form.label 'Nome' %>
+              <%= form.text_field :name, class: "form-control" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kt-portlet__foot">
+        <div class="kt-form__actions">
+          <div class="row">
+            <div class="col-lg-6">
+              <%= form.submit "Salvar", class:"btn btn-primary" %>
+              <%= link_to 'Back', :back, class:"btn btn-secondary"  %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<% end %>
