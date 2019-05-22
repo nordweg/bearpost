@@ -168,6 +168,7 @@
 
   <div class="col-md-6">
 
+    <% @shipment.packages.each do |package| %>
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -179,10 +180,11 @@
 
       <div class="kt-portlet__body">
         <div class="kt-portlet__content">
-          <%= render 'packages/table', package: @shipment.packages.last %>
+          <%= render 'packages/table', package: package %>
         </div>
       </div>
     </div>
+    <% end %>
 
     <%= link_to new_package_path(shipment_id:@shipment.id), class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
     <i class="flaticon2-plus"></i> Novo pacote
