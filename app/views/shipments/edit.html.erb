@@ -1,0 +1,4 @@
+<% content_for :subheader_title do %>
+  Editando envio #<%= @shipment.shipment_number %>
+<% end %>
+<%= render 'form', shipment: @shipment %>
