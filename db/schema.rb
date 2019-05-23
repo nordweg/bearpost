@@ -10,10 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190514184503) do
+ActiveRecord::Schema.define(version: 20190521185825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "name"
+  end
 
   create_table "packages", force: :cascade do |t|
     t.integer "shipment_id"
@@ -71,6 +75,8 @@ ActiveRecord::Schema.define(version: 20190514184503) do
     t.string "recipient_city"
     t.string "recipient_city_code"
     t.string "recipient_state"
+    t.string "sender_country"
+    t.string "recipient_country"
   end
 
 end

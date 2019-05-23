@@ -1,5 +1,4 @@
 #  BASE
-
 module Carrier
   class Base
     def get_authorization_code
@@ -25,6 +24,14 @@ module Carrier
   class Azul < Carrier::Base
     SHIPPING_CARRIERS << ["Carrier::Azul"]
     REVERSE_SHIPPING_CARRIERS << ["Carrier::Azul"]
+  end
+end
+
+# Exemplo de preferences
+# https://github.com/spree-contrib/spree_social/blob/master/app/models/spree/social_configuration.rb
+module Spree
+  class SocialConfiguration < Preferences::Configuration
+    preference :path_prefix, :string, default: 'users'
   end
 end
 
@@ -76,7 +83,15 @@ t.string   :state
 
 # Creating a controller
 rails g controller Home index
+rails g controller Settings index --skip-assets --skip-tests --skip-helper
+
 
 # Resetting DB before tests
 rake db:test:prepare
 rake db:reset
+
+# Scaffold a Controller with all crud actions for an existing table
+rails g scaffold_controller Shipment
+
+# Scaffold a Model with a field (all crud actions, tests, routes)
+rails g scaffold Shipment shipment_number:string --skip-migration
