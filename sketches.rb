@@ -85,7 +85,6 @@ t.string   :state
 rails g controller Home index
 rails g controller Settings index --skip-assets --skip-tests --skip-helper
 
-
 # Resetting DB before tests
 rake db:test:prepare
 rake db:reset
