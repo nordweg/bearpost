@@ -1,23 +1,28 @@
 class AccountsController < ApplicationController
   before_action :set_account, only: [:show, :edit, :update, :destroy]
 
-  # GET /accounts
-  # GET /accounts.json
   def index
     @accounts = Account.all
   end
 
-  # GET /accounts/1
-  # GET /accounts/1.json
   def show
   end
 
-  # GET /accounts/new
   def new
     @account = Account.new
   end
 
   def edit
+  end
+
+  def update_carrier_settings
+    @carrier = "Carrier::#{params[:carrier_id].titleize}".constantize
+    @account = Account.find(params[:id])
+    if @account.update(@carrier.settings_field => params[:settings])
+      redirect_to edit_carrier_path(@carrier.id), notice: 'Configurações atualizadas com sucesso'
+    else
+      redirect_to edit_carrier_path(@carrier.id), notice: 'algo deu errado'
+    end
   end
 
   def create
@@ -33,14 +38,9 @@ class AccountsController < ApplicationController
     end
   end
 
-  # DELETE /accounts/1
-  # DELETE /accounts/1.json
   def destroy
     @account.destroy
-    respond_to do |format|
-      format.html { redirect_to accounts_url, notice: 'Account was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    redirect_to settings_path, notice: 'Conta apagada'
   end
 
   private

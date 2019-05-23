@@ -94,3 +94,8 @@ rails g scaffold_controller Shipment
 
 # Scaffold a Model with a field (all crud actions, tests, routes)
 rails g scaffold Shipment shipment_number:string --skip-migration
+
+#
+# ac = Account.new
+# ac.correios_settings[:email] = "lucas"
+# ac.save
