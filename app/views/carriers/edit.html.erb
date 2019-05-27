@@ -23,18 +23,35 @@
       </div>
       <div class="kt-portlet__body">
         <div class="tab-content">
+
           <% @accounts.each do |account| %>
           <div class="tab-pane" id="kt_portlet_tabs_1_<%= account.id %>_content" role="tabpanel">
+
             <% settings = account.send(@carrier.settings_field) %>
             <%= form_for :settings, url: "/accounts/#{account.id}/update_carrier_settings" do |f| %>
-            <%= hidden_field_tag 'carrier_id', @carrier.id %>
-            <% @carrier.settings.each do |setting| %>
+              <%= hidden_field_tag 'carrier_id', @carrier.id %>
+              <% @carrier.settings.each do |setting| %>
+                <div class="form-group">
+                  <%= f.label setting %>
+                  <%= f.text_field setting, value: settings[setting], class:'form-control' %>
+                </div>
+              <% end %>
 
-            <div class="form-group">
-              <%= f.label setting %>
-              <%= f.text_field setting, value: settings[setting], class:'form-control' %>
-            </div>
-            <% end %>
+              <hr>
+
+              <div class="form-group">
+                <label>Métodos de envio disponíveis:</label>
+                <%= fields_for :selected_shipping_methods do |ff| %>
+                  <% @carrier.shipping_methods.each do |shipping_method,value| %>
+                    <div>
+                      <%= ff.check_box shipping_method, { checked: settings["selected_shipping_methods"][shipping_method.to_s] == '1' } %>
+                      <%= ff.label shipping_method %>
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+              <!-- settings["selected_shipping_methods"][shipping_method.to_s] == '1' -->
+
 
 
               <div class="kt-form__actions">
@@ -45,9 +62,8 @@
                   </div>
                 </div>
               </div>
-
-
             <% end %>
+
           </div>
           <% end %>
         </div>

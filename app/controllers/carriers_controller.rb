@@ -6,6 +6,5 @@ class CarriersController < ApplicationController
   def edit
     @carrier = "Carrier::#{params[:id].titleize}".constantize
     @accounts = Account.all
-    @account = Account.last
   end
 end

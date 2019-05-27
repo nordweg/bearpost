@@ -16,8 +16,11 @@ class AccountsController < ApplicationController
   end
 
   def update_carrier_settings
-    @carrier = "Carrier::#{params[:carrier_id].titleize}".constantize
     @account = Account.find(params[:id])
+    @carrier = helpers.carrier_from_id(params[:carrier_id])
+    20.times { p params[:selected_shipping_methods] }
+    params[:settings][:selected_shipping_methods] = params[:selected_shipping_methods]
+    20.times { p params[:settings] }
     if @account.update(@carrier.settings_field => params[:settings])
       redirect_to edit_carrier_path(@carrier.id), notice: 'Configurações atualizadas com sucesso'
     else
