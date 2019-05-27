@@ -1,5 +1,6 @@
 class ShipmentsController < ApplicationController
   before_action :set_shipment, only: [:show, :edit, :update, :destroy]
+  # include ApplicationHelper
 
   # GET /shipments
   # GET /shipments.json
@@ -10,6 +11,7 @@ class ShipmentsController < ApplicationController
   # GET /shipments/1
   # GET /shipments/1.json
   def show
+    @carrier = helpers.carrier_from_id(@shipment.carrier_name)
   end
 
   # GET /shipments/new
@@ -19,6 +21,7 @@ class ShipmentsController < ApplicationController
 
   # GET /shipments/1/edit
   def edit
+    @accounts_and_shipping_methods = selected_shipping_methods
   end
 
   # POST /shipments

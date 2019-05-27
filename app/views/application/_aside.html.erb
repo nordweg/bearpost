@@ -27,57 +27,37 @@
           <% end %>
         </li>
 
-
-        <li class="kt-menu__item <%= 'kt-menu__item--active' if current_page?(controller: 'carriers') %>">
-          <%= link_to carriers_path, class: "kt-menu__link" do %>
-          <i class="kt-menu__link-icon flaticon-paper-plane"></i>
-          <span class="kt-menu__link-text">Transportadoras</span>
-          <% end %>
-        </li>
-
-
-
-
-        <li class="kt-menu__item kt-menu__item--submenu kt-menu__item--here" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
+        <li class="kt-menu__item <%= 'kt-menu__item--active' if current_page?(controller: 'carriers') %> kt-menu__item--submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover">
           <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
-            <i class="kt-menu__link-icon flaticon2-graphic">
+            <i class="kt-menu__link-icon flaticon-paper-plane">
             </i>
-            <span class="kt-menu__link-text">
-              Transportadoras
-            </span>
+            <span class="kt-menu__link-text">Transportadoras</span>
             <i class="kt-menu__ver-arrow la la-angle-right">
             </i>
           </a>
-          <div class="kt-menu__submenu " kt-hidden-height="200" style="">
+          <div class="kt-menu__submenu " kt-hidden-height="160" style="display: none; overflow: hidden;">
             <span class="kt-menu__arrow">
             </span>
             <ul class="kt-menu__subnav">
-      
+              <li class="kt-menu__item  kt-menu__item--parent" aria-haspopup="true">
+                <span class="kt-menu__link">
+                  <span class="kt-menu__link-text">Transportadoras</span>
+                </span>
+              </li>
 
               <% Rails.configuration.carriers.each do |carrier| %>
-              <li class="kt-menu__item  kt-menu__item--active" aria-haspopup="true">
-                <a href="/keen/preview/demo1/index.html" class="kt-menu__link ">
-                  <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
-                    <span>
-                    </span>
-                  </i>
-                  <span class="kt-menu__link-text"><%= carrier.display_name %>
-                  </span>
-                </a>
+              <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true">
+                <%= link_to edit_carrier_path(carrier.id), class: "kt-menu__link" do %>
+                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+                <span class="kt-menu__link-text"><%= carrier.display_name %>
+                </span>
+                <% end %>
               </li>
               <% end %>
 
             </ul>
           </div>
         </li>
-
-
-
-
-
-
-
-
 
       </ul>
     </div>

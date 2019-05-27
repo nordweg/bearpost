@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190523165547) do
+ActiveRecord::Schema.define(version: 20190527174751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,8 @@ ActiveRecord::Schema.define(version: 20190523165547) do
     t.string "recipient_state"
     t.string "sender_country"
     t.string "recipient_country"
+    t.integer "account_id"
+    t.string "shipping_method"
   end
 
   create_table "shipping_methods", force: :cascade do |t|
