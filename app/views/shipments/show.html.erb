@@ -28,15 +28,15 @@
               </tr>
               <tr>
                 <th>Conta</th>
-                <td><%= @shipment.account.name %></td>
+                <td><%= @shipment.account.name if @shipment.account %></td>
+              </tr>
+              <tr>
+                <th>Transportadora</th>
+                <td><%= link_to @carrier.display_name, edit_carrier_path(@carrier.id), class: "kt-link" if @carrier %></td>
               </tr>
               <tr>
                 <th>Método de envio</th>
                 <td><%= @shipment.shipping_method %></td>
-              </tr>
-              <tr>
-                <th>Transportadora</th>
-                <td><%= link_to @carrier.display_name, edit_carrier_path(@carrier.id), class: "kt-link" %></td>
               </tr>
               <tr>
                 <th>Série da nota fiscal</th>
@@ -176,13 +176,33 @@
 
   <div class="col-md-6">
 
+    <% total_shipments = @shipment.packages.size %>
     <% @shipment.packages.each do |package| %>
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
-            Pacote 1/1
+            Pacote <%= @shipment.packages.index(package) + 1 %>/<%= total_shipments %>
           </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+          <div class="kt-portlet__head-toolbar-wrapper">
+            <div class="dropdown dropdown-inline">
+              <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="flaticon-more-1"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right">
+                <ul class="kt-nav">
+                  <li class="kt-nav__item">
+                    <%= link_to package, class: "kt-nav__link", method: :delete, data: { confirm: 'Você tem certeza?' } do %>
+                      <i class="kt-nav__link-icon la la-trash"></i>
+                      <span class="kt-nav__link-text">Apagar</span>
+                    <% end %>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 class Carrier::Correios < Carrier
   def self.settings
-    ['username','password','posting_card','another_idea']
+    ['Usuário','Senha','Código Administrativo','Contrato', 'Codigo Serviço', 'Cartão', 'CNPJ']
   end
 
   def self.tracking_url
@@ -14,4 +14,9 @@ class Carrier::Correios < Carrier
       'Sedex20': { carrier_service_id: 3 },
     }
   end
+
+  def create_shipping_label(shipment)
+
+  end
+  
 end

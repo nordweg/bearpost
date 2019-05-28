@@ -201,7 +201,7 @@
     $('#shipment_shipping_method').empty();
     $.each(items, function (i, item) {
         $('#shipment_shipping_method').append($('<option>', {
-            value: item[Object.keys(item)]['shipping_method_id'], // Get the value
+            value: Object.keys(item)[0], // Get the value
             text : Object.keys(item)[0], // Key the key
         }));
     });
