@@ -11,7 +11,11 @@ class ShipmentsController < ApplicationController
   # GET /shipments/1
   # GET /shipments/1.json
   def show
-    @carrier = helpers.carrier_from_id(@shipment.carrier_name)
+    if @shipment.carrier_name
+      @carrier = helpers.carrier_from_id(@shipment.carrier_name)
+    else
+      @carrier = nil
+    end 
   end
 
   # GET /shipments/new

@@ -14,7 +14,8 @@ class PackagesController < ApplicationController
 
   # GET /packages/new
   def new
-    @package = Package.new(shipment_id:params[:shipment_id])
+    @shipment = Shipment.find(params[:shipment_id])
+    @package = @shipment.packages.new
   end
 
   # GET /packages/1/edit
@@ -28,7 +29,7 @@ class PackagesController < ApplicationController
 
     respond_to do |format|
       if @package.save
-        format.html { redirect_to @package, notice: 'Pacote criado com sucesso.' }
+        format.html { redirect_to @package.shipment, notice: 'Pacote criado com sucesso.' }
         format.json { render :show, status: :created, location: @package }
       else
         format.html { render :new }
@@ -54,9 +55,10 @@ class PackagesController < ApplicationController
   # DELETE /packages/1
   # DELETE /packages/1.json
   def destroy
+    shipment = @package.shipment
     @package.destroy
     respond_to do |format|
-      format.html { redirect_to packages_url, notice: 'Pacote apagado.' }
+      format.html { redirect_to shipment_path(shipment), notice: 'Pacote apagado.' }
       format.json { head :no_content }
     end
   end
