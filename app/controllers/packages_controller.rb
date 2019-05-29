@@ -1,5 +1,5 @@
 class PackagesController < ApplicationController
-  before_action :set_package, only: [:show, :edit, :update, :destroy]
+  before_action :set_package, only: [:show, :edit, :update, :destroy, :create_label]
 
   # GET /packages
   # GET /packages.json
@@ -20,6 +20,13 @@ class PackagesController < ApplicationController
 
   # GET /packages/1/edit
   def edit
+  end
+
+  def create_label
+    @carrier = helpers.carrier_from_id(@package.shipment.carrier_name)
+    package_label = @carrier.create_label(@package)
+    @package.update(tracking_number:package_label)
+    redirect_to @package.shipment, notice: 'Etiqueta criada com sucesso.'
   end
 
   # POST /packages

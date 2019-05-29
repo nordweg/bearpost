@@ -7,6 +7,10 @@ Rails.application.routes.draw do
 
   resources :carriers
   resources :accounts
-  resources :packages
+  resources :packages do
+    member do
+      post 'create_label', to: "packages#create_label"
+    end
+  end
   resources :shipments
 end

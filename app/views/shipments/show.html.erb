@@ -1,9 +1,9 @@
 <% content_for :subheader_title do %>
-  Envio #<%= @shipment.shipment_number %>
+Envio #<%= @shipment.shipment_number %>
 <% end %>
 
 <% content_for :subheader_links do %>
-  <%= link_to "Editar", edit_shipment_path(@shipment), class: "dropdown-item" %>
+<%= link_to "Editar", edit_shipment_path(@shipment), class: "dropdown-item" %>
 <% end %>
 
 <div class="row">
@@ -192,14 +192,14 @@
                 <i class="flaticon-more-1"></i>
               </button>
               <div class="dropdown-menu dropdown-menu-right">
-                <ul class="kt-nav">
-                  <li class="kt-nav__item">
-                    <%= link_to package, class: "kt-nav__link", method: :delete, data: { confirm: 'Você tem certeza?' } do %>
-                      <i class="kt-nav__link-icon la la-trash"></i>
-                      <span class="kt-nav__link-text">Apagar</span>
-                    <% end %>
-                  </li>
-                </ul>
+                <%= link_to create_label_package_path(package), class: "dropdown-item", method: :post do %>
+                <i class="la la-print"></i>Gerar etiqueta
+                <% end %>
+                <div class="dropdown-divider"></div>
+                <%= link_to package, class: "dropdown-item", method: :delete, data: { confirm: 'Você tem certeza?' } do %>
+                <i class="la la-trash"></i> Apagar
+                <% end %>
+
               </div>
             </div>
           </div>

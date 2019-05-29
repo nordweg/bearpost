@@ -29,39 +29,41 @@
 
             <% settings = account.send(@carrier.settings_field) %>
             <%= form_for :settings, url: "/accounts/#{account.id}/update_carrier_settings" do |f| %>
-              <%= hidden_field_tag 'carrier_id', @carrier.id %>
+            <%= hidden_field_tag 'carrier_id', @carrier.id %>
+            <div class="row">
               <% @carrier.settings.each do |setting| %>
+              <div class="col-md-6">
                 <div class="form-group">
                   <%= f.label setting %>
                   <%= f.text_field setting, value: settings[setting], class:'form-control' %>
                 </div>
-              <% end %>
-
-              <hr>
-
-              <div class="form-group">
-                <label>Métodos de envio disponíveis:</label>
-                <%= fields_for :selected_shipping_methods do |ff| %>
-                  <% @carrier.shipping_methods.each do |shipping_method,value| %>
-                    <div>
-                      <%= ff.check_box shipping_method, { checked: settings["selected_shipping_methods"][shipping_method.to_s] == '1' } %>
-                      <%= ff.label shipping_method %>
-                    </div>
-                  <% end %>
-                <% end %>
               </div>
-              <!-- settings["selected_shipping_methods"][shipping_method.to_s] == '1' -->
+              <% end %>
+            </div>
 
+            <hr>
 
+            <div class="form-group">
+              <label>Métodos de envio disponíveis:</label>
+              <%= fields_for :selected_shipping_methods do |ff| %>
+              <% @carrier.shipping_methods.each do |shipping_method,value| %>
+              <div>
+                <%= ff.check_box shipping_method, { checked: settings["selected_shipping_methods"][shipping_method.to_s] == '1' } %>
+                <%= ff.label shipping_method %>
+              </div>
+              <% end %>
+              <% end %>
+            </div>
+            <!-- settings["selected_shipping_methods"][shipping_method.to_s] == '1' -->
 
-              <div class="kt-form__actions">
-                <div class="row">
-                  <div class="col-lg-6">
-                    <%= f.submit "Salvar", class:"btn btn-primary" %>
-                    <%= link_to 'Voltar', :back, class:"btn btn-secondary"  %>
-                  </div>
+            <div class="kt-form__actions">
+              <div class="row">
+                <div class="col-lg-6">
+                  <%= f.submit "Salvar", class:"btn btn-primary" %>
+                  <%= link_to 'Voltar', :back, class:"btn btn-secondary"  %>
                 </div>
               </div>
+            </div>
             <% end %>
 
           </div>
