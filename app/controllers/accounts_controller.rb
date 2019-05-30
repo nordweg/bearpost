@@ -18,10 +18,16 @@ class AccountsController < ApplicationController
   def update_carrier_settings
     @account = Account.find(params[:id])
     @carrier = helpers.carrier_from_id(params[:carrier_id])
-    20.times { p params[:selected_shipping_methods] }
-    params[:settings][:selected_shipping_methods] = params[:selected_shipping_methods]
-    20.times { p params[:settings] }
-    if @account.update(@carrier.settings_field => params[:settings])
+
+    # make checkboxes become true/false
+    # params[:settings][:shipping_methods].each do |k,v|
+    #   params[:settings][:shipping_methods][k]["selected"] = ActiveRecord::Type::Boolean.new.cast(params[:settings][:shipping_methods][k]["selected"])
+    # end
+
+    current_settings = @account.send(@carrier.settings_field)
+    new_settings     = current_settings.deep_merge(settings_params.to_h)
+    
+    if @account.update(@carrier.settings_field => new_settings)
       redirect_to edit_carrier_path(@carrier.id), notice: 'Configurações atualizadas com sucesso'
     else
       redirect_to edit_carrier_path(@carrier.id), notice: 'algo deu errado'
@@ -55,5 +61,9 @@ class AccountsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def account_params
       params.require(:account).permit(:name)
+    end
+
+    def settings_params
+      params.require(:settings).permit!
     end
 end

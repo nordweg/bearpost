@@ -5,7 +5,7 @@ class Shipment < ApplicationRecord
   # If we want unique invoice numbers in a series
   # validates_uniqueness_of :invoice_number, scope: :invoice_series
 
-  has_many    :packages
+  has_many    :packages, -> { order "created_at" } 
   belongs_to  :account
 
   def shipped?

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   resources :accounts
   resources :packages do
     member do
-      post 'create_label', to: "packages#create_label"
+      post 'get_tracking_number', to: "packages#get_tracking_number"
     end
   end
   resources :shipments
