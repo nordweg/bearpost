@@ -10,6 +10,9 @@
   <!-- Link de opções (Editar, apagar) -->
   <div class="kt-subheader__toolbar">
     <div class="kt-subheader__wrapper">
+      <% if content_for?(:subheader_toolbar) %>
+        <%= yield :subheader_toolbar %>
+      <% end %>
       <% if content_for?(:subheader_links) %>
       <div class="btn-group">
         <button type="button" class="btn btn-pill btn-outline-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

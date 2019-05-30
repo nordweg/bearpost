@@ -99,3 +99,24 @@ rails g scaffold Shipment shipment_number:string --skip-migration
 # ac = Account.new
 # ac.correios_settings[:email] = "lucas"
 # ac.save
+
+
+# Shipping method example
+"PAC" => {
+  "selected" => true,
+  "range_end" => "1",
+  "range_start" => "1",
+  "carrier_service_id" => "1",
+  "minimum_labels_stock" => "50"
+  "ranges":[
+    [
+      "created_at",
+      "prefix",
+      "next_number",
+      "last_number",
+      "sufix",
+    ],
+    ["created_at", "start","end","next_number"],
+    ["created_at", "start","end","next_number"],
+  ]
+}
