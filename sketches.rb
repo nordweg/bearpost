@@ -120,3 +120,10 @@ rails g scaffold Shipment shipment_number:string --skip-migration
     ["created_at", "start","end","next_number"],
   ]
 }
+
+#
+bundle gem bearpost_correios --coc --mit -t --test=rspec
+rails plugin new correios --full --database=postgresql --skip-system-test
+
+gem build bearpost_correios.gemspec
+gem install bearpost_correios
