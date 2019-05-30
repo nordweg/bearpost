@@ -57,7 +57,7 @@ class Carrier::Correios < Carrier
       tracking_number
     end
 
-    private
+    # private
 
     def check_tracking_number_availability(account,shipping_method)
       settings        = account.correios_settings['shipping_methods'][shipping_method]

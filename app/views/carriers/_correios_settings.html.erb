@@ -73,16 +73,44 @@
             <div class="kt-portlet__content">
               <div class="row">
                 <%= ff.fields_for shipping_method do |fff| %>
-                <% shipping_method_settings.each do |setting| %>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <%= fff.label setting %>
-                    <%= fff.text_field setting, value: settings.dig('shipping_methods',shipping_method,setting), class:'form-control' %>
+                  <% shipping_method_settings.each do |setting| %>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <%= fff.label setting %>
+                      <%= fff.text_field setting, value: settings.dig('shipping_methods',shipping_method,setting), class:'form-control' %>
+                    </div>
                   </div>
+                  <% end %>
                 </div>
+                <% if settings['shipping_methods'][shipping_method]['ranges'] %>
+
+                <p>Faixas de etiqueta</p>
+                <table class="table">
+                  <thead>
+                    <th>Prefixo</th>
+                    <th>Próxima</th>
+                    <th>Última</th>
+                    <th>Sufixo</th>
+                    <th>Disponíveis</th>
+                  </thead>
+                  <% settings['shipping_methods'][shipping_method]['ranges'].each do |range| %>
+                  <tr>
+                    <td><%= range['prefix'] %></td>
+                    <td><%= range['next_number'] %></td>
+                    <td><%= range['last_number'] %></td>
+                    <td><%= range['sufix'] %></td>
+                    <td><%= range['last_number'] - range['next_number'] + 1 %></td>
+                  </tr>
+                  <% end %>
+                  <tfoot>
+                    <td colspan="4">Total</td>
+                    <td><%= @carrier.count_available_labels(account,shipping_method) %></td>
+                  </tfoot>
+                </table>
+                <%= link_to "Pedit novo range", "#", class: "btn btn-primary" %>
+
                 <% end %>
                 <% end %>
-              </div>
             </div>
           </div>
         </div>
