@@ -1,0 +1,5 @@
+<% @shipment.packages.each do |package| %>
+<div style="page-break-before: always;">
+  <%= render "#{@carrier.id}_label", package: package %>
+</div>
+<% end %>

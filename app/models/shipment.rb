@@ -5,14 +5,17 @@ class Shipment < ApplicationRecord
   # If we want unique invoice numbers in a series
   # validates_uniqueness_of :invoice_number, scope: :invoice_series
 
-  has_many    :packages, -> { order "created_at" } 
+  scope :ready, -> { where(status: 'pronto') }
+  # criado, pronto para envio, enviado 
+
+  has_many    :packages, -> { order "created_at" }
   belongs_to  :account
 
   def shipped?
     shipped_at.present?
   end
 
-  def full_name
+  def recipient_full_name
     "#{recipient_first_name} #{recipient_last_name}"
   end
 end

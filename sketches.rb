@@ -123,7 +123,7 @@ rails g scaffold Shipment shipment_number:string --skip-migration
 
 #
 bundle gem bearpost_correios --coc --mit -t --test=rspec
-rails plugin new correios --full --database=postgresql --skip-system-test
+rails plugin new correios --full --database=postgresql
 
 gem build bearpost_correios.gemspec
 gem install bearpost_correios
