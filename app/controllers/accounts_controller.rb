@@ -26,7 +26,7 @@ class AccountsController < ApplicationController
 
     current_settings = @account.send(@carrier.settings_field)
     new_settings     = current_settings.deep_merge(settings_params.to_h)
-    
+
     if @account.update(@carrier.settings_field => new_settings)
       redirect_to edit_carrier_path(@carrier.id), notice: 'Configurações atualizadas com sucesso'
     else
@@ -60,7 +60,7 @@ class AccountsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def account_params
-      params.require(:account).permit(:name)
+      params.require(:account).permit!
     end
 
     def settings_params

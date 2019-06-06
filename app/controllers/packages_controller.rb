@@ -22,13 +22,6 @@ class PackagesController < ApplicationController
   def edit
   end
 
-  def get_tracking_number
-    @carrier        = helpers.carrier_from_id(@package.shipment.carrier_name)
-    tracking_number = @carrier.get_tracking_number(@package)
-    @package.update(tracking_number:tracking_number)
-    redirect_to @package.shipment, notice: 'Etiqueta criada com sucesso.'
-  end
-
   # POST /packages
   # POST /packages.json
   def create
