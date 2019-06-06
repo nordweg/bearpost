@@ -85,7 +85,6 @@ t.string   :state
 rails g controller Home index
 rails g controller Settings index --skip-assets --skip-tests --skip-helper
 
-
 # Resetting DB before tests
 rake db:test:prepare
 rake db:reset
@@ -95,3 +94,36 @@ rails g scaffold_controller Shipment
 
 # Scaffold a Model with a field (all crud actions, tests, routes)
 rails g scaffold Shipment shipment_number:string --skip-migration
+
+#
+# ac = Account.new
+# ac.correios_settings[:email] = "lucas"
+# ac.save
+
+
+# Shipping method example
+"PAC" => {
+  "selected" => true,
+  "range_end" => "1",
+  "range_start" => "1",
+  "carrier_service_id" => "1",
+  "minimum_labels_stock" => "50"
+  "ranges":[
+    [
+      "created_at",
+      "prefix",
+      "next_number",
+      "last_number",
+      "sufix",
+    ],
+    ["created_at", "start","end","next_number"],
+    ["created_at", "start","end","next_number"],
+  ]
+}
+
+#
+bundle gem bearpost_correios --coc --mit -t --test=rspec
+rails plugin new correios --full --database=postgresql
+
+gem build bearpost_correios.gemspec
+gem install bearpost_correios

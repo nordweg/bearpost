@@ -10,15 +10,8 @@
   <!-- Link de opções (Editar, apagar) -->
   <div class="kt-subheader__toolbar">
     <div class="kt-subheader__wrapper">
-      <% if content_for?(:subheader_links) %>
-      <div class="btn-group">
-        <button type="button" class="btn btn-pill btn-outline-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Opções
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-          <%= yield :subheader_links %>
-        </div>
-      </div>
+      <% if content_for?(:subheader_toolbar) %>
+        <%= yield :subheader_toolbar %>
       <% end %>
     </div>
   </div>

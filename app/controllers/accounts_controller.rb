@@ -1,23 +1,37 @@
 class AccountsController < ApplicationController
   before_action :set_account, only: [:show, :edit, :update, :destroy]
 
-  # GET /accounts
-  # GET /accounts.json
   def index
     @accounts = Account.all
   end
 
-  # GET /accounts/1
-  # GET /accounts/1.json
   def show
   end
 
-  # GET /accounts/new
   def new
     @account = Account.new
   end
 
   def edit
+  end
+
+  def update_carrier_settings
+    @account = Account.find(params[:id])
+    @carrier = helpers.carrier_from_id(params[:carrier_id])
+
+    # make checkboxes become true/false
+    # params[:settings][:shipping_methods].each do |k,v|
+    #   params[:settings][:shipping_methods][k]["selected"] = ActiveRecord::Type::Boolean.new.cast(params[:settings][:shipping_methods][k]["selected"])
+    # end
+
+    current_settings = @account.send(@carrier.settings_field)
+    new_settings     = current_settings.deep_merge(settings_params.to_h)
+
+    if @account.update(@carrier.settings_field => new_settings)
+      redirect_to edit_carrier_path(@carrier.id), notice: 'Configurações atualizadas com sucesso'
+    else
+      redirect_to edit_carrier_path(@carrier.id), notice: 'algo deu errado'
+    end
   end
 
   def create
@@ -33,14 +47,9 @@ class AccountsController < ApplicationController
     end
   end
 
-  # DELETE /accounts/1
-  # DELETE /accounts/1.json
   def destroy
     @account.destroy
-    respond_to do |format|
-      format.html { redirect_to accounts_url, notice: 'Account was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    redirect_to settings_path, notice: 'Conta apagada'
   end
 
   private
@@ -51,6 +60,10 @@ class AccountsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def account_params
-      params.require(:account).permit(:name)
+      params.require(:account).permit!
+    end
+
+    def settings_params
+      params.require(:settings).permit!
     end
 end
