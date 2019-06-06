@@ -36,7 +36,7 @@ Envios
               <% @shipments.each do |shipment| %>
               <tr>
                   <td><%= link_to shipment.shipment_number, shipment, class: "kt-link" %></td>
-                  <td><%= shipment.full_name %></td>
+                  <td><%= shipment.recipient_full_name %></td>
                   <td><%= shipment.recipient_city %></td>
                   <td><%= shipment.shipped_at.try(:to_date) %></td>
                   <td><%= shipment.status %></td>

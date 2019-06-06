@@ -10,18 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190521185825) do
+ActiveRecord::Schema.define(version: 20190606131024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
+    t.jsonb "correios_settings", default: {}
+    t.string "cnpj"
+    t.string "razao_social"
+    t.string "inscricao_estadual"
+    t.string "phone"
+    t.string "email"
+    t.string "street"
+    t.string "number"
+    t.string "complement"
+    t.string "neighborhood"
+    t.string "city"
+    t.string "zip"
+    t.string "state"
+    t.string "country"
   end
 
   create_table "packages", force: :cascade do |t|
     t.integer "shipment_id"
-    t.string "tracking_number"
     t.float "heigth"
     t.float "width"
     t.float "depth"
@@ -58,7 +71,7 @@ ActiveRecord::Schema.define(version: 20190521185825) do
     t.string "sender_number"
     t.string "sender_complement"
     t.string "sender_neighborhood"
-    t.string "sender_cep"
+    t.string "sender_zip"
     t.string "sender_city"
     t.string "sender_city_code"
     t.string "sender_state"
@@ -71,12 +84,22 @@ ActiveRecord::Schema.define(version: 20190521185825) do
     t.string "recipient_number"
     t.string "recipient_complement"
     t.string "recipient_neighborhood"
-    t.string "recipient_cep"
+    t.string "recipient_zip"
     t.string "recipient_city"
     t.string "recipient_city_code"
     t.string "recipient_state"
     t.string "sender_country"
     t.string "recipient_country"
+    t.integer "account_id"
+    t.string "shipping_method"
+    t.string "tracking_number"
+    t.jsonb "settings", default: {}
+  end
+
+  create_table "shipping_methods", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

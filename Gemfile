@@ -32,12 +32,20 @@ gem 'jbuilder', '~> 2.5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+gem 'savon' # SOAP requests for Correios
+
+gem 'bearpost_correios'
+
+gem 'wicked_pdf'
+gem "wkhtmltopdf-binary"
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw] # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'rspec-rails', '~> 3.8'
   gem 'capybara' # Adds support for Capybara system testing and
   gem 'selenium-webdriver' # selenium driver
+
+  gem 'awesome_print', :require => 'ap' # Print with indentation on rails console
 end
 
 group :development do

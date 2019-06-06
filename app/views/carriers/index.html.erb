@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Transportadoras
+          </h3>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+            <tbody>
+              <% @carriers.each do |carrier| %>
+              <tr>
+                <td><%= carrier.display_name %></td>
+                <td><%= carrier %></td>
+                <td class="text-right">
+                  <%= link_to edit_carrier_path(carrier.id), class:"btn btn-sm btn-clean btn-icon btn-icon-sm" do %>
+                  <i class="la la-edit"></i>
+                  <% end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
