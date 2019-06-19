@@ -11,11 +11,6 @@ class ShipmentsController < ApplicationController
   # GET /shipments/1
   # GET /shipments/1.json
   def show
-    if @shipment.carrier_name
-      @carrier = helpers.carrier_from_id(@shipment.carrier_name)
-    else
-      @carrier = nil
-    end
   end
 
   # GET /shipments/new
@@ -29,15 +24,19 @@ class ShipmentsController < ApplicationController
   end
 
   def get_tracking_number
-    @carrier        = helpers.carrier_from_id(@shipment.carrier_name)
     tracking_number = @carrier.get_tracking_number(@shipment)
-    @shipment.update(tracking_number:tracking_number, status:'pronto')
-    redirect_to @shipment, notice: 'Rastreio criado com sucesso.'
+    if tracking_number
+      @shipment.update(tracking_number:tracking_number, status:'pronto')
+      redirect_to @shipment, notice: 'Rastreio criado com sucesso.'
+    else
+      redirect_to @shipment, notice: 'Não foi possível criar número de rastreio.'
+    end
   end
 
   def get_labels
-    @carrier = helpers.carrier_from_id(@shipment.carrier_name)
-    get_tracking_number if @shipment.tracking_number.blank?
+    require "barby/barcode/code_128"
+    require "barby/outputter/png_outputter"
+
     respond_to do |format|
       format.html do
         render layout: 'pdf'
@@ -102,18 +101,15 @@ class ShipmentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_shipment
-      @shipment = Shipment.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_shipment
+    @shipment = Shipment.find(params[:id])
+    @carrier  = helpers.carrier_from_id(@shipment.carrier_name) rescue nil
+  end
 
-    def set_car
-      @shipment = Shipment.find(params[:id])
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def shipment_params
-      # params.require(:shipment).permit(:shipment_number)
-      params.require(:shipment).permit!
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def shipment_params
+    # params.require(:shipment).permit(:shipment_number)
+    params.require(:shipment).permit!
+  end
 end

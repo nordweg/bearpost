@@ -7,7 +7,6 @@ RSpec.describe "packages/edit", type: :view do
       :width => 1.5,
       :depth => 1.5,
       :weight => 1.5,
-      :tracking_number => "MyString",
       :shipment => nil
     ))
   end
@@ -24,8 +23,6 @@ RSpec.describe "packages/edit", type: :view do
       assert_select "input[name=?]", "package[depth]"
 
       assert_select "input[name=?]", "package[weight]"
-
-      assert_select "input[name=?]", "package[tracking_number]"
 
       assert_select "input[name=?]", "package[shipment_id]"
     end
