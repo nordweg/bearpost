@@ -1,15 +1,25 @@
+<style>
+.debug_dump {
+  font-size: 13px;
+  color: #646c9a;
+}
+</style>
+
 <% content_for :subheader_title do %>
 Envio #<%= @shipment.shipment_number %>
 <% end %>
 
 <%= content_for :subheader_toolbar do %>
 
-  <% if @carrier.shipment_menu_links.present? %>
+<% if @carrier && @carrier.shipment_menu_links.present? %>
   <div class="btn-group">
     <button type="button" class="btn btn-pill btn-outline-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Opções da transportadora
+      Opções
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
+
+      <%= link_to 'Informações adicionais', "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#exampleModalCenter' %>
+
       <% @carrier.shipment_menu_links.each do |text, path| %>
       <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
       <% end %>
@@ -21,356 +31,319 @@ Envio #<%= @shipment.shipment_number %>
     <i class="la la-print"></i>
   </a>
 
-  <a href="<%= get_labels_shipment_path(@shipment, format: :pdf) %>" target="_blank" class="btn btn-icon btn btn-label btn-label-brand btn-bold" data-toggle="kt-tooltip" title="" data-placement="top" data-original-title="Enviar">
-    <i class="flaticon2-rocket-2"></i>
-  </a>
-
-
   <%= link_to edit_shipment_path(@shipment), class: "btn btn-sm btn-elevate btn-brand btn-elevate" do %>
   Editar
   <% end %>
-  <% end %>
+<% end %>
 
-
-  <div class="row">
-
-    <div class="col-md-6">
-      <div class="kt-portlet">
-        <div class="kt-portlet__head">
-          <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-              Geral
-            </h3>
-          </div>
-        </div>
-
-
-        <div class="kt-portlet__body">
-          <div class="kt-portlet__content">
-            <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-              <tbody>
-                <tr>
-                  <th>Número do pedido</th>
-                  <td><%= @shipment.order_number %></td>
-                </tr>
-                <tr>
-                  <th>Conta</th>
-                  <td><%= @shipment.account.name if @shipment.account %></td>
-                </tr>
-                <tr>
-                  <th>Transportadora</th>
-                  <td><%= link_to @carrier.display_name, edit_carrier_path(@carrier.id), class: "kt-link" if @carrier %></td>
-                </tr>
-                <tr>
-                  <th>Método de envio</th>
-                  <td><%= @shipment.shipping_method %></td>
-                </tr>
-                <tr>
-                  <th>Série da nota fiscal</th>
-                  <td><%= @shipment.invoice_series %></td>
-                </tr>
-                <tr>
-                  <th>Número da nota fiscal</th>
-                  <td><%= @shipment.invoice_number %></td>
-                </tr>
-                <tr>
-                  <th>Rastreamento</th>
-                  <td>
-                    <% if @shipment.tracking_number %>
-                      <%= @shipment.tracking_number %>
-                    <% else %>
-                      <%= link_to "Gerar etiqueta", get_labels_shipment_path(@shipment, format: :pdf) %>
-                    <% end %>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Informações adicionais</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= ap(@shipment.settings,plain: true, indent: 0).html_safe %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="col-md-6">
-      <div class="kt-portlet kt-portlet--height-fluid kt-widget-12">
-        <div class="kt-portlet__head kt-portlet__head--noborder">
-          <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">Histograma</h3>
-          </div>
-          <div class="kt-portlet__head-toolbar">
-            <div class="kt-portlet__head-toolbar-wrapper">
-              <div class="dropdown dropdown-inline">
-                <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="flaticon-more-1"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <ul class="kt-nav">
-                    <li class="kt-nav__section kt-nav__section--first">
-                      <span class="kt-nav__section-text">Export Tools</span>
-                    </li>
-                    <li class="kt-nav__item">
-                      <a href="#" class="kt-nav__link">
-                        <i class="kt-nav__link-icon la la-print"></i>
-                        <span class="kt-nav__link-text">Print</span>
-                      </a>
-                    </li>
-                    <li class="kt-nav__item">
-                      <a href="#" class="kt-nav__link">
-                        <i class="kt-nav__link-icon la la-copy"></i>
-                        <span class="kt-nav__link-text">Copy</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+<div class="row">
 
-        <div class="kt-portlet__body kt-portlet__body--fluid">
-
-          <div class="kt-widget-19">
-            <div class="kt-widget-12__body d-flex m-4 justify-content-center">
-              <div class="">
-                <div class="kt-widget-12__head">
-                  <div class="kt-widget-12__date kt-widget-12__date--success m-0">
-                    <i class="flaticon2-box"></i>
-                    <span class="kt-widget-12__day">05</span>
-                    <span class="kt-widget-12__month">Jan</span>
-                  </div>
-                </div>
-                <h4><%= @shipment.status %></h4>
-              </div>
-            </div>
-            <div class="kt-widget-19__title">
-              <div class="kt-widget-19__label"><small>R$</small><%= sprintf('%.2f', @shipment.cost) if @shipment.cost %></div>
-              <img class="kt-widget-19__bg" src="/keen/misc/iconbox_bg.png" alt="bg">
-            </div>
-            <div class="kt-widget-19__data" style="align-items: center;">
-              <!--Doc: For the chart bars you can use state helper classes: kt-bg-success, kt-bg-info, kt-bg-danger. Refer: components/custom/colors.html -->
-              <div class="kt-widget-19__chart">
-                <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-45" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="45"></div></div>
-                <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-95" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="95"></div></div>
-                <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-63" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="63"></div></div>
-                <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-11" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="11"></div></div>
-                <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-46" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="46"></div></div>
-                <div class="kt-widget-19__bar"><div class="kt-widget-19__bar-88" data-toggle="kt-tooltip" data-skin="brand" data-placement="top" title="" data-original-title="88"></div></div>
-              </div>
-            </div>
-          </div>
+  <div class="col-md-6">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Geral
+          </h3>
         </div>
       </div>
 
+
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+            <tbody>
+              <tr>
+                <th>Número do pedido</th>
+                <td><%= @shipment.order_number %></td>
+              </tr>
+              <tr>
+                <th>Conta</th>
+                <td><%= @shipment.account.name if @shipment.account %></td>
+              </tr>
+              <tr>
+                <th>Transportadora</th>
+                <td><%= link_to @carrier.display_name, edit_carrier_path(@carrier.id), class: "kt-link" if @carrier %></td>
+              </tr>
+              <tr>
+                <th>Método de envio</th>
+                <td><%= @shipment.shipping_method %></td>
+              </tr>
+              <tr>
+                <th>Série da nota fiscal</th>
+                <td><%= @shipment.invoice_series %></td>
+              </tr>
+              <tr>
+                <th>Número da nota fiscal</th>
+                <td><%= @shipment.invoice_number %></td>
+              </tr>
+              <tr>
+                <th>Rastreamento</th>
+                <td>
+                  <% if @shipment.tracking_number %>
+                  <%= @shipment.tracking_number %>
+                  <% else %>
+                  <%= link_to "Gerar rastreio", get_tracking_number_shipment_path(@shipment), class: "kt-link" %>
+                  <% end %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
 
-      <div class="kt-portlet">
-        <div class="kt-portlet__head">
-          <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-              Destinatário
-            </h3>
-          </div>
-        </div>
-
-        <div class="kt-portlet__body">
-          <div class="kt-portlet__content">
-            <%= render "recipient_address" %>
-          </div>
+  <div class="col-md-6">
+    <div class="kt-portlet kt-portlet--height-fluid">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Informações adicionais
+          </h3>
         </div>
       </div>
 
+
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+
+        </div>
+      </div>
     </div>
-    <div class="col-md-6">
+  </div>
 
-      <div class="kt-portlet">
-        <div class="kt-portlet__head">
-          <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-              Remetente
-            </h3>
-          </div>
-        </div>
+</div>
 
-        <div class="kt-portlet__body">
-          <div class="kt-portlet__content">
-            <%= render "sender_address" %>
-          </div>
+<div class="row">
+  <div class="col-md-6">
+
+    <div class="kt-portlet kt-portlet--height-fluid">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Destinatário
+          </h3>
         </div>
       </div>
 
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <%= render "recipient_address" %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-md-6">
+
+    <div class="kt-portlet kt-portlet--height-fluid">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Remetente
+          </h3>
+        </div>
+      </div>
+
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <%= render "sender_address" %>
+        </div>
+      </div>
     </div>
 
   </div>
 
-  <div class="row">
+</div>
 
-    <div class="col-md-6">
+<div class="row">
 
-      <% total_shipments = @shipment.packages.size %>
-      <div class="row">
+  <div class="col-md-6">
 
-        <% @shipment.packages.each do |package| %>
-        <div class="col-md-6">
-          <div class="kt-portlet">
-            <div class="kt-portlet__head">
-              <div class="kt-portlet__head-label">
-                <h3 class="kt-portlet__head-title">
-                  <i class="la la-cube"></i> Pacote <%= @shipment.packages.index(package) + 1 %>/<%= total_shipments %>
-                </h3>
-              </div>
+    <% total_shipments = @shipment.packages.size %>
+    <div class="row">
+
+      <% @shipment.packages.each do |package| %>
+      <div class="col-md-6">
+        <div class="kt-portlet">
+          <div class="kt-portlet__head">
+            <div class="kt-portlet__head-label">
+              <h3 class="kt-portlet__head-title">
+                <i class="la la-cube"></i> Pacote <%= @shipment.packages.index(package) + 1 %>/<%= total_shipments %>
+              </h3>
             </div>
-            <div class="kt-portlet__body">
-              <div class="kt-portlet__content">
-                <%= render 'packages/table', package: package %>
-              </div>
+          </div>
+          <div class="kt-portlet__body">
+            <div class="kt-portlet__content">
+              <%= render 'packages/table', package: package %>
             </div>
           </div>
         </div>
-
-        <% end %>
       </div>
 
-
-      <%= link_to new_package_path(shipment_id:@shipment.id), class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
-      <i class="flaticon2-plus"></i> Novo pacote
       <% end %>
     </div>
 
-    <div class="col-md-6">
-      <div class="kt-portlet">
-        <div class="kt-portlet__head">
-          <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-              Histórico
-            </h3>
-          </div>
+
+    <%= link_to new_package_path(shipment_id:@shipment.id), class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
+    <i class="flaticon2-plus"></i> Novo pacote
+    <% end %>
+  </div>
+
+  <div class="col-md-6">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Histórico
+          </h3>
         </div>
-        <div class="kt-portlet__body">
+      </div>
+      <div class="kt-portlet__body">
 
-          <!--Begin::Timeline -->
-          <div class="kt-timeline">
+        <!--Begin::Timeline -->
+        <div class="kt-timeline">
 
-            <!--Begin::Item -->
-            <div class="kt-timeline__item kt-timeline__item--success">
-              <div class="kt-timeline__item-section">
-                <div class="kt-timeline__item-section-border">
-                  <div class="kt-timeline__item-section-icon">
-                    <i class="flaticon-psd  kt-font-success"></i>
-                  </div>
+          <!--Begin::Item -->
+          <div class="kt-timeline__item kt-timeline__item--success">
+            <div class="kt-timeline__item-section">
+              <div class="kt-timeline__item-section-border">
+                <div class="kt-timeline__item-section-icon">
+                  <i class="flaticon-psd  kt-font-success"></i>
                 </div>
-                <span class="kt-timeline__item-datetime">02:30 PM</span>
               </div>
-              <a href="" class="kt-timeline__item-text">
-                KeenThemes created new layout whith tens of<br> new options for Keen Admin panel
-              </a>
-              <div class="kt-timeline__item-info">
-                HTML,CSS,VueJS
-              </div>
+              <span class="kt-timeline__item-datetime">02:30 PM</span>
             </div>
-            <!--End::Item -->
-
-            <!--Begin::Item -->
-            <div class="kt-timeline__item kt-timeline__item--danger">
-              <div class="kt-timeline__item-section">
-                <div class="kt-timeline__item-section-border">
-                  <div class="kt-timeline__item-section-icon">
-                    <i class="flaticon-safe-shield-protection kt-font-danger"></i>
-                  </div>
-                </div>
-                <span class="kt-timeline__item-datetime">01:20 AM</span>
-              </div>
-              <a href="" class="kt-timeline__item-text">
-                New secyrity alert by Firewall &amp; order to take<br> aktion on User Preferences
-              </a>
-              <div class="kt-timeline__item-info">
-                Security, Fieewall
-              </div>
+            <a href="" class="kt-timeline__item-text">
+              KeenThemes created new layout whith tens of<br> new options for Keen Admin panel
+            </a>
+            <div class="kt-timeline__item-info">
+              HTML,CSS,VueJS
             </div>
-            <!--End::Item -->
-
-            <!--Begin::Item -->
-            <div class="kt-timeline__item kt-timeline__item--brand">
-              <div class="kt-timeline__item-section">
-                <div class="kt-timeline__item-section-border">
-                  <div class="kt-timeline__item-section-icon">
-                    <i class="flaticon2-box kt-font-brand"></i>
-                  </div>
-                </div>
-                <span class="kt-timeline__item-datetime">Yestardey</span>
-              </div>
-              <a href="" class="kt-timeline__item-text">
-                FlyMore design mock-ups been uploadet by<br> designers Bob, Naomi, Richard
-              </a>
-              <div class="kt-timeline__item-info">
-                PSD, Sketch, AJ
-              </div>
-            </div>
-            <!--End::Item -->
-
-            <!--Begin::Item -->
-            <div class="kt-timeline__item kt-timeline__item--warning">
-              <div class="kt-timeline__item-section">
-                <div class="kt-timeline__item-section-border">
-                  <div class="kt-timeline__item-section-icon">
-                    <i class="flaticon-pie-chart-1 kt-font-warning"></i>
-                  </div>
-                </div>
-                <span class="kt-timeline__item-datetime">Aug 13,2018</span>
-              </div>
-              <a href="" class="kt-timeline__item-text">
-                Meeting with Ken Digital Corp ot Unit14, 3<br> Edigor Buildings, George Street, Loondon<br> England, BA12FJ
-              </a>
-              <div class="kt-timeline__item-info">
-                Meeting, Customer
-              </div>
-            </div>
-            <!--End::Item -->
-
-            <!--Begin::Item -->
-            <div class="kt-timeline__item kt-timeline__item--info">
-              <div class="kt-timeline__item-section">
-                <div class="kt-timeline__item-section-border">
-                  <div class="kt-timeline__item-section-icon">
-                    <i class="flaticon-bell kt-font-info"></i>
-                  </div>
-                </div>
-                <span class="kt-timeline__item-datetime">May 09, 2018</span>
-              </div>
-              <a href="" class="kt-timeline__item-text">
-                KeenThemes created new layout whith tens of<br> new options for Keen Admin panel
-              </a>
-              <div class="kt-timeline__item-info">
-                HTML,CSS,VueJS
-              </div>
-            </div>
-            <!--End::Item -->
-
-            <!--Begin::Item -->
-            <div class="kt-timeline__item kt-timeline__item--accent">
-              <div class="kt-timeline__item-section">
-                <div class="kt-timeline__item-section-border">
-                  <div class="kt-timeline__item-section-icon">
-                    <i class="flaticon-users-1 kt-font-success"></i>
-                  </div>
-                </div>
-                <span class="kt-timeline__item-datetime">01:20 AM</span>
-              </div>
-              <a href="" class="kt-timeline__item-text">
-                New secyrity alert by Firewall &amp; order to take<br> aktion on User Preferences
-              </a>
-              <div class="kt-timeline__item-info">
-                Security, Fieewall
-              </div>
-            </div>
-            <!--End::Item -->
-
           </div>
-          <!--End::Timeline -->
+          <!--End::Item -->
+
+          <!--Begin::Item -->
+          <div class="kt-timeline__item kt-timeline__item--danger">
+            <div class="kt-timeline__item-section">
+              <div class="kt-timeline__item-section-border">
+                <div class="kt-timeline__item-section-icon">
+                  <i class="flaticon-safe-shield-protection kt-font-danger"></i>
+                </div>
+              </div>
+              <span class="kt-timeline__item-datetime">01:20 AM</span>
+            </div>
+            <a href="" class="kt-timeline__item-text">
+              New secyrity alert by Firewall &amp; order to take<br> aktion on User Preferences
+            </a>
+            <div class="kt-timeline__item-info">
+              Security, Fieewall
+            </div>
+          </div>
+          <!--End::Item -->
+
+          <!--Begin::Item -->
+          <div class="kt-timeline__item kt-timeline__item--brand">
+            <div class="kt-timeline__item-section">
+              <div class="kt-timeline__item-section-border">
+                <div class="kt-timeline__item-section-icon">
+                  <i class="flaticon2-box kt-font-brand"></i>
+                </div>
+              </div>
+              <span class="kt-timeline__item-datetime">Yestardey</span>
+            </div>
+            <a href="" class="kt-timeline__item-text">
+              FlyMore design mock-ups been uploadet by<br> designers Bob, Naomi, Richard
+            </a>
+            <div class="kt-timeline__item-info">
+              PSD, Sketch, AJ
+            </div>
+          </div>
+          <!--End::Item -->
+
+          <!--Begin::Item -->
+          <div class="kt-timeline__item kt-timeline__item--warning">
+            <div class="kt-timeline__item-section">
+              <div class="kt-timeline__item-section-border">
+                <div class="kt-timeline__item-section-icon">
+                  <i class="flaticon-pie-chart-1 kt-font-warning"></i>
+                </div>
+              </div>
+              <span class="kt-timeline__item-datetime">Aug 13,2018</span>
+            </div>
+            <a href="" class="kt-timeline__item-text">
+              Meeting with Ken Digital Corp ot Unit14, 3<br> Edigor Buildings, George Street, Loondon<br> England, BA12FJ
+            </a>
+            <div class="kt-timeline__item-info">
+              Meeting, Customer
+            </div>
+          </div>
+          <!--End::Item -->
+
+          <!--Begin::Item -->
+          <div class="kt-timeline__item kt-timeline__item--info">
+            <div class="kt-timeline__item-section">
+              <div class="kt-timeline__item-section-border">
+                <div class="kt-timeline__item-section-icon">
+                  <i class="flaticon-bell kt-font-info"></i>
+                </div>
+              </div>
+              <span class="kt-timeline__item-datetime">May 09, 2018</span>
+            </div>
+            <a href="" class="kt-timeline__item-text">
+              KeenThemes created new layout whith tens of<br> new options for Keen Admin panel
+            </a>
+            <div class="kt-timeline__item-info">
+              HTML,CSS,VueJS
+            </div>
+          </div>
+          <!--End::Item -->
+
+          <!--Begin::Item -->
+          <div class="kt-timeline__item kt-timeline__item--accent">
+            <div class="kt-timeline__item-section">
+              <div class="kt-timeline__item-section-border">
+                <div class="kt-timeline__item-section-icon">
+                  <i class="flaticon-users-1 kt-font-success"></i>
+                </div>
+              </div>
+              <span class="kt-timeline__item-datetime">01:20 AM</span>
+            </div>
+            <a href="" class="kt-timeline__item-text">
+              New secyrity alert by Firewall &amp; order to take<br> aktion on User Preferences
+            </a>
+            <div class="kt-timeline__item-info">
+              Security, Fieewall
+            </div>
+          </div>
+          <!--End::Item -->
 
         </div>
+        <!--End::Timeline -->
+
       </div>
     </div>
   </div>
+</div>

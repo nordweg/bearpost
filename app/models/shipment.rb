@@ -6,10 +6,10 @@ class Shipment < ApplicationRecord
   # validates_uniqueness_of :invoice_number, scope: :invoice_series
 
   scope :ready, -> { where(status: 'pronto') }
-  # criado, pronto para envio, enviado 
+  # criado, pronto para envio, enviado
 
   has_many    :packages, -> { order "created_at" }
-  belongs_to  :account
+  belongs_to  :account, optional: true
 
   def shipped?
     shipped_at.present?

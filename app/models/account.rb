@@ -9,6 +9,7 @@ class Account < ApplicationRecord
     #   selected_shipping_methods << carrier.shipping_methods.slice(shipping_method.to_sym) if value == '1'
     # end
     # selected_shipping_methods
-    self.send(carrier.settings_field)['shipping_methods'].map {|k,v| k}
+    # self.send(carrier.settings_field)['shipping_methods'].map {|k,v| k}
+    carrier.settings['shipping_methods'].map { |k,v| k }
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190606131024) do
+ActiveRecord::Schema.define(version: 20190617175130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20190606131024) do
     t.string "zip"
     t.string "state"
     t.string "country"
+    t.jsonb "azul_settings", default: {}
   end
 
   create_table "packages", force: :cascade do |t|

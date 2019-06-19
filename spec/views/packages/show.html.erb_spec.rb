@@ -7,7 +7,6 @@ RSpec.describe "packages/show", type: :view do
       :width => 3.5,
       :depth => 4.5,
       :weight => 5.5,
-      :tracking_number => "Tracking Number",
       :shipment => nil
     ))
   end
@@ -18,7 +17,6 @@ RSpec.describe "packages/show", type: :view do
     expect(rendered).to match(/3.5/)
     expect(rendered).to match(/4.5/)
     expect(rendered).to match(/5.5/)
-    expect(rendered).to match(/Tracking Number/)
     expect(rendered).to match(//)
   end
 end

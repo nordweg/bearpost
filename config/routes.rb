@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   resources :packages
   resources :shipments do
     member do
-      post 'get_tracking_number',  to: "shipments#get_tracking_number"
+      get  'get_tracking_number',  to: "shipments#get_tracking_number"
       get  'get_labels',           to: "shipments#get_labels", format: :pdf
       post 'ship',                 to: "shipments#ship"
     end
