@@ -34,8 +34,6 @@ class ShipmentsController < ApplicationController
   end
 
   def get_labels
-    @carrier.before_label(@shipment)
-
     require "barby/barcode/code_128"
     require "barby/outputter/png_outputter"
 
