@@ -41,6 +41,7 @@ gem 'wicked_pdf'
 gem "wkhtmltopdf-binary"
 gem "chunky_png"
 gem 'barby', require: %w(barby barby/barcode/code_128 barby/outputter/png_outputter barby/outputter)
+gem 'devise'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw] # Call 'byebug' anywhere in the code to stop execution and get a debugger console

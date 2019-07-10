@@ -1,20 +1,8 @@
 class ApplicationController < ActionController::Base
+  before_action :authenticate_user!
   protect_from_forgery with: :exception
 
   def selected_shipping_methods
-    # {
-    #   'Nordweg': {
-    #     'Correios': {
-    #       'PAC', { shipping_method_id: 1 }
-    #       'SEDEX', 2
-    #     }
-    #   },
-    #   'Emme': {
-    #     'Correios': {
-    #       'SEDEX10': 12
-    #     }
-    #   }
-    # }
     hash = {}
     Account.all.each do |account|
       hash[account.name] = {}
@@ -26,5 +14,15 @@ class ApplicationController < ActionController::Base
     hash
   end
 
+  layout :layout_by_resource
 
+  private
+
+  def layout_by_resource
+    if devise_controller?
+      "devise"
+    else
+      "application"
+    end
+  end
 end

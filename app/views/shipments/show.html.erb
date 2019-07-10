@@ -18,7 +18,7 @@ Envio #<%= @shipment.shipment_number %>
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
 
-      <%= link_to 'Informações adicionais', "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#exampleModalCenter' %>
+      <%= link_to 'Informações adicionais', "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
 
       <% @carrier.shipment_menu_links.each do |text, path| %>
       <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
@@ -36,14 +36,14 @@ Envio #<%= @shipment.shipment_number %>
   <% end %>
 <% end %>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<!-- Modal de Informações Adicionais-->
+<div class="modal fade" id="extraInfoModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Informações adicionais</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
+        <h5 class="modal-title">Informações adicionais</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>×</span>
         </button>
       </div>
       <div class="modal-body">
@@ -56,8 +56,29 @@ Envio #<%= @shipment.shipment_number %>
   </div>
 </div>
 
-<div class="row">
+<!-- Modal do XML -->
+<div class="modal fade" id="invoiceXmlModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">XML da Nota Fiscal</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre class="debug_dump">
+          <%= Nokogiri::XML(@shipment.invoice_xml).to_xml(:indent => 2, :encoding => 'UTF-8') %>
+        </pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-brand" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div class="row">
   <div class="col-md-6">
     <div class="kt-portlet">
       <div class="kt-portlet__head">
@@ -106,6 +127,10 @@ Envio #<%= @shipment.shipment_number %>
                   <%= link_to "Gerar rastreio", get_tracking_number_shipment_path(@shipment), class: "kt-link" %>
                   <% end %>
                 </td>
+              </tr>
+              <tr>
+                <th>Nota Fiscal</th>
+                <td><%= link_to 'Ver XML', "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal' %></td>
               </tr>
             </tbody>
           </table>
