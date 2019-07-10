@@ -1,4 +1,5 @@
 class ShipmentsController < ApplicationController
+
   before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number, :get_labels]
   # include ApplicationHelper
 
@@ -16,6 +17,58 @@ class ShipmentsController < ApplicationController
   # GET /shipments/new
   def new
     @shipment = Shipment.new
+  end
+
+  def new_from_xml
+    @shipment         = Shipment.new
+    @shipment.invoice_xml = params[:invoice_xml]["invoice_xml"].read.strip
+    doc = Nokogiri::XML(@shipment.invoice_xml)
+
+    name = doc.at_css('dest xNome').content
+    first_name = name.split(" ").first
+    last_name  = name.gsub(first_name, "").strip
+
+    @shipment.recipient_first_name = first_name
+    @shipment.recipient_last_name = last_name
+    @shipment.recipient_email = doc.at_css('dest email').try(:content)
+    @shipment.recipient_phone = doc.at_css('dest fone').try(:content)
+    @shipment.recipient_cpf = doc.at_css('dest CPF').try(:content)
+    @shipment.recipient_street = doc.at_css('dest xLgr').try(:content)
+    @shipment.recipient_number = doc.at_css('dest nro').try(:content)
+    @shipment.recipient_complement = doc.at_css('dest xCpl').try(:content)
+    @shipment.recipient_neighborhood = doc.at_css('dest xBairro').try(:content)
+    @shipment.recipient_zip = doc.at_css('dest CEP').try(:content)
+    @shipment.recipient_city = doc.at_css('dest xMun').try(:content)
+    @shipment.recipient_city_code = doc.at_css('dest cMun').try(:content)
+    @shipment.recipient_state = doc.at_css('dest UF').try(:content)
+    @shipment.recipient_country = doc.at_css('dest xPais').try(:content)
+
+    name = doc.at_css('emit xNome').content
+    first_name = name.split(" ").first
+    last_name  = name.gsub(first_name, "").strip
+
+    @shipment.sender_first_name = first_name
+    @shipment.sender_last_name = last_name
+    @shipment.sender_email = doc.at_css('emit email').try(:content)
+    @shipment.sender_phone = doc.at_css('emit fone').try(:content)
+    @shipment.sender_cpf = doc.at_css('emit CNPJ').try(:content)
+    @shipment.sender_street = doc.at_css('emit xLgr').try(:content)
+    @shipment.sender_number = doc.at_css('emit nro').try(:content)
+    @shipment.sender_complement = doc.at_css('emit xCpl').try(:content)
+    @shipment.sender_neighborhood = doc.at_css('emit xBairro').try(:content)
+    @shipment.sender_zip = doc.at_css('emit CEP').try(:content)
+    @shipment.sender_city = doc.at_css('emit xMun').try(:content)
+    @shipment.sender_city_code = doc.at_css('emit cMun').try(:content)
+    @shipment.sender_state = doc.at_css('emit UF').try(:content)
+    @shipment.sender_country = doc.at_css('emit xPais').try(:content)
+
+    @shipment.invoice_series = doc.at_css('serie').try(:content)
+    @shipment.invoice_number = doc.at_css('nNF').try(:content)
+
+    @shipment.cost = doc.at_css('vNF').try(:content)
+
+    puts doc.to_xml(:indent => 2)
+    render 'new'
   end
 
   # GET /shipments/1/edit
@@ -63,8 +116,8 @@ class ShipmentsController < ApplicationController
   # POST /shipments
   # POST /shipments.json
   def create
-    @shipment = Shipment.new(shipment_params)
-
+    @shipment         = Shipment.new(shipment_params)
+    @shipment.user    = current_user
     respond_to do |format|
       if @shipment.save
         format.html { redirect_to @shipment, notice: 'Shipment was successfully created.' }
@@ -80,6 +133,7 @@ class ShipmentsController < ApplicationController
   # PATCH/PUT /shipments/1.json
   def update
     respond_to do |format|
+      # byebug
       if @shipment.update(shipment_params)
         format.html { redirect_to @shipment, notice: 'Shipment was successfully updated.' }
         format.json { render :show, status: :ok, location: @shipment }
@@ -110,6 +164,10 @@ class ShipmentsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def shipment_params
     # params.require(:shipment).permit(:shipment_number)
+    if params[:invoice_xml]
+      byebug
+      params[:shipment][:invoice_xml] = params[:invoice_xml].read.strip
+    end
     params.require(:shipment).permit!
   end
 end

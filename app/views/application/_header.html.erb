@@ -316,7 +316,7 @@
             </a>
           </li>
           <li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
-            <a href="demo1/custom/user/login-v1.html" target="_blank" class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
+            <%= link_to "Sign Out", destroy_user_session_path, class: "btn btn-label-brand btn-upper btn-sm btn-bold", method: :delete %>
           </li>
         </ul>
       </div>

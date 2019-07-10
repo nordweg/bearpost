@@ -10,6 +10,7 @@ class Shipment < ApplicationRecord
 
   has_many    :packages, -> { order "created_at" }
   belongs_to  :account, optional: true
+  belongs_to  :user, optional: true
 
   def shipped?
     shipped_at.present?
