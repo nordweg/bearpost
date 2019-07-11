@@ -5,6 +5,8 @@ class Shipment < ApplicationRecord
   # If we want unique invoice numbers in a series
   # validates_uniqueness_of :invoice_number, scope: :invoice_series
 
+  validates_uniqueness_of :shipment_number, scope: :user_id
+
   scope :ready, -> { where(status: 'pronto') }
   # criado, pronto para envio, enviado
 

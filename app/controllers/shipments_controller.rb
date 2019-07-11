@@ -6,7 +6,7 @@ class ShipmentsController < ApplicationController
   # GET /shipments
   # GET /shipments.json
   def index
-    @shipments = Shipment.all
+    @shipments = current_user.shipments
   end
 
   # GET /shipments/1

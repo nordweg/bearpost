@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'home#index'
+  root 'shipments#index'
 
   get  'settings',                                   to: "settings#index"
   get  'accounts/:id/:carrier_id/edit',              to: "accounts#edit_carrier"
