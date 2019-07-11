@@ -1,5 +1,7 @@
 module Api::V1
   class ApiController < ApplicationController
+    protect_from_forgery unless: -> { request.format.json? || request.format.xml? }
+    respond_to :json
 
     # Generic API stuff here
     skip_before_action :authenticate_user!
@@ -21,7 +23,11 @@ module Api::V1
     end
 
     def render_unauthorized
-      render json: 'Access denied', status: :unauthorized
+      render json: 'Credenciais inválidas', status: :unauthorized
+    end
+
+    rescue_from Exception do |e|
+      render json: e.to_json, status: 500
     end
   end
 end
