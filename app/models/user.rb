@@ -4,8 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
   :recoverable, :rememberable, :validatable
 
-  has_many :shipments
-  
+  belongs_to :company
+  has_many   :shipments, through: :company
+
   before_create do |user|
     user.token = user.generate_token
   end

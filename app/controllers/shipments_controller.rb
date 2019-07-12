@@ -1,26 +1,22 @@
 class ShipmentsController < ApplicationController
 
-  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number, :get_labels]
+  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number, :get_labels, :ship]
   # include ApplicationHelper
 
-  # GET /shipments
-  # GET /shipments.json
   def index
     @shipments = current_user.shipments
   end
 
-  # GET /shipments/1
-  # GET /shipments/1.json
   def show
   end
 
-  # GET /shipments/new
   def new
     @shipment = Shipment.new
+    @accounts_and_shipping_methods = get_shipping_methods
   end
 
   def new_from_xml
-    @shipment         = Shipment.new
+    @shipment             = Shipment.new
     @shipment.invoice_xml = params[:invoice_xml]["invoice_xml"].read.strip
     doc = Nokogiri::XML(@shipment.invoice_xml)
 
@@ -73,8 +69,21 @@ class ShipmentsController < ApplicationController
 
   # GET /shipments/1/edit
   def edit
-    @accounts_and_shipping_methods = selected_shipping_methods
+    @accounts_and_shipping_methods = get_shipping_methods
   end
+
+  def get_shipping_methods
+    hash = {}
+    Account.all.each do |account|
+      hash[account.name] = {}
+      Rails.configuration.carriers.each do |carrier|
+        hash[account.name][carrier.display_name] = {}
+        hash[account.name][carrier.display_name] = account.selected_shipping_methods(carrier)
+      end
+    end
+    hash
+  end
+
 
   def get_tracking_number
     tracking_number = @carrier.get_tracking_number(@shipment)
@@ -109,7 +118,6 @@ class ShipmentsController < ApplicationController
   end
 
   def ship
-    @carrier = helpers.carrier_from_id(@shipment.carrier_name)
     @carrier.ship
   end
 

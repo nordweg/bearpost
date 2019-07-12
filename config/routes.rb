@@ -23,7 +23,13 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :shipments
+      resources :shipments do
+        member do
+          get  'get_tracking_number',  to: "shipments#get_tracking_number"
+          get  'get_labels',           to: "shipments#get_labels", format: :pdf
+          post 'ship',                 to: "shipments#ship"
+        end
+      end
     end
   end
 
