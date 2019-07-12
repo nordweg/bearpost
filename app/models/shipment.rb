@@ -5,14 +5,14 @@ class Shipment < ApplicationRecord
   # If we want unique invoice numbers in a series
   # validates_uniqueness_of :invoice_number, scope: :invoice_series
 
-  validates_uniqueness_of :shipment_number, scope: :user_id
+  validates_uniqueness_of :shipment_number, scope: :company_id
 
   scope :ready, -> { where(status: 'pronto') }
   # criado, pronto para envio, enviado
 
   has_many    :packages, -> { order "created_at" }
   belongs_to  :account, optional: true
-  belongs_to  :user, optional: true
+  belongs_to  :company
 
   def shipped?
     shipped_at.present?
