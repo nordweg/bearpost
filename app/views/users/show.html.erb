@@ -415,8 +415,8 @@
           </div>
           <div class="kt-portlet__body">
             <div class="kt-portlet__content">
-              <h4>API Token</h4>
-              <%= SecureRandom.hex %>
+              <h4>Token</h4>
+              <%= current_user.company.token %>
             </div>
           </div>
         </div>

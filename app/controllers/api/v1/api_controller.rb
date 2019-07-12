@@ -1,24 +1,22 @@
 module Api::V1
   class ApiController < ApplicationController
-    protect_from_forgery unless: -> { request.format.json? || request.format.xml? }
-    respond_to :json
-
     # Generic API stuff here
-    skip_before_action :authenticate_user!
 
-    include ActionController::HttpAuthentication::Token::ControllerMethods
-    before_action :authenticate
+    protect_from_forgery unless: -> { request.format.json? || request.format.xml? }
+
+    skip_before_action :authenticate_user!
+    before_action      :authenticate_company!
 
     protected
 
     # Authenticate the user with token based authentication
-    def authenticate
+    def authenticate_company!
       authenticate_token || render_unauthorized
     end
 
     def authenticate_token
       authenticate_with_http_token do |token, options|
-        @current_user = User.find_by(token: token)
+        @current_company = Company.find_by(token: token)
       end
     end
 
@@ -28,6 +26,10 @@ module Api::V1
 
     rescue_from Exception do |e|
       render json: e.to_json, status: 500
+    end
+
+    def current_company
+      @current_company
     end
   end
 end
