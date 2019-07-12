@@ -2,19 +2,15 @@ module Api::V1
   class ShipmentsController < ApiController
 
     def index
-      render json: current_user.shipments.as_json(
-        except: [:invoice_xml],
-        include: { packages: { only: [:number] } }
-      )
+      render json: current_company.shipments
     end
 
     def create
       if request.format.xml?
-        shipment = current_user.shipments.new(shipment_info_from_xml)
+        shipment = current_company.shipments.new(shipment_info_from_xml)
       else
-        shipment = current_user.shipments.new(shipment_params)
+        shipment = current_company.shipments.new(shipment_params)
       end
-      shipment.company = current_user.company
       hande_save(shipment)
     end
 
@@ -37,7 +33,7 @@ module Api::V1
 
     def hande_save(shipment)
       if shipment.save
-        render json: shipment.as_json(except: [:invoice_xml,:company_id])
+        render json: shipment
       else
         render json: shipment.errors.full_messages
       end
@@ -46,7 +42,7 @@ module Api::V1
     private
 
     def get_shipment
-      shipment = current_user.shipments.find_by(shipment_number:params[:id])
+      shipment = current_company.shipments.find_by(shipment_number:params[:id])
       raise Exception.new('Shipment not found') if shipment.blank?
       shipment
     end
@@ -96,7 +92,8 @@ module Api::V1
       hash[:invoice_number] = doc.at_css('nNF').try(:content)
       hash[:cost] = doc.at_css('vNF').try(:content)
       hash[:shipment_number] = "#{doc.at_css('serie').try(:content)}_#{doc.at_css('nNF').try(:content)}"
-      hash[:invoice_xml] = doc.to_s.strip
+      hash[:invoice_xml] = doc.inner_html.strip
+      byebug
       hash
     end
   end
