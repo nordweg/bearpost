@@ -28,8 +28,10 @@ Rails.application.routes.draw do
           get  'get_tracking_number',  to: "shipments#get_tracking_number"
           get  'get_labels',           to: "shipments#get_labels", format: :pdf
           post 'ship',                 to: "shipments#ship"
+          post 'update_invoice_xml',   to: "shipments#update_invoice_xml"
         end
       end
+      resources :shipping_methods
     end
   end
 

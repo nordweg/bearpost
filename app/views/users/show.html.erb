@@ -345,8 +345,8 @@
             </label>
           </div>
           <div class="kt-profile__main-info">
-            <div class="kt-profile__main-info-name">Brian Johnson</div>
-            <div class="kt-profile__main-info-position">Lead Designer</div>
+            <div class="kt-profile__main-info-name"><%= @user.full_name %></div>
+            <div class="kt-profile__main-info-position"><%= @user.company %></div>
           </div>
         </div>
       </div>
@@ -390,12 +390,14 @@
           </div>
           <div class="kt-portlet__body">
             <div class="kt-portlet__content">
+              <h4>Nome</h4>
+              <p><%= @user.first_name %></p>
+              <h4>Sobrenome</h4>
+              <p><%= @user.last_name %></p>
               <h4>Email</h4>
-              <%= @user.email %>
-              <br>
-              <br>
+              <p><%= @user.email %></p>
               <h4>Cadastrado em</h4>
-              <%= @user.created_at.to_date %>
+              <p><%= @user.created_at.to_date %></p>
             </div>
           </div>
         </div>
@@ -416,7 +418,7 @@
           <div class="kt-portlet__body">
             <div class="kt-portlet__content">
               <h4>Token</h4>
-              <%= current_user.company.token %>
+              <%= @user.company.token %>
             </div>
           </div>
         </div>
