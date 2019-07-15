@@ -27,9 +27,15 @@ Envio #<%= @shipment.shipment_number %>
   </div>
   <% end %>
 
-  <a href="<%= get_labels_shipment_path(@shipment, format: :pdf) %>" target="_blank" class="btn btn-icon btn btn-label btn-label-brand btn-bold" data-toggle="kt-tooltip" title="" data-placement="top" data-original-title="Imprimir etiquetas">
-    <i class="la la-print"></i>
-  </a>
+  <% if @shipment.tracking_number %>
+    <%= link_to get_labels_shipment_path(@shipment, format: :pdf), class: "btn btn-sm btn-secondary btn-label-brand", target:'_blank' do %>
+      <i class="la la-print"></i> Imprimir etiquetas
+    <% end %>
+  <% else %>
+    <%= link_to get_tracking_number_shipment_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
+      <i class="la la-link"></i> Gerar rastreio
+    <% end %>
+  <% end %>
 
   <%= link_to edit_shipment_path(@shipment), class: "btn btn-sm btn-elevate btn-brand btn-elevate" do %>
   Editar
@@ -120,13 +126,7 @@ Envio #<%= @shipment.shipment_number %>
               </tr>
               <tr>
                 <th>Rastreamento</th>
-                <td>
-                  <% if @shipment.tracking_number %>
-                  <%= @shipment.tracking_number %>
-                  <% else %>
-                  <%= link_to "Gerar rastreio", get_tracking_number_shipment_path(@shipment), class: "kt-link" %>
-                  <% end %>
-                </td>
+                <td><%= @shipment.tracking_number %></td>
               </tr>
               <tr>
                 <th>Nota Fiscal</th>

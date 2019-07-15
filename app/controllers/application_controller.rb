@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
 
   layout :layout_by_resource
 
+  def current_company
+    current_user.company
+  end
+
   private
 
   def layout_by_resource

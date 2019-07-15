@@ -20,20 +20,33 @@ module Api::V1
       hande_save(shipment)
     end
 
+    def update_invoice_xml
+      shipment = get_shipment
+      shipment.invoice_xml = request.body.read.strip
+      byebug
+      hande_save(shipment)
+    end
+
     def get_tracking_number
       shipment = get_shipment
-      tracking_number = @carrier.get_tracking_number(shipment)
-      if tracking_number
-        @shipment.update(tracking_number:tracking_number, status:'pronto')
-        redirect_to @shipment, notice: 'Rastreio criado com sucesso.'
+      carrier  = get_carrier(shipment)
+      shipment.tracking_number = carrier.get_tracking_number(shipment)
+      hande_save(shipment)
+    end
+
+    def ship
+      shipment = get_shipment
+      if shipment.requirements_missing.present?
+        render json: shipment.requirements_missing
       else
-        redirect_to @shipment, notice: 'Não foi possível criar número de rastreio.'
+        carrier  = get_carrier(shipment)
+        carrier.ship(shipment)
       end
     end
 
     def hande_save(shipment)
       if shipment.save
-        render json: shipment
+        render json: shipment.to_json(except: [:invoice_xml])
       else
         render json: shipment.errors.full_messages
       end
@@ -47,7 +60,16 @@ module Api::V1
       shipment
     end
 
+    def get_carrier(shipment)
+      carrier = shipment.carrier
+      raise Exception.new('Carrier not found') if carrier.blank?
+      carrier
+    end
+
     def shipment_params
+      if params[:shipment][:account]
+        params[:shipment][:account] = current_company.accounts.find_by(name:params[:shipment][:account])
+      end
       params.require(:shipment).permit!
     end
 
@@ -93,7 +115,6 @@ module Api::V1
       hash[:cost] = doc.at_css('vNF').try(:content)
       hash[:shipment_number] = "#{doc.at_css('serie').try(:content)}_#{doc.at_css('nNF').try(:content)}"
       hash[:invoice_xml] = doc.inner_html.strip
-      byebug
       hash
     end
   end
