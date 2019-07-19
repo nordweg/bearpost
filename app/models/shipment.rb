@@ -5,11 +5,16 @@ class Shipment < ApplicationRecord
   # If we want unique invoice numbers in a series
   # validates_uniqueness_of :invoice_number, scope: :invoice_series
 
+  validates_uniqueness_of :shipment_number, scope: :company_id
+
   scope :ready, -> { where(status: 'pronto') }
   # criado, pronto para envio, enviado
 
   has_many    :packages, -> { order "created_at" }
   belongs_to  :account, optional: true
+  belongs_to  :company
+
+  accepts_nested_attributes_for :packages
 
   def shipped?
     shipped_at.present?
@@ -17,5 +22,19 @@ class Shipment < ApplicationRecord
 
   def recipient_full_name
     "#{recipient_first_name} #{recipient_last_name}"
+  end
+
+  def requirements_missing
+    errors = []
+    errors << "Shipment: Account is required" if account.blank?
+    errors << "Shipment: Carrier is required" if carrier_name.blank?
+    errors << "Shipment: Shipping method is required" if shipping_method.blank?
+    errors << "Shipment: Shipping Number is required" if shipment_number.blank?
+    errors << "Shipment: At least 1 package is required" if packages.blank?
+    errors
+  end
+
+  def carrier
+    "Carrier::#{carrier_name.titleize}".constantize rescue nil
   end
 end

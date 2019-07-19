@@ -24,7 +24,7 @@
         <div class="kt-portlet__content">
           <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
             <tbody>
-              <% Account.all.each do |account| %>
+              <% @accounts.all.each do |account| %>
               <tr>
                 <td><%= account.name %></td>
                 <td class="text-right">
@@ -44,6 +44,6 @@
     </div>
   </div>
 
-  
+
 
 </div>

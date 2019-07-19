@@ -13,10 +13,24 @@ Envios
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
-            <%= link_to new_shipment_path, class: "btn btn-brand btn-bold btn-upper btn-font-sm" do %>
-            <i class="la la-plus"></i>
-            Novo envio
-            <% end %>
+            <div class="btn-group">
+              <%= link_to new_shipment_path, class: "btn btn-primary" do %>
+              <i class="la la-plus"></i>
+              Novo envio
+              <% end %>
+							<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							</button>
+							<div class="dropdown-menu dropdown-menu-right">
+                <h6 class="dropdown-header">Criar a partir de uma nota fiscal</h6>
+                <%= form_for :invoice_xml, url: new_from_xml_shipments_path, html: {class: 'd-none'} do |f| %>
+                  <%= f.file_field :invoice_xml, id:"fileinput" %><br><br>
+                  <%= f.submit 'Enviar' %>
+                <% end  %>
+                <div class="px-4 py-3">
+                  <button type="submit" id="filebutton" class="btn btn-primary btn-sm btn-upper">Selecionar Arquivo</button>
+                </div>
+							</div>
+						</div>
           </div>
         </div>
       </div>
@@ -49,3 +63,13 @@ Envios
     </div>
   </div>
 </div>
+
+<script>
+$('#filebutton').click(function(e){
+  e.preventDefault();
+  $('#fileinput').click();
+});
+$('#fileinput').change(function(){
+  $(this).parent('form').submit();
+});
+</script>
