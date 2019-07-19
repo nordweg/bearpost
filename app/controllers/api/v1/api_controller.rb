@@ -2,7 +2,7 @@ module Api::V1
   class ApiController < ApplicationController
     # Generic API stuff here
 
-    protect_from_forgery unless: -> { request.format.json? || request.format.xml? }
+    protect_from_forgery unless: -> { request.format.json? || request.format.xml? || request.format.pdf? }
 
     skip_before_action :authenticate_user!
     before_action      :authenticate_company!

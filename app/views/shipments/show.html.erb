@@ -17,24 +17,19 @@ Envio #<%= @shipment.shipment_number %>
       Opções
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-
+      <%= link_to "Imprimir etiqueta", get_labels_shipment_path(format: :pdf), class: "dropdown-item", target:"_blank" %>
+      <%= link_to "Marcar como despachado", set_as_shipped_shipment_path, class: "dropdown-item", method:'post' %>
+      <div class="dropdown-divider"></div>
       <%= link_to 'Informações adicionais', "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
-
       <% @carrier.shipment_menu_links.each do |text, path| %>
-      <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
+        <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
       <% end %>
     </div>
   </div>
   <% end %>
 
-  <% if @shipment.tracking_number %>
-    <%= link_to get_labels_shipment_path(@shipment, format: :pdf), class: "btn btn-sm btn-secondary btn-label-brand", target:'_blank' do %>
-      <i class="la la-print"></i> Imprimir etiquetas
-    <% end %>
-  <% else %>
-    <%= link_to get_tracking_number_shipment_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
-      <i class="la la-link"></i> Gerar rastreio
-    <% end %>
+  <%= link_to get_labels_shipment_path(@shipment, format: :pdf), class: "btn btn-sm btn-secondary btn-label-brand", target:'_blank' do %>
+    <i class="la la-print"></i> Imprimir etiquetas
   <% end %>
 
   <%= link_to edit_shipment_path(@shipment), class: "btn btn-sm btn-elevate btn-brand btn-elevate" do %>
@@ -131,6 +126,16 @@ Envio #<%= @shipment.shipment_number %>
               <tr>
                 <th>Nota Fiscal</th>
                 <td><%= link_to 'Ver XML', "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal' %></td>
+              </tr>
+              <tr>
+                <th>Sincronizado com a transportadora</th>
+                <td>
+                <% if @shipment.sent_to_carrier %>
+                  Sim
+                <% else %>
+                  <%= link_to "Enviar para a transportadora", send_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
+                <% end %>
+                </td>
               </tr>
             </tbody>
           </table>

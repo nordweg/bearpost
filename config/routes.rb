@@ -14,7 +14,8 @@ Rails.application.routes.draw do
     member do
       get  'get_tracking_number',  to: "shipments#get_tracking_number"
       get  'get_labels',           to: "shipments#get_labels", format: :pdf
-      post 'ship',                 to: "shipments#ship"
+      post 'send_to_carrier',      to: "shipments#send_to_carrier"
+      post 'set_as_shipped',       to: "shipments#set_as_shipped"
     end
     collection do
       post 'new_from_xml',         to: "shipments#new_from_xml"
@@ -27,8 +28,9 @@ Rails.application.routes.draw do
         member do
           get  'get_tracking_number',  to: "shipments#get_tracking_number"
           get  'get_labels',           to: "shipments#get_labels", format: :pdf
-          post 'ship',                 to: "shipments#ship"
+          post 'send_to_carrier',      to: "shipments#send_to_carrier"
           post 'update_invoice_xml',   to: "shipments#update_invoice_xml"
+          post 'set_as_shipped',       to: "shipments#set_as_shipped"
         end
       end
       resources :shipping_methods
