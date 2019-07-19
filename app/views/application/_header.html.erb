@@ -285,8 +285,8 @@
               <img alt="Pic" src="/keen/users/300_21.jpg" />
             </div>
             <div class="kt-user-card__details">
-              <div class="kt-user-card__name">Alex Stone</div>
-              <div class="kt-user-card__position">CTO, Loop Inc.</div>
+              <div class="kt-user-card__name"><%= current_user.full_name %></div>
+              <div class="kt-user-card__position"><%= current_user.company.name %></div>
             </div>
           </div>
         </div>

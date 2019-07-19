@@ -121,11 +121,17 @@ Envio #<%= @shipment.shipment_number %>
               </tr>
               <tr>
                 <th>Rastreamento</th>
-                <td><%= @shipment.tracking_number %></td>
+                <td>
+                  <% if @shipment.tracking_number.present? %>
+                    <%= @shipment.tracking_number %>
+                  <% else %>
+                    <%= link_to "Gerar rastreio", get_tracking_number_shipment_path, class: "kt-link" %>
+                  <% end %>
+                </td>
               </tr>
               <tr>
                 <th>Nota Fiscal</th>
-                <td><%= link_to 'Ver XML', "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal' %></td>
+                <td><%= link_to 'Ver XML', "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal', class: "kt-link" %></td>
               </tr>
               <tr>
                 <th>Sincronizado com a transportadora</th>

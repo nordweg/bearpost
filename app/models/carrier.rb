@@ -51,7 +51,7 @@ class Carrier
     end
 
     def shipping_methods
-      settings[:shipping_methods].keys
+      shipping_method_settings.keys
     end
   end
 end
