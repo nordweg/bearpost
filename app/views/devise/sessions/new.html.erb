@@ -1,0 +1,21 @@
+<div class="kt-login-v2__title">
+  <h3>Entrar</h3>
+</div>
+
+<!--begin::Form-->
+<%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class:'kt-login-v2__form kt-form'}) do |f| %>
+<div class="form-group">
+  <%= f.email_field :email, autofocus: true,autocomplete:'off', placeholder: "email", class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= f.password_field :password,autocomplete:'off', placeholder: "senha", class: "form-control" %>
+</div>
+
+<%= f.hidden_field :remember_me, value:'1' %>
+
+<div class="kt-login-v2__actions">
+  <%= link_to "Esqueceu a senha?", new_password_path(resource_name), class: "kt-link kt-link--brand" %><br />
+  <%= f.submit "Log in", class:"btn btn-brand btn-elevate btn-pill" %>
+</div>
+<% end %>

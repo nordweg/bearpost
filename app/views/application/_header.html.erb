@@ -271,7 +271,7 @@
       <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px, 0px">
         <div class="kt-header__topbar-user">
           <span class="kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
-          <span class="kt-header__topbar-username kt-hidden-mobile">Sean</span>
+          <span class="kt-header__topbar-username kt-hidden-mobile"><%= current_user.first_name %></span>
           <img alt="Pic" src="/keen/users/300_25.jpg" />
 
           <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
@@ -285,38 +285,20 @@
               <img alt="Pic" src="/keen/users/300_21.jpg" />
             </div>
             <div class="kt-user-card__details">
-              <div class="kt-user-card__name">Alex Stone</div>
-              <div class="kt-user-card__position">CTO, Loop Inc.</div>
+              <div class="kt-user-card__name"><%= current_user.full_name %></div>
+              <div class="kt-user-card__position"><%= current_user.company.name %></div>
             </div>
           </div>
         </div>
         <ul class="kt-nav kt-margin-b-10">
           <li class="kt-nav__item">
-            <a href="demo1/custom/user/profile-v1.html" class="kt-nav__link">
-              <span class="kt-nav__link-icon"><i class="flaticon2-calendar-3"></i></span>
-              <span class="kt-nav__link-text">My Profile</span>
-            </a>
-          </li>
-          <li class="kt-nav__item">
-            <a href="demo1/custom/user/profile-v1.html" class="kt-nav__link">
-              <span class="kt-nav__link-icon"><i class="flaticon2-browser-2"></i></span>
-              <span class="kt-nav__link-text">My Tasks</span>
-            </a>
-          </li>
-          <li class="kt-nav__item">
-            <a href="demo1/custom/user/profile-v1.html" class="kt-nav__link">
-              <span class="kt-nav__link-icon"><i class="flaticon2-mail"></i></span>
-              <span class="kt-nav__link-text">Messages</span>
-            </a>
-          </li>
-          <li class="kt-nav__item">
-            <a href="demo1/custom/user/profile-v1.html" class="kt-nav__link">
-              <span class="kt-nav__link-icon"><i class="flaticon2-gear"></i></span>
-              <span class="kt-nav__link-text">Settings</span>
-            </a>
+            <%= link_to user_path(current_user), class: "kt-nav__link" do %>
+            <span class="kt-nav__link-icon"><i class="flaticon2-calendar-3"></i></span>
+            <span class="kt-nav__link-text">Minha conta</span>
+            <% end %>
           </li>
           <li class="kt-nav__item kt-nav__item--custom kt-margin-t-15">
-            <a href="demo1/custom/user/login-v1.html" target="_blank" class="btn btn-label-brand btn-upper btn-sm btn-bold">Sign Out</a>
+            <%= link_to "Sair", destroy_user_session_path, class: "btn btn-label-brand btn-upper btn-sm btn-bold", method: :delete %>
           </li>
         </ul>
       </div>

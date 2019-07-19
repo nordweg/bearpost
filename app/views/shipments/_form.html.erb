@@ -1,4 +1,4 @@
-<%= form_for shipment do |form| %>
+<%= form_for(shipment, html: { multipart: true }) do |form| %>
 
 <div class="row">
   <div class="col-md-6">
@@ -288,11 +288,10 @@
                   <%= form.select(:shipping_method, [], {}, class: 'form-control') %>
                 </div>
               </div>
-
               <div class="col-lg-6">
                 <div class="form-group">
-                  <label>Série da nota fiscal</label>
-                  <%= form.number_field :invoice_series, class: "form-control" %>
+                  <label>Rastreio</label>
+                  <%= form.text_field :tracking_number, class: "form-control" %>
                 </div>
               </div>
             </div>
@@ -300,18 +299,40 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="form-group">
+                  <label>Série da nota fiscal</label>
+                  <%= form.number_field :invoice_series, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
                   <label>Número da nota fiscal</label>
                   <%= form.number_field :invoice_number, class: "form-control" %>
                 </div>
               </div>
+            </div>
+
+            <div class="row">
               <div class="col-lg-6">
                 <div class="form-group">
                   <label>Valor</label>
                   <%= form.number_field :cost, class: "form-control" %>
                 </div>
               </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Xml da nota fiscal</label>
+                  <% if @shipment.invoice_xml %>
+                    <%= form.hidden_field :invoice_xml  if @shipment.invoice_xml %>
+                    <p class="form-control" id="invoice-selected">
+                      Nota <%= "#{@shipment.invoice_series}_#{@shipment.invoice_number}" %>
+                      <%= link_to "Alterar", "javascript:;", class: "kt-link float-right", id:'toggle-file-field' %>
+                    </p>
+                  <% end %>
+                  <%= file_field_tag :invoice_xml, class: "form-control", style: "#{'display: none' if @shipment.invoice_xml.present?}" %>
+                </div>
+              </div>
             </div>
-
+            
           </div>
         </div>
       </div>
@@ -336,6 +357,11 @@
 <% end %>
 
 <script>
+  $("#toggle-file-field").click(function() {
+    $("#invoice-selected").toggle();
+    $("#invoice_xml").toggle();
+  })
+
   update_shipping_method_field();
 
   $('#shipment_account_id').on('change', function() { update_shipping_method_field() });
@@ -344,8 +370,8 @@
   function update_shipping_method_field() {
     selected_account = $('#shipment_account_id option:selected').text();
     selected_carrier = $('#shipment_carrier_name option:selected').text();
-    accounts_and_shipping_methods = <%= raw @accounts_and_shipping_methods.to_json %>;
-    items = accounts_and_shipping_methods[selected_account][selected_carrier];
+    available_shipping_methods = <%= raw @available_shipping_methods.to_json %>;
+    items = available_shipping_methods[selected_account][selected_carrier];
     $('#shipment_shipping_method').empty();
     $.each(items, function (i, item) {
         $('#shipment_shipping_method').append($('<option>', {
