@@ -116,6 +116,7 @@ class ShipmentsController < ApplicationController
 
   def send_to_carrier
     @carrier.send_to_carrier(@shipment)
+    @shipment.update(sent_to_carrier:true)
     redirect_to @shipment, notice: 'Pedido enviado para a transportadora'
   end
 

@@ -48,19 +48,6 @@
                 <%= form.text_field :recipient_cpf, class: "form-control" %>
               </div>
             </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label>Xml da nota fiscal</label>
-                <% if @shipment.invoice_xml %>
-                  <%= form.hidden_field :invoice_xml  if @shipment.invoice_xml %>
-                  <p class="form-control" id="invoice-selected">
-                    Nota <%= "#{@shipment.invoice_series}_#{@shipment.invoice_number}" %>
-                    <%= link_to "Alterar", "javascript:;", class: "kt-link float-right", id:'toggle-file-field' %>
-                  </p>
-                <% end %>
-                <%= file_field_tag :invoice_xml, class: "form-control", style: "#{'display: none' if @shipment.invoice_xml.present?}" %>
-              </div>
-            </div>
           </div>
 
           <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg"></div>
@@ -301,11 +288,10 @@
                   <%= form.select(:shipping_method, [], {}, class: 'form-control') %>
                 </div>
               </div>
-
               <div class="col-lg-6">
                 <div class="form-group">
-                  <label>Série da nota fiscal</label>
-                  <%= form.number_field :invoice_series, class: "form-control" %>
+                  <label>Rastreio</label>
+                  <%= form.text_field :tracking_number, class: "form-control" %>
                 </div>
               </div>
             </div>
@@ -313,18 +299,40 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="form-group">
+                  <label>Série da nota fiscal</label>
+                  <%= form.number_field :invoice_series, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
                   <label>Número da nota fiscal</label>
                   <%= form.number_field :invoice_number, class: "form-control" %>
                 </div>
               </div>
+            </div>
+
+            <div class="row">
               <div class="col-lg-6">
                 <div class="form-group">
                   <label>Valor</label>
                   <%= form.number_field :cost, class: "form-control" %>
                 </div>
               </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Xml da nota fiscal</label>
+                  <% if @shipment.invoice_xml %>
+                    <%= form.hidden_field :invoice_xml  if @shipment.invoice_xml %>
+                    <p class="form-control" id="invoice-selected">
+                      Nota <%= "#{@shipment.invoice_series}_#{@shipment.invoice_number}" %>
+                      <%= link_to "Alterar", "javascript:;", class: "kt-link float-right", id:'toggle-file-field' %>
+                    </p>
+                  <% end %>
+                  <%= file_field_tag :invoice_xml, class: "form-control", style: "#{'display: none' if @shipment.invoice_xml.present?}" %>
+                </div>
+              </div>
             </div>
-
+            
           </div>
         </div>
       </div>

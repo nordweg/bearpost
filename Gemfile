@@ -32,10 +32,13 @@ gem 'jbuilder', '~> 2.5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
-gem 'savon' # SOAP requests for Correios
+gem 'savon'   # SOAP requests
+gem 'faraday' # REST requests
+gem 'faraday_middleware'
 
-# gem 'bearpost_correios'
-gem 'bearpost_azul'
+
+gem 'bearpost_correios', :git => 'https://github.com/nordweg/bearpost_correios.git'
+gem 'bearpost_azul',     :git => 'https://github.com/nordweg/bearpost_azul.git'
 
 gem 'wicked_pdf'
 gem "wkhtmltopdf-binary"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190716133836) do
+ActiveRecord::Schema.define(version: 20190719204028) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20190716133836) do
 
   create_table "companies", force: :cascade do |t|
     t.string "token"
+    t.string "name"
     t.index ["token"], name: "index_companies_on_token"
   end
 
