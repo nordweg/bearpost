@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190712180127) do
+ActiveRecord::Schema.define(version: 20190716133836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20190712180127) do
   end
 
   create_table "shipments", force: :cascade do |t|
-    t.string "status"
+    t.string "status", default: "pending"
     t.datetime "shipped_at"
     t.string "shipment_number"
     t.string "order_number"
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20190712180127) do
     t.jsonb "settings", default: {}
     t.xml "invoice_xml"
     t.integer "company_id"
+    t.boolean "sent_to_carrier", default: false
   end
 
   create_table "shipping_methods", force: :cascade do |t|

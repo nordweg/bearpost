@@ -34,14 +34,37 @@ module Api::V1
       hande_save(shipment)
     end
 
-    def ship
+    def get_labels
+      require "barby/barcode/code_128"
+      require "barby/outputter/png_outputter"
+      shipment = get_shipment
+      carrier  = get_carrier(shipment)
+      pdf_html = ActionController::Base.new.render_to_string(
+        template: 'api/v1/labels.html.erb',
+        locals: {shipment:shipment, carrier:carrier}
+      )
+      pdf      = WickedPdf.new.pdf_from_string(pdf_html)
+      send_data pdf, filename: 'file.pdf'
+    end
+
+    def send_to_carrier
       shipment = get_shipment
       if shipment.requirements_missing.present?
         render json: shipment.requirements_missing
       else
         carrier  = get_carrier(shipment)
-        carrier.ship(shipment)
+        carrier.send_to_carrier(shipment)
+        shipment.send_to_carrier = true
+        shipment.status = 'pending'
+        hande_save(shipment)
       end
+    end
+
+    def set_as_shipped
+      shipment = get_shipment
+      shipment.status = 'shipped'
+      shipment.shipped_at = DateTime.now
+      hande_save(shipment)
     end
 
     def hande_save(shipment)

@@ -1,6 +1,7 @@
 class ShipmentsController < ApplicationController
 
-  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number, :get_labels, :ship]
+  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number,
+     :get_labels, :ship, :send_to_carrier, :set_as_shipped]
   # include ApplicationHelper
 
   def index
@@ -12,18 +13,15 @@ class ShipmentsController < ApplicationController
 
   def new
     @shipment = Shipment.new
-    @accounts_and_shipping_methods = get_shipping_methods
+    @available_shipping_methods = get_shipping_methods
   end
 
   def new_from_xml
     @shipment             = Shipment.new
-    @shipment.invoice_xml = params[:invoice_xml]["invoice_xml"].read.strip
-    doc = Nokogiri::XML(@shipment.invoice_xml)
-
+    doc = Nokogiri::XML(params[:invoice_xml]["invoice_xml"].read)
     name = doc.at_css('dest xNome').content
     first_name = name.split(" ").first
     last_name  = name.gsub(first_name, "").strip
-
     @shipment.recipient_first_name = first_name
     @shipment.recipient_last_name = last_name
     @shipment.recipient_email = doc.at_css('dest email').try(:content)
@@ -38,11 +36,9 @@ class ShipmentsController < ApplicationController
     @shipment.recipient_city_code = doc.at_css('dest cMun').try(:content)
     @shipment.recipient_state = doc.at_css('dest UF').try(:content)
     @shipment.recipient_country = doc.at_css('dest xPais').try(:content)
-
     name = doc.at_css('emit xNome').content
     first_name = name.split(" ").first
     last_name  = name.gsub(first_name, "").strip
-
     @shipment.sender_first_name = first_name
     @shipment.sender_last_name = last_name
     @shipment.sender_email = doc.at_css('emit email').try(:content)
@@ -57,24 +53,22 @@ class ShipmentsController < ApplicationController
     @shipment.sender_city_code = doc.at_css('emit cMun').try(:content)
     @shipment.sender_state = doc.at_css('emit UF').try(:content)
     @shipment.sender_country = doc.at_css('emit xPais').try(:content)
-
     @shipment.invoice_series = doc.at_css('serie').try(:content)
     @shipment.invoice_number = doc.at_css('nNF').try(:content)
-
     @shipment.cost = doc.at_css('vNF').try(:content)
-
-    puts doc.to_xml(:indent => 2)
+    @shipment.invoice_xml = doc.inner_html.strip
+    @available_shipping_methods = get_shipping_methods
     render 'new'
   end
 
   # GET /shipments/1/edit
   def edit
-    @accounts_and_shipping_methods = get_shipping_methods
+    @available_shipping_methods = get_shipping_methods
   end
 
   def get_shipping_methods
     hash = {}
-    Account.all.each do |account|
+    current_user.company.accounts.each do |account|
       hash[account.name] = {}
       Rails.configuration.carriers.each do |carrier|
         hash[account.name][carrier.display_name] = {}
@@ -85,10 +79,6 @@ class ShipmentsController < ApplicationController
   end
 
   def get_tracking_number
-    if @shipment.requirements_missing.present?
-      flash[:error] = @shipment.requirements_missing.first
-      redirect_to @shipment and return
-    end
     tracking_number = @carrier.get_tracking_number(@shipment)
     if tracking_number
       @shipment.update(tracking_number:tracking_number, status:'pronto')
@@ -124,21 +114,29 @@ class ShipmentsController < ApplicationController
     end
   end
 
-  def ship
-    @carrier.ship
+  def send_to_carrier
+    @carrier.send_to_carrier(@shipment)
+    redirect_to @shipment, notice: 'Pedido enviado para a transportadora'
   end
 
-  # POST /shipments
-  # POST /shipments.json
+  def set_as_shipped
+    @shipment.update(status:'shipped')
+    redirect_to @shipment, notice: 'Pedido marcado como enviado'
+  end
+
   def create
     @shipment         = Shipment.new(shipment_params)
-    @shipment.user    = current_user
+    @shipment.company = current_user.company
+    byebug
     respond_to do |format|
       if @shipment.save
         format.html { redirect_to @shipment, notice: 'Shipment was successfully created.' }
         format.json { render :show, status: :created, location: @shipment }
       else
-        format.html { render :new }
+        format.html {
+          flash[:error] = @shipment.errors.full_messages
+          render :new
+        }
         format.json { render json: @shipment.errors, status: :unprocessable_entity }
       end
     end
@@ -178,9 +176,7 @@ class ShipmentsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def shipment_params
-    # params.require(:shipment).permit(:shipment_number)
     if params[:invoice_xml]
-      byebug
       params[:shipment][:invoice_xml] = params[:invoice_xml].read.strip
     end
     params.require(:shipment).permit!
