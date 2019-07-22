@@ -31845,3 +31845,10 @@ body {
 @import url(keen/skins/header/menu/light.css);
 @import url(keen/skins/brand/navy.css);
 @import url(keen/skins/aside/navy.css);
+@font-face {
+  font-family: "Flaticon";
+  src: url(/fonts/fladasdasaticon/font/Flaticon.eot);
+  src: url(/assets/flaticon/font/Flaticon-3b72b80afa2bcdbad857acaa18987f52854a43f8fa6df73f7392c6835b6ae444.eot?#iefix) format("embedded-opentype"), url(/assets/flaticon/font/Flaticon-7a7199005043ac1ec1585bf43679e722c6b678612c69cddc1c327011543c65f1.woff) format("woff"), url(/assets/flaticon/font/Flaticon-925fce5de39a655dfddfdae46cce4bea720ded42cfe2e7e1331be83707544a41.ttf) format("truetype"), url(/assets/flaticon/font/Flaticon-a70f32fc222a321672beedf62587e35b11c08c3ba612f3c951b916f03e18e3a3.svg#Flaticon) format("svg");
+  font-weight: normal;
+  font-style: normal;
+}

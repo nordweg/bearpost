@@ -35,7 +35,6 @@
 //= require bootstrap-daterangepicker/daterangepicker.js
 //= require bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js
 //= require bootstrap-maxlength/src/bootstrap-maxlength.js
-//= require vendors/bootstrap-multiselectsplitter/bootstrap-multiselectsplitter.min.js
 //= require bootstrap-select/dist/js/bootstrap-select.js
 
 // Keen Global Theme Bundle (used by all pages)
