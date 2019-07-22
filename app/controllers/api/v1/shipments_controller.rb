@@ -23,7 +23,6 @@ module Api::V1
     def update_invoice_xml
       shipment = get_shipment
       shipment.invoice_xml = request.body.read.strip
-      byebug
       hande_save(shipment)
     end
 

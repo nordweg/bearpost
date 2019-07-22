@@ -128,7 +128,6 @@ class ShipmentsController < ApplicationController
   def create
     @shipment         = Shipment.new(shipment_params)
     @shipment.company = current_user.company
-    byebug
     respond_to do |format|
       if @shipment.save
         format.html { redirect_to @shipment, notice: 'Shipment was successfully created.' }
@@ -147,7 +146,6 @@ class ShipmentsController < ApplicationController
   # PATCH/PUT /shipments/1.json
   def update
     respond_to do |format|
-      # byebug
       if @shipment.update(shipment_params)
         format.html { redirect_to @shipment, notice: 'Shipment was successfully updated.' }
         format.json { render :show, status: :ok, location: @shipment }
