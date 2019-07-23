@@ -17,7 +17,8 @@
 // Keen Global Mandatory Vendors
 @import "perfect-scrollbar/css/perfect-scrollbar.css";
 
-// Keen Global Optional Vendors
+// Keen Global Optional Vendors ( General )
+@import "bootstrap-select/sass/bootstrap-select.scss";
 
 // Keen Optional Vendors ( Custom )
 @import "fullcalendar/fullcalendar.bundle.css";
