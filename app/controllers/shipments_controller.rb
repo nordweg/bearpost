@@ -102,15 +102,8 @@ class ShipmentsController < ApplicationController
         render layout: 'pdf'
       end
       format.pdf do
-        render pdf: "Etiqueta #{@shipment.shipment_number}",
-        page_height: '155mm',
-        page_width:  '105mm',
-        template: "shipments/get_labels.html.erb",
-        orientation: "Portrait",
-        layout: 'pdf',
-        zoom: 1,
-        dpi: 203,
-        margin:  {top:  0,bottom:0,left: 0,right:0}
+        render pdf: "Etiqueta-#{@shipment.shipment_number}",
+        template: "shipments/get_labels.html.erb"
       end
     end
   end

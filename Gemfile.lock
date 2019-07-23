@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/nordweg/bearpost_azul.git
-  revision: 222e372e063d6d3f093b4198613699285f51da96
+  revision: 0bd57bfc8a8ee4e1b8165eaf0ff3d0cf0ca0cd73
   specs:
     bearpost_azul (0.1.1)
       rails (~> 5.1)
@@ -167,7 +167,7 @@ GEM
       method_source
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (12.3.2)
+    rake (12.3.3)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)

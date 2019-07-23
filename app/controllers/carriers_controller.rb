@@ -4,7 +4,7 @@ class CarriersController < ApplicationController
     @accounts = current_company.accounts
   end
   def edit
-    @carrier = "Carrier::#{params[:id].titleize}".constantize
+    @carrier = helpers.carrier_from_id(params[:id])
     @accounts = current_company.accounts
   end
 end
