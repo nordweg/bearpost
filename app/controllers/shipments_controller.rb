@@ -82,10 +82,11 @@ class ShipmentsController < ApplicationController
     tracking_number = @carrier.get_tracking_number(@shipment)
     if tracking_number
       @shipment.update(tracking_number:tracking_number, status:'pronto')
-      redirect_to @shipment, notice: 'Rastreio criado com sucesso.'
+      flash[:success] = 'Rastreio criado com sucesso.'
     else
-      redirect_to @shipment, notice: 'Não foi possível criar número de rastreio.'
+      flash[:error] = 'Não foi possível criar número de rastreio.'
     end
+    redirect_to @shipment
   end
 
   def get_labels
@@ -115,9 +116,14 @@ class ShipmentsController < ApplicationController
   end
 
   def send_to_carrier
-    @carrier.send_to_carrier(@shipment)
-    @shipment.update(sent_to_carrier:true)
-    redirect_to @shipment, notice: 'Pedido enviado para a transportadora'
+    begin
+      @carrier.send_to_carrier(@shipment)
+      @shipment.update(sent_to_carrier:true)
+      flash[:success] = 'Pedido enviado para a transportadora'
+    rescue Exception => e
+      flash[:error]  = e.message
+    end
+    redirect_to @shipment
   end
 
   def set_as_shipped
