@@ -25,7 +25,10 @@ module Api::V1
     end
 
     rescue_from Exception do |e|
-      render json: e.to_json, status: 500
+      render json: {
+        status: "error",
+        message: e.message
+        }, status: 500
     end
 
     def current_company
