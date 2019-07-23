@@ -54,7 +54,7 @@ module Api::V1
         carrier  = get_carrier(shipment)
         carrier.send_to_carrier(shipment)
         shipment.sent_to_carrier = true
-        shipment.status = 'pending'
+        shipment.status = 'ready'
         hande_save(shipment)
       end
     end
