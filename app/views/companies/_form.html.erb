@@ -1,24 +1,11 @@
-<%= form_with(model: user, local: true) do |form| %>
-<% if user.errors.any? %>
-<div id="error_explanation">
-  <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-  <ul>
-    <% user.errors.full_messages.each do |message| %>
-    <li><%= message %></li>
-    <% end %>
-  </ul>
-</div>
-<% end %>
-
-
+<%= form_for company do |form| %>
 <div class="row">
   <div class="col-md-6">
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
-            Dados pessoais
+            Informações gerais
           </h3>
         </div>
       </div>
@@ -28,13 +15,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label>Nome</label>
-                <%= form.text_field :first_name, class: "form-control" %>
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label>Sobrenome</label>
-                <%= form.text_field :last_name, class: "form-control" %>
+                <%= form.text_field :name, class: "form-control" %>
               </div>
             </div>
           </div>

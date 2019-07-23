@@ -6,10 +6,11 @@ Rails.application.routes.draw do
   post 'accounts/:id/update_carrier_settings',       to: "accounts#update_carrier_settings"
 
   devise_for :users
-  resources :users, only: [:show]
+  resources :users, only: [:show,:edit,:update]
   resources :carriers
   resources :accounts
   resources :packages
+  resources :companies
   resources :shipments do
     member do
       get  'get_tracking_number',  to: "shipments#get_tracking_number"

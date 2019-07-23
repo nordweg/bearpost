@@ -14,8 +14,7 @@ $(document).ready(function() {
   function hideAlert() {
     $(".alert").slideUp(400, function() { $(this).alert('close'); });
   }
-  // var hideAlertTimer = setInterval(hideAlert,3000);
-  
+  var hideAlertTimer = setInterval(hideAlert,5000);
   $(".alert").hover(
     function() {clearInterval(hideAlertTimer)},function() {}
   );

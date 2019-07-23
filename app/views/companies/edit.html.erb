@@ -1,0 +1,4 @@
+<% content_for :subheader_title do %>
+  Editando empresa <%= @company.name %>
+<% end %>
+<%= render 'form', company: @company %>
