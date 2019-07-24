@@ -13,16 +13,6 @@ Envios
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
-            <div class="mr-2">
-              <div class="kt-input-icon kt-input-icon--left">
-                <input type="text" class="form-control" placeholder="" id="generalSearch">
-                <span class="kt-input-icon__icon kt-input-icon__icon--left">
-                  <span><i class="la la-search"></i></span>
-                </span>
-              </div>
-            </div>
-
-
             <div class="btn-group">
               <%= link_to new_shipment_path, class: "btn btn-primary" do %>
               <i class="la la-plus"></i>
@@ -37,32 +27,134 @@ Envios
                 <%= f.submit 'Enviar' %>
                 <% end  %>
                 <div class="px-4 py-3">
-                  <button type="submit" id="filebutton" class="btn btn-primary btn-sm btn-upper">Selecionar Arquivo</button>
+                  <button type="submit" id="filebutton" class="btn btn-default btn-bold btn-font-sm btn-upper">Selecionar Arquivo</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="kt-portlet__body">
-        <div class="kt-portlet__content">
-          <div class="kt_datatable"></div>
+        <div class="row align-items-center">
+          <div class="col-md-3">
+            <div class="kt-input-icon kt-input-icon--left">
+              <input type="text" class="form-control" placeholder="Search..." id="generalSearch">
+              <span class="kt-input-icon__icon kt-input-icon__icon--left">
+                <span><i class="la la-search"></i></span>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="row kt-form__group">
+              <div class="col-md-4">
+                <p class="mt-2 text-right">Status:</p>
+              </div>
+              <div class="col-md-8">
+                <div class="dropdown bootstrap-select form-control">
+                  <select class="form-control bootstrap-select" id="kt_form_status">
+                    <option value="">Todos</option>
+                    <option value="pending">Pendente</option>
+                    <option value="ready">Pronto</option>
+                    <option value="shipped">Enviado</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="row kt-form__group">
+              <div class="col-md-4">
+                <p class="mt-2 text-right">Transportadora:</p>
+              </div>
+              <div class="col-md-8">
+                <div class="dropdown bootstrap-select form-control">
+                  <select class="form-control bootstrap-select" id="kt_form_carrier">
+                    <option value="">Todos</option>
+                    <% Rails.configuration.carriers.each do |carrier| %>
+                      <option value="<%= carrier.id %>"><%= carrier.display_name %></option>
+                    <% end %>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div class="kt-form kt-fork--label-align-right kt-margin-t-20 collapse" id="kt_datatable_group_action_form">
+          <div class="row align-items-center">
+            <div class="col-xl-12">
+              <div class="kt-form__group kt-form__group--inline">
+                <div class="kt-form__label kt-form__label-no-wrap">
+                  <label class="kt--font-bold kt--font-danger-">
+                    <span id="kt_datatable_selected_number">0</span> envios selecionados:
+                  </label>
+                </div>
+                <div class="kt-form__control">
+                  <div class="btn-toolbar">
+                    <div class="dropdown">
+                      <button type="button" class="btn btn-accent btn-sm dropdown-toggle" data-toggle="dropdown">
+                        Atualizar status
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item set-status-JS" data-status="pending" href="javascript:;">Pendente</a>
+                        <a class="dropdown-item set-status-JS" data-status="ready"   href="javascript:;">Pronto para envio</a>
+                        <a class="dropdown-item set-status-JS" data-status="shipped" href="javascript:;">Enviado</a>
+                      </div>
+                    </div>
+                    &nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-sm btn-danger" type="button" id="kt_datatable_delete_all">Apagar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kt-portlet__body kt-portlet__body kt-portlet__body--fit">
+        <div class="kt_datatable"></div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+$(function(){
+  // always pass csrf tokens on ajax calls
+  $.ajaxSetup({
+    headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }
+  });
+});
+
+$('.set-status-JS').click(function(){ setStatus($(this).data("status")); return false; });
+
+function setStatus(status) {
+  data = { shipment: {status: status} }
+
+  $.each($(".kt-checkbox input:checked"), function(){
+    $.ajax({
+      type: "PATCH",
+      url:  "/shipments/" + $(this).val(),
+      data: data,
+      dataType: 'json'
+    });
+  });
+
+  $(document).ajaxStop(function () {
+      location.reload();
+  });
+}
+
 $('#filebutton').click(function(e){
   e.preventDefault();
   $('#fileinput').click();
 });
+
 $('#fileinput').change(function(){
   $(this).parent('form').submit();
 });
 </script>
-
 
 <script>
 
@@ -79,7 +171,7 @@ var KTDatatableDataLocalDemo = function() {
       data: {
         type: 'local',
         source: dataJSONArray,
-        pageSize: 10,
+        pageSize: 30,
       },
 
       // layout definition
@@ -117,6 +209,10 @@ var KTDatatableDataLocalDemo = function() {
         }, {
           field: 'order_number',
           title: 'Pedido',
+        }, {
+          field: 'carrier_name',
+          title: 'Transportadora',
+          class: 'text-capitalize'
         }, {
           field: 'recipient_last_name',
           title: 'Nome',
@@ -167,39 +263,52 @@ var KTDatatableDataLocalDemo = function() {
           template: function(row) {
             let buttons =
             `<a href="/shipments/${row.id}/edit" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="Editar">
-             <i class="la la-edit"></i>
-             </a>
-             <a data-confirm="Apagar o envio?" class="btn btn-sm btn-clean btn-icon btn-icon-md" rel="nofollow" data-method="delete" href="/shipments/${row.id}" title="Apagar">
-             <i class="la la-trash"></i>
-             </a>`
+            <i class="la la-edit"></i>
+            </a>
+            <a data-confirm="Apagar o envio?" class="btn btn-sm btn-clean btn-icon btn-icon-md" rel="nofollow" data-method="delete" href="/shipments/${row.id}" title="Apagar">
+            <i class="la la-trash"></i>
+            </a>`
             return buttons;
           },
         }],
       });
 
       $('#kt_form_status').on('change', function() {
-        datatable.search($(this).val().toLowerCase(), 'status');
+        datatable.search($(this).val(), 'status');
       });
 
-      $('#kt_form_type').on('change', function() {
-        datatable.search($(this).val().toLowerCase(), 'type');
+      $('#kt_form_carrier').on('change', function() {
+        datatable.search($(this).val(), 'carrier_name');
       });
 
-      $('#kt_form_status,#kt_form_type').selectpicker();
+      $('#kt_form_status,#kt_form_carrier').selectpicker();
 
-    };
+      datatable.on(
+        'kt-datatable--on-check kt-datatable--on-uncheck kt-datatable--on-layout-updated',
+        function(e) {
+          var checkedNodes = datatable.rows('.kt-datatable__row--active').nodes();
+          var count = checkedNodes.length;
+          $('#kt_datatable_selected_number').html(count);
+          if (count > 0) {
+            $('#kt_datatable_group_action_form').collapse('show');
+          } else {
+            $('#kt_datatable_group_action_form').collapse('hide');
+          }
+        });
 
-    return {
-      // Public functions
-      init: function() {
-        // init dmeo
-        demo();
-      }
-    };
-  }();
+      };
 
-  jQuery(document).ready(function() {
-    KTDatatableDataLocalDemo.init();
-  });
+      return {
+        // Public functions
+        init: function() {
+          // init dmeo
+          demo();
+        }
+      };
+    }();
 
-</script>
+    jQuery(document).ready(function() {
+      KTDatatableDataLocalDemo.init();
+    });
+
+    </script>
