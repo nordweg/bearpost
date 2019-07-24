@@ -16,6 +16,16 @@ class Shipment < ApplicationRecord
 
   accepts_nested_attributes_for :packages
 
+  after_save :track_changes
+
+  def track_changes
+    if saved_changes.include?("status")
+        20.times do
+          p "Status changed from #{saved_changes['status'][0]} to #{saved_changes['status'][1]}"
+        end
+    end
+  end
+
   def shipped?
     shipped_at.present?
   end
