@@ -146,6 +146,7 @@ class ShipmentsController < ApplicationController
   def update
     respond_to do |format|
       if @shipment.update(shipment_params)
+        create_history(@shipment)
         format.html { redirect_to @shipment, notice: 'Shipment was successfully updated.' }
         format.json { render :show, status: :ok, location: @shipment }
       else

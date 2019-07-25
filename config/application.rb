@@ -19,5 +19,7 @@ module Bearpost
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     Rails.configuration.carriers = []
+
+    config.i18n.default_locale = 'pt-BR'
   end
 end

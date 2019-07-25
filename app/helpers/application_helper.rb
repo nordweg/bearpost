@@ -7,4 +7,13 @@ module ApplicationHelper
     when 'alert'   then "warning"
     end
   end
+
+  def status_selector
+    [
+      ['Pendente','pending'],
+      ['Pronto para envio','ready'],
+      ['Enviado','shipped'],
+      ['Cancelado','cancelled']
+    ]
+  end
 end

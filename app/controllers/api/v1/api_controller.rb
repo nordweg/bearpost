@@ -20,8 +20,12 @@ module Api::V1
       end
     end
 
+    def current_company
+      @current_company
+    end
+
     def render_unauthorized
-      render json: 'Credenciais inválidas', status: :unauthorized
+      render json: 'Credenciais inválidas'.to_json, status: :unauthorized
     end
 
     rescue_from Exception do |e|
@@ -29,10 +33,6 @@ module Api::V1
         status: "error",
         message: e.message
         }, status: 500
-    end
-
-    def current_company
-      @current_company
     end
   end
 end
