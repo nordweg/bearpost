@@ -127,3 +127,47 @@ rails plugin new correios --full --database=postgresql
 
 gem build bearpost_correios.gemspec
 gem install bearpost_correios
+
+
+<!--Begin::Item -->
+<% @shipment.histories.each do |history| %>
+  <div class="kt-timeline__item kt-timeline__item--brand">
+    <div class="kt-timeline__item-section">
+      <div class="kt-timeline__item-section-border">
+        <div class="kt-timeline__item-section-icon">
+          <i class="flaticon2-box kt-font-brand"></i>
+        </div>
+      </div>
+      <span class="kt-timeline__item-datetime mr-3">
+        <%= history.created_at.strftime("%d/%m/%Y %H:%M") %>
+      </span>
+    </div>
+    <p class="kt-timeline__item-text">
+        <%= history.description %>
+    </p>
+  </div>
+<% end %>
+<!--End::Item -->
+
+# badge
+<span class="kt-badge kt-badge--inline <%= badge_class(status) %> kt-badge--pill">
+  <%= translate_status(status) %>
+</span>
+
+# badge class / translate status
+def badge_class(status)
+  case status
+  when 'shipped'  then "kt-badge--success"
+  when 'pending'  then "kt-badge--metal"
+  when 'ready'    then "kt-badge--brand"
+  when 'canceled' then "kt-badge--brand"
+  end
+end
+def translate_status(status)
+  case status
+  when 'shipped'  then "Enviado"
+  when 'pending'  then "Pendente"
+  when 'ready'    then "Pronto para envio"
+  when 'canceled' then "Cancelado"
+  end
+end
