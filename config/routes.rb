@@ -7,19 +7,25 @@ Rails.application.routes.draw do
 
   devise_for :users
   resources :users, only: [:show,:edit,:update]
-  resources :carriers
   resources :accounts
   resources :packages
   resources :companies
+  resources :carriers do
+    member do
+      post 'send_to_carrier'
+    end
+  end
   resources :shipments do
+    collection do
+      get  '/',                    to: "shipments#index"
+      post 'new',                  to: "shipments#new"
+      get  'sync_to_carriers',     to: "shipments#sync_to_carriers"
+    end
     member do
       get  'get_tracking_number',  to: "shipments#get_tracking_number"
       get  'get_labels',           to: "shipments#get_labels", format: :pdf
       post 'send_to_carrier',      to: "shipments#send_to_carrier"
       post 'set_as_shipped',       to: "shipments#set_as_shipped"
-    end
-    collection do
-      post 'new_from_xml',         to: "shipments#new_from_xml"
     end
   end
 

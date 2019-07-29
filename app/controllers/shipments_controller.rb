@@ -12,53 +12,53 @@ class ShipmentsController < ApplicationController
   end
 
   def new
-    @shipment = Shipment.new
+    shipment_data = params[:invoice_xml] ? get_info_from_xml : nil
+    @shipment = Shipment.new(shipment_data)
     @available_shipping_methods = get_shipping_methods
   end
 
-  def new_from_xml
-    @shipment             = Shipment.new
+  def get_info_from_xml
+    hash = {}
     doc = Nokogiri::XML(params[:invoice_xml]["invoice_xml"].read)
     name = doc.at_css('dest xNome').content
     first_name = name.split(" ").first
     last_name  = name.gsub(first_name, "").strip
-    @shipment.recipient_first_name = first_name
-    @shipment.recipient_last_name = last_name
-    @shipment.recipient_email = doc.at_css('dest email').try(:content)
-    @shipment.recipient_phone = doc.at_css('dest fone').try(:content)
-    @shipment.recipient_cpf = doc.at_css('dest CPF').try(:content)
-    @shipment.recipient_street = doc.at_css('dest xLgr').try(:content)
-    @shipment.recipient_number = doc.at_css('dest nro').try(:content)
-    @shipment.recipient_complement = doc.at_css('dest xCpl').try(:content)
-    @shipment.recipient_neighborhood = doc.at_css('dest xBairro').try(:content)
-    @shipment.recipient_zip = doc.at_css('dest CEP').try(:content)
-    @shipment.recipient_city = doc.at_css('dest xMun').try(:content)
-    @shipment.recipient_city_code = doc.at_css('dest cMun').try(:content)
-    @shipment.recipient_state = doc.at_css('dest UF').try(:content)
-    @shipment.recipient_country = doc.at_css('dest xPais').try(:content)
+    hash[:recipient_first_name] = first_name
+    hash[:recipient_last_name] = last_name
+    hash[:recipient_email] = doc.at_css('dest email').try(:content)
+    hash[:recipient_phone] = doc.at_css('dest fone').try(:content)
+    hash[:recipient_cpf] = doc.at_css('dest CPF').try(:content)
+    hash[:recipient_street] = doc.at_css('dest xLgr').try(:content)
+    hash[:recipient_number] = doc.at_css('dest nro').try(:content)
+    hash[:recipient_complement] = doc.at_css('dest xCpl').try(:content)
+    hash[:recipient_neighborhood] = doc.at_css('dest xBairro').try(:content)
+    hash[:recipient_zip] = doc.at_css('dest CEP').try(:content)
+    hash[:recipient_city] = doc.at_css('dest xMun').try(:content)
+    hash[:recipient_city_code] = doc.at_css('dest cMun').try(:content)
+    hash[:recipient_state] = doc.at_css('dest UF').try(:content)
+    hash[:recipient_country] = doc.at_css('dest xPais').try(:content)
     name = doc.at_css('emit xNome').content
     first_name = name.split(" ").first
     last_name  = name.gsub(first_name, "").strip
-    @shipment.sender_first_name = first_name
-    @shipment.sender_last_name = last_name
-    @shipment.sender_email = doc.at_css('emit email').try(:content)
-    @shipment.sender_phone = doc.at_css('emit fone').try(:content)
-    @shipment.sender_cpf = doc.at_css('emit CNPJ').try(:content)
-    @shipment.sender_street = doc.at_css('emit xLgr').try(:content)
-    @shipment.sender_number = doc.at_css('emit nro').try(:content)
-    @shipment.sender_complement = doc.at_css('emit xCpl').try(:content)
-    @shipment.sender_neighborhood = doc.at_css('emit xBairro').try(:content)
-    @shipment.sender_zip = doc.at_css('emit CEP').try(:content)
-    @shipment.sender_city = doc.at_css('emit xMun').try(:content)
-    @shipment.sender_city_code = doc.at_css('emit cMun').try(:content)
-    @shipment.sender_state = doc.at_css('emit UF').try(:content)
-    @shipment.sender_country = doc.at_css('emit xPais').try(:content)
-    @shipment.invoice_series = doc.at_css('serie').try(:content)
-    @shipment.invoice_number = doc.at_css('nNF').try(:content)
-    @shipment.cost = doc.at_css('vNF').try(:content)
-    @shipment.invoice_xml = doc.inner_html.strip
-    @available_shipping_methods = get_shipping_methods
-    render 'new'
+    hash[:sender_first_name] = first_name
+    hash[:sender_last_name] = last_name
+    hash[:sender_email] = doc.at_css('emit email').try(:content)
+    hash[:sender_phone] = doc.at_css('emit fone').try(:content)
+    hash[:sender_cpf] = doc.at_css('emit CNPJ').try(:content)
+    hash[:sender_street] = doc.at_css('emit xLgr').try(:content)
+    hash[:sender_number] = doc.at_css('emit nro').try(:content)
+    hash[:sender_complement] = doc.at_css('emit xCpl').try(:content)
+    hash[:sender_neighborhood] = doc.at_css('emit xBairro').try(:content)
+    hash[:sender_zip] = doc.at_css('emit CEP').try(:content)
+    hash[:sender_city] = doc.at_css('emit xMun').try(:content)
+    hash[:sender_city_code] = doc.at_css('emit cMun').try(:content)
+    hash[:sender_state] = doc.at_css('emit UF').try(:content)
+    hash[:sender_country] = doc.at_css('emit xPais').try(:content)
+    hash[:invoice_series] = doc.at_css('serie').try(:content)
+    hash[:invoice_number] = doc.at_css('nNF').try(:content)
+    hash[:cost] = doc.at_css('vNF').try(:content)
+    hash[:invoice_xml] = doc.inner_html.strip
+    hash
   end
 
   # GET /shipments/1/edit
@@ -109,19 +109,31 @@ class ShipmentsController < ApplicationController
   end
 
   def send_to_carrier
-    begin
-      @carrier.send_to_carrier(@shipment)
-      @shipment.update(sent_to_carrier:true)
-      flash[:success] = 'Pedido enviado para a transportadora'
-    rescue Exception => e
-      flash[:error]  = e.message
-    end
+    raise Exception.new('Carrier not found') if @carrier.blank?
+    sync_result = @carrier.send_to_carrier([@shipment])
+    message = sync_result.first[:message]
+    sync_result.first[:success] ? flash[:success] = message : flash[:error] = message
     redirect_to @shipment
   end
 
-  def set_as_shipped
-    @shipment.update(status:'shipped')
-    redirect_to @shipment, notice: 'Pedido marcado como enviado'
+  def sync_to_carriers
+    results = []
+    available_carriers.each do |carrier|
+      current_company.accounts.each do |account|
+        shipments = Shipment.ready_to_ship.where(carrier_name: carrier.id, account_id: account.id)
+        carrier_hash = {
+          account: account,
+          carrier: carrier,
+          sync_result: carrier.send_to_carrier(shipments)
+        }
+        results << carrier_hash
+      end
+    end
+    @results = results
+    respond_to do |format|
+      format.html
+      format.json { render json: @results.to_json }
+    end
   end
 
   def create

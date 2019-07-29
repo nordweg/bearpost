@@ -1,0 +1,67 @@
+<div class="kt-portlet">
+  <div class="kt-portlet__head">
+    <div class="kt-portlet__head-label">
+      <h3 class="kt-portlet__head-title">
+        Enviando todos pedidos com status Pronto para a transportadora...
+      </h3>
+    </div>
+  </div>
+
+  <div class="kt-portlet__body">
+    <div class="kt-portlet__content">
+      <table class="table table-hover table-head-noborder">
+        <thead>
+          <tr>
+            <th>Envio</th>
+            <th>Pedido</th>
+            <th>Transportadora</th>
+            <th>Nome</th>
+            <th>Sincronizado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @shipments.each do |shipment| %>
+          <tr>
+            <td><%= link_to shipment.shipment_number, shipment, class: "kt-link" %></td>
+            <td><%= shipment.order_number %></td>
+            <td><%= shipment.carrier_name.try(:capitalize) %></td>
+            <td><%= shipment.recipient_full_name %></td>
+            <td class="shipment-status" data-id="<%= shipment.id %>" id="<%= shipment.id %>"><i class="la la-ellipsis-h mr-2"></i> <span></span></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<script>
+$(".shipment-status");
+  shipment_id = <%= raw @shipments.pluck(:id).to_json %>;
+debugger;
+
+function sendToCarrier(shipment_id) {
+  $.ajax({
+    type: 'POST',
+    url: "/shipments" + shipment_id + "shipment_id",
+    dataType: 'json',
+    success: function(response) {
+      td = document.getElementById(shipment_id);
+      icon = td.querySelector('i');
+      icon.classList.remove('la-ellipsis-h');
+      if (response == "OK") {
+        icon.classList.add('la-check-circle');
+      } else {
+        icon.classList.add('la-close', 'text-danger');
+        error = td.querySelector('span')
+        error.innerHTML = response ;
+        error.classList.add('badge', 'badge-danger');
+      }
+    }
+  });
+}
+
+sendToCarrier();
+</script>

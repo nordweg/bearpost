@@ -252,16 +252,22 @@
         <div class="kt-section">
           <div class="kt-section__body">
             <div class="row">
-              <div class="col-lg-6">
+              <div class="col-lg-4">
                 <div class="form-group">
                   <label>Número do envio</label>
                   <%= form.text_field :shipment_number, class: "form-control" %>
                 </div>
               </div>
-              <div class="col-lg-6">
+              <div class="col-lg-4">
                 <div class="form-group">
                   <label>Número do pedido</label>
                   <%= form.text_field :order_number, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <%= form.select(:status, status_selector, {}, class: 'form-control') %>
                 </div>
               </div>
             </div>
@@ -270,7 +276,7 @@
               <div class="col-lg-6">
                 <div class="form-group">
                   <%= form.label 'Conta' %>
-                  <%= form.select(:account_id, Account.all.pluck(:name,:id), {}, class: 'form-control') %>
+                  <%= form.select(:account_id, current_user.company.accounts.pluck(:name,:id), {}, class: 'form-control') %>
                 </div>
               </div>
               <div class="col-lg-6">
@@ -332,7 +338,7 @@
                 </div>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>

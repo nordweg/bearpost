@@ -7,22 +7,33 @@ class Shipment < ApplicationRecord
 
   validates_uniqueness_of :shipment_number, scope: :company_id
 
-  scope :ready, -> { where(status: 'pronto') }
-  # criado, pronto para envio, enviado
+  scope :ready_to_ship, -> { where(status: 'ready', sent_to_carrier:false) }
 
-  has_many    :packages, -> { order "created_at" }
+  has_many    :packages
+  has_many    :histories
   belongs_to  :account, optional: true
   belongs_to  :company
-
   accepts_nested_attributes_for :packages
 
-  after_save :track_changes
+  after_create :create_package
+  after_update :save_history
 
-  def track_changes
+  def save_history
     if saved_changes.include?("status")
-        20.times do
-          p "Status changed from #{saved_changes['status'][0]} to #{saved_changes['status'][1]}"
-        end
+        before = I18n.t saved_changes["status"][0]
+        after  = I18n.t saved_changes["status"][1]
+
+        histories.create(
+          user: Current.user,
+          description: "Status alterado de #{before} para #{after}",
+          category:'status'
+        )
+    end
+  end
+
+  def create_package
+    if packages.empty?
+      packages.create()
     end
   end
 
@@ -36,15 +47,18 @@ class Shipment < ApplicationRecord
 
   def requirements_missing
     errors = []
-    errors << "Shipment: Account is required" if account.blank?
     errors << "Shipment: Carrier is required" if carrier_name.blank?
     errors << "Shipment: Shipping method is required" if shipping_method.blank?
-    errors << "Shipment: Shipping Number is required" if shipment_number.blank?
-    errors << "Shipment: At least 1 package is required" if packages.blank?
     errors
   end
 
   def carrier
     "Carrier::#{carrier_name.titleize}".constantize rescue nil
+  end
+
+  def as_json(*)
+    super.except("updated_at","invoice_xml").tap do |hash|
+      hash["synced_with_carrier"] = sent_to_carrier ? 'true' : 'false'
+    end
   end
 end
