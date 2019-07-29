@@ -31,6 +31,25 @@ class Carrier
       raise ::NotImplementedError, 'You must implement tracking_url method for this carrier.'
     end
 
+    def send_to_carrier(shipments)
+      # This method should respond with the an array of hashes, including the shipment,
+      # a boolean stating if the sync was successful, and any message (error or success) from the result of the process.
+      # eg:
+      # [
+      #   {
+      #     shipment: shipment
+      #     success: false
+      #     message: 'Package size is not valid'
+      #   },
+      #   {
+      #     shipment: shipment,
+      #     success: true,
+      #     message: 'Envio recebido com sucesso'
+      #   }
+      # ]
+      raise ::NotImplementedError, 'You must implement send_to_carrier method for this carrier.'
+    end
+
     def id
       name.demodulize.downcase
     end

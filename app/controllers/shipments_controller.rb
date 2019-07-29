@@ -81,7 +81,7 @@ class ShipmentsController < ApplicationController
   def get_tracking_number
     tracking_number = @carrier.get_tracking_number(@shipment)
     if tracking_number
-      @shipment.update(tracking_number:tracking_number, status:'pronto')
+      @shipment.update(tracking_number:tracking_number)
       flash[:success] = 'Rastreio criado com sucesso.'
     else
       flash[:error] = 'Não foi possível criar número de rastreio.'
