@@ -2,6 +2,33 @@
 Envios
 <% end %>
 
+<% content_for :subheader_toolbar do %>
+
+  <%= link_to sync_to_carriers_shipments_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
+    <i class="la la-truck"></i> Enviar pedidos prontos para a transportadora
+  <% end %>
+
+
+  <div class="btn-group">
+    <%= link_to new_shipment_path, class: "btn btn-primary" do %>
+    <i class="la la-plus"></i>
+    Novo envio
+    <% end %>
+    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split ml-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    </button>
+    <div class="dropdown-menu dropdown-menu-right">
+      <h6 class="dropdown-header">Criar a partir de uma nota fiscal</h6>
+      <%= form_for :invoice_xml, url: new_shipment_path, html: {class: 'd-none'} do |f| %>
+      <%= f.file_field :invoice_xml, id:"fileinput" %><br><br>
+      <%= f.submit 'Enviar' %>
+      <% end  %>
+      <div class="px-4 py-3">
+        <button type="submit" id="filebutton" class="btn btn-default btn-bold btn-font-sm btn-upper">Selecionar Arquivo</button>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div class="row">
   <div class="col-lg-12">
     <div class="kt-portlet">
@@ -13,44 +40,16 @@ Envios
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
-            <div class="btn-group">
-              <%= link_to new_shipment_path, class: "btn btn-primary" do %>
-              <i class="la la-plus"></i>
-              Novo envio
-              <% end %>
-              <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              </button>
-              <div class="dropdown-menu dropdown-menu-right">
-                <h6 class="dropdown-header">Criar a partir de uma nota fiscal</h6>
-                <%= form_for :invoice_xml, url: new_from_xml_shipments_path, html: {class: 'd-none'} do |f| %>
-                <%= f.file_field :invoice_xml, id:"fileinput" %><br><br>
-                <%= f.submit 'Enviar' %>
-                <% end  %>
-                <div class="px-4 py-3">
-                  <button type="submit" id="filebutton" class="btn btn-default btn-bold btn-font-sm btn-upper">Selecionar Arquivo</button>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
 
       <div class="kt-portlet__body">
         <div class="row align-items-center">
-          <div class="col-md-3">
-            <div class="kt-input-icon kt-input-icon--left">
-              <input type="text" class="form-control" placeholder="Search..." id="generalSearch">
-              <span class="kt-input-icon__icon kt-input-icon__icon--left">
-                <span><i class="la la-search"></i></span>
-              </span>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="row kt-form__group">
-              <div class="col-md-4">
-                <p class="mt-2 text-right">Status:</p>
-              </div>
-              <div class="col-md-8">
+          <div class="col-md-4">
+            <div class="kt-form__group">
+                <label>Status:</label>
                 <div class="dropdown bootstrap-select form-control">
                   <select class="form-control bootstrap-select" id="kt_form_status">
                     <option value="">Todos</option>
@@ -59,26 +58,45 @@ Envios
                     <option value="shipped">Enviado</option>
                   </select>
                 </div>
-              </div>
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="row kt-form__group">
-              <div class="col-md-4">
-                <p class="mt-2 text-right">Transportadora:</p>
-              </div>
-              <div class="col-md-8">
+          <div class="col-md-4">
+            <div class="kt-form__group">
+              <label>Transportadora:</label>
                 <div class="dropdown bootstrap-select form-control">
                   <select class="form-control bootstrap-select" id="kt_form_carrier">
                     <option value="">Todos</option>
                     <% Rails.configuration.carriers.each do |carrier| %>
-                      <option value="<%= carrier.id %>"><%= carrier.display_name %></option>
+                    <option value="<%= carrier.id %>"><%= carrier.display_name %></option>
                     <% end %>
                   </select>
                 </div>
-              </div>
             </div>
           </div>
+
+          <div class="col-md-4">
+            <label>Busca rápida:</label>
+
+            <div class="kt-input-icon kt-input-icon--left">
+              <input type="text" class="form-control" placeholder="..." id="generalSearch">
+              <span class="kt-input-icon__icon kt-input-icon__icon--left">
+                <span><i class="la la-search"></i></span>
+              </span>
+            </div>
+          </div>
+
+          <!-- <div class="col-md-4">
+            <div class="kt-form__group">
+              <label>Enviado para transportadora:</label>
+              <div class="dropdown bootstrap-select form-control">
+                <select class="form-control bootstrap-select" id="kt_form_synced_with_carrier">
+                  <option value="">Todos</option>
+                  <option value="true">Sim</option>
+                  <option value="false">Não</option>
+                </select>
+              </div>
+            </div>
+          </div> -->
         </div>
 
         <div class="kt-form kt-fork--label-align-right kt-margin-t-20 collapse" id="kt_datatable_group_action_form">
@@ -93,7 +111,7 @@ Envios
                 <div class="kt-form__control">
                   <div class="btn-toolbar">
                     <div class="dropdown">
-                      <button type="button" class="btn btn-accent btn-sm dropdown-toggle" data-toggle="dropdown">
+                      <button type="button" class="btn btn-sm btn-accent dropdown-toggle" data-toggle="dropdown">
                         Atualizar status
                       </button>
                       <div class="dropdown-menu">
@@ -103,7 +121,7 @@ Envios
                       </div>
                     </div>
                     &nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-sm btn-danger" type="button" id="kt_datatable_delete_all">Apagar</button>
+                    <!-- <button class="btn btn-sm btn-metal" type="button" id="">Placeholder</button> -->
                   </div>
                 </div>
               </div>
@@ -120,12 +138,6 @@ Envios
 </div>
 
 <script>
-$(function(){
-  // always pass csrf tokens on ajax calls
-  $.ajaxSetup({
-    headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }
-  });
-});
 
 $('.set-status-JS').click(function(){ setStatus($(this).data("status")); return false; });
 
@@ -142,9 +154,9 @@ function setStatus(status) {
   });
 
   $(document).ajaxStop(function () {
-      location.reload();
+    location.reload();
   });
-}
+};
 
 $('#filebutton').click(function(e){
   e.preventDefault();
@@ -165,6 +177,7 @@ var KTDatatableDataLocalDemo = function() {
   var demo = function() {
 
     var dataJSONArray = <%= raw @shipments.to_json %>;
+    console.log(dataJSONArray);
 
     var datatable = $('.kt_datatable').KTDatatable({
       // datasource definition
@@ -281,7 +294,11 @@ var KTDatatableDataLocalDemo = function() {
         datatable.search($(this).val(), 'carrier_name');
       });
 
-      $('#kt_form_status,#kt_form_carrier').selectpicker();
+      $('#kt_form_synced_with_carrier').on('change', function() {
+        datatable.search( $(this).val(), 'synced_with_carrier');
+      });
+
+      $('#kt_form_status,#kt_form_carrier,#kt_form_synced_with_carrier').selectpicker();
 
       datatable.on(
         'kt-datatable--on-check kt-datatable--on-uncheck kt-datatable--on-layout-updated',

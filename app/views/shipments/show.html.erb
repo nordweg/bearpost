@@ -96,6 +96,10 @@ Envio #<%= @shipment.shipment_number %>
           <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
             <tbody>
               <tr>
+                <th>Status</th>
+                <td><%= t @shipment.status %></td>
+              </tr>
+              <tr>
                 <th>Número do pedido</th>
                 <td><%= @shipment.order_number %></td>
               </tr>
@@ -137,7 +141,7 @@ Envio #<%= @shipment.shipment_number %>
                 <th>Sincronizado com a transportadora</th>
                 <td>
                 <% if @shipment.sent_to_carrier %>
-                  Sim
+                  Sim <i class="la la-check-circle"></i>
                 <% else %>
                   <%= link_to "Enviar para a transportadora", send_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
                 <% end %>

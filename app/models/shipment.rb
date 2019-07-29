@@ -7,7 +7,7 @@ class Shipment < ApplicationRecord
 
   validates_uniqueness_of :shipment_number, scope: :company_id
 
-  scope :ready, -> { where(status: 'ready') }
+  scope :ready_to_ship, -> { where(status: 'ready', sent_to_carrier:false) }
 
   has_many    :packages
   has_many    :histories
@@ -54,5 +54,11 @@ class Shipment < ApplicationRecord
 
   def carrier
     "Carrier::#{carrier_name.titleize}".constantize rescue nil
+  end
+
+  def as_json(*)
+    super.except("updated_at","invoice_xml").tap do |hash|
+      hash["synced_with_carrier"] = sent_to_carrier ? 'true' : 'false'
+    end
   end
 end

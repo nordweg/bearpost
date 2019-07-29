@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
     current_user.company
   end
 
+  def available_carriers
+    Rails.configuration.carriers
+  end
+
   private
 
   def set_current_user

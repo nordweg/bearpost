@@ -1,0 +1,71 @@
+<% content_for :subheader_title do %>
+  Sincronização com a transportadora
+<% end %>
+
+<% content_for :subheader_toolbar do %>
+<div class="kt-subheader__toolbar">
+  <div class="kt-subheader__wrapper">
+    <ul class="nav nav-tabs nav-tabs-bold nav-tabs-line nav-tabs-line-brand m-0" role="tablist">
+      <% @results.each do |result_hash| %>
+      <li class="nav-item">
+        <a class="nav-link p-1" data-toggle="tab" href="#kt_portlet_tabs_<%= result_hash[:account].id %>_content" role="tab">
+          <%= result_hash[:account].name %>
+        </a>
+      </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<% end %>
+
+<div class="tab-content">
+<% @results.each do |result_hash| %>
+<div class="tab-pane" id="kt_portlet_tabs_<%= result_hash[:account].id %>_content" role="tabpanel">
+
+  <div class="kt-portlet">
+    <div class="kt-portlet__head">
+      <div class="kt-portlet__head-label">
+        <h3 class="kt-portlet__head-title">
+          <%= result_hash[:carrier].display_name %>
+        </h3>
+      </div>
+    </div>
+
+    <div class="kt-portlet__body">
+      <div class="kt-portlet__content">
+        <table class="table table-hover table-head-noborder">
+          <thead>
+            <tr>
+              <th>Envio</th>
+              <th>Enviado</th>
+              <th>Resposta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% result_hash[:sync_result].each do |result| %>
+            <tr>
+              <td><%= link_to "#{result[:shipment].shipment_number} - #{result[:shipment].recipient_full_name}", shipment_path(result[:shipment]), class: "kt-link" %> </td>
+              <td>
+                <% if result[:success] %>
+                <i class="la la-check-circle"></i>
+                <% else %>
+                <i class="la la-close text-danger"></i>
+                <% end %>
+              </td>
+              <td><%= result[:message] %></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<% end %>
+</div>
+
+<script>
+$('.nav-link').first().addClass('active');
+$('.tab-pane').first().addClass('active');
+</script>
