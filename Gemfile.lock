@@ -7,10 +7,10 @@ GIT
 
 GIT
   remote: https://github.com/nordweg/bearpost_correios.git
-  revision: fe373169b374af5673cf3b3e380e93cd08c6c963
+  revision: 41efbe049da983e2d4bea2e24dbf1aebceccdad8
   specs:
-    bearpost_correios (0.1.21)
-      rails (~> 5.1)
+    bearpost_correios (0.1.22)
+      rails (~> 5.2)
 
 GEM
   remote: https://rubygems.org/
