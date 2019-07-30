@@ -129,7 +129,7 @@ Envio #<%= @shipment.shipment_number %>
                   <% if @shipment.tracking_number.present? %>
                     <%= @shipment.tracking_number %>
                   <% else %>
-                    <%= link_to "Gerar rastreio", get_tracking_number_shipment_path, class: "kt-link" %>
+                    <%= link_to "Obter rastreio", get_tracking_number_shipment_path, class: "kt-link" %>
                   <% end %>
                 </td>
               </tr>
