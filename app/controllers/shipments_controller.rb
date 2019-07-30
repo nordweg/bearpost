@@ -90,10 +90,6 @@ class ShipmentsController < ApplicationController
   end
 
   def get_labels
-    if @shipment.requirements_missing.present?
-      flash[:error] = @shipment.requirements_missing.first
-      redirect_to @shipment and return
-    end
     require "barby/barcode/code_128"
     require "barby/outputter/png_outputter"
 
