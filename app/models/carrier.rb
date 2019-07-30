@@ -1,9 +1,5 @@
 class Carrier
   class << self
-    def shipment_menu_links
-      []
-    end
-
     def general_settings
       # Define an array of general settings for the carrier, eg.
       # ['username','password','posting_card_number']
@@ -48,6 +44,19 @@ class Carrier
       #   }
       # ]
       raise ::NotImplementedError, 'You must implement send_to_carrier method for this carrier.'
+    end
+
+    def get_tracking_number(shipment)
+      # This method should return a tracking number for the shipment, as a string.
+    end
+
+    def prepare_label(shipment)
+      # If any, all the hooks that are required before a label should be set here.
+      # This method is optional
+    end
+
+    def shipment_menu_links
+      []
     end
 
     def id
