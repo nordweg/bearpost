@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/nordweg/bearpost_correios.git
-  revision: 6dba550bfd8850ddb0b9a096cee43d6bb4775df7
+  revision: 00043ad4fda35c9372827bde3d02565ab3cd51aa
   specs:
     bearpost_correios (0.1.22)
       rails (~> 5.2)
