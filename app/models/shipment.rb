@@ -45,13 +45,6 @@ class Shipment < ApplicationRecord
     "#{recipient_first_name} #{recipient_last_name}"
   end
 
-  def requirements_missing
-    errors = []
-    errors << "Shipment: Carrier is required" if carrier_name.blank?
-    errors << "Shipment: Shipping method is required" if shipping_method.blank?
-    errors
-  end
-
   def carrier
     "Carrier::#{carrier_name.titleize}".constantize rescue nil
   end

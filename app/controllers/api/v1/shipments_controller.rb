@@ -48,15 +48,10 @@ module Api::V1
 
     def send_to_carrier
       shipment = get_shipment
-      if shipment.requirements_missing.present?
-        render json: shipment.requirements_missing
-      else
-        carrier  = get_carrier(shipment)
-        carrier.send_to_carrier(shipment)
-        shipment.sent_to_carrier = true
-        shipment.status = 'ready'
-        hande_save(shipment)
-      end
+      carrier  = get_carrier(shipment)
+      carrier.send_to_carrier(shipment)
+      shipment.sent_to_carrier = true
+      hande_save(shipment)
     end
 
     def set_as_shipped

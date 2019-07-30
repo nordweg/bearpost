@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/nordweg/bearpost_azul.git
-  revision: 0bd57bfc8a8ee4e1b8165eaf0ff3d0cf0ca0cd73
+  revision: fcd4db9feb7fb04e99a89fd14004220b1e084e85
   specs:
     bearpost_azul (0.1.1)
-      rails (~> 5.1)
+      rails (~> 5.2)
 
 GIT
   remote: https://github.com/nordweg/bearpost_correios.git
-  revision: 727b9e06135758e63d1b40e2c90fcf1b821407a8
+  revision: 6dba550bfd8850ddb0b9a096cee43d6bb4775df7
   specs:
     bearpost_correios (0.1.22)
       rails (~> 5.2)
