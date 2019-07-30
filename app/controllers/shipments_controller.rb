@@ -92,7 +92,7 @@ class ShipmentsController < ApplicationController
   def get_labels
     require "barby/barcode/code_128"
     require "barby/outputter/png_outputter"
-    @carrier.prepare_label(shipment)
+    @carrier.prepare_label(@shipment)
     respond_to do |format|
       format.html do
         render layout: 'pdf'
