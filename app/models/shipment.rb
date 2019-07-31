@@ -16,6 +16,7 @@ class Shipment < ApplicationRecord
   accepts_nested_attributes_for :packages
 
   after_create :create_package
+  before_save  :update_invoice_number
   after_update :save_history
 
   def save_history
@@ -28,6 +29,14 @@ class Shipment < ApplicationRecord
           description: "Status alterado de #{before} para #{after}",
           category:'status'
         )
+    end
+  end
+
+  def update_invoice_number
+    if changes.include?("invoice_xml")
+      doc = Nokogiri::XML(invoice_xml)
+      self.invoice_number = doc.at_css('nNF').content
+      self.invoice_series = doc.at_css('serie').content
     end
   end
 
