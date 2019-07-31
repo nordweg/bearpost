@@ -13,7 +13,7 @@ module Bearpost
 
     config.assets.paths << Rails.root.join("vendor", "assets", "general")
     config.assets.paths << Rails.root.join("vendor", "assets", "custom")
-    config.assets.paths << Rails.root.join("vendor", "assets", "keen")
+    config.assets.paths << Rails.root.join("app",    "assets", "keen")
     config.assets.paths << Rails.root.join("app",    "assets", "fonts")
 
     # Settings in config/environments/* take precedence over those specified here.
