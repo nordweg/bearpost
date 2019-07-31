@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     collection do
       get  '/',                    to: "shipments#index"
       post 'new',                  to: "shipments#new"
-      get  'send_to_carriers',     to: "shipments#send_to_carriers"
+      get  'sync_to_carriers',     to: "shipments#sync_to_carriers"
     end
     member do
       get  'get_tracking_number',  to: "shipments#get_tracking_number"

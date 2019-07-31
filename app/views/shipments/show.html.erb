@@ -10,25 +10,31 @@ Envio #<%= @shipment.shipment_number %>
 <% end %>
 
 <%= content_for :subheader_toolbar do %>
+
+<% if @carrier && @carrier.shipment_menu_links.present? %>
   <div class="btn-group">
     <button type="button" class="btn btn-pill btn-outline-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Opções
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-      <%= link_to "Marcar como enviado", set_as_shipped_shipment_path, class: "dropdown-item", method:'post' %>
-      <%= link_to 'Informações adicionais', "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
+      <%= link_to "Imprimir etiqueta", get_labels_shipment_path(format: :pdf), class: "dropdown-item", target:"_blank" %>
+      <%= link_to "Marcar como despachado", set_as_shipped_shipment_path, class: "dropdown-item", method:'post' %>
       <div class="dropdown-divider"></div>
+      <%= link_to 'Informações adicionais', "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
       <% @carrier.shipment_menu_links.each do |text, path| %>
-      <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
+        <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
       <% end %>
     </div>
   </div>
-
-  <%= link_to get_labels_shipment_path(format: :pdf), class: "btn btn-sm btn-secondary btn-label-brand", target:'_blank' do %>
-  <i class="la la-print"></i> Imprimir etiquetas
   <% end %>
 
-  <%= link_to "Editar", edit_shipment_path, class: "btn btn-sm btn-elevate btn-brand btn-elevate" %>
+  <%= link_to get_labels_shipment_path(@shipment, format: :pdf), class: "btn btn-sm btn-secondary btn-label-brand", target:'_blank' do %>
+    <i class="la la-print"></i> Imprimir etiquetas
+  <% end %>
+
+  <%= link_to edit_shipment_path(@shipment), class: "btn btn-sm btn-elevate btn-brand btn-elevate" do %>
+  Editar
+  <% end %>
 <% end %>
 
 <!-- Modal de Informações Adicionais-->
