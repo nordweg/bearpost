@@ -1,26 +1,10 @@
 <% content_for :subheader_title do %>
-  Sincronização com a transportadora
+  Pedidos pronto para envio enviados para as transportadoras
 <% end %>
 
-<% content_for :subheader_toolbar do %>
-<div class="kt-subheader__toolbar">
-  <div class="kt-subheader__wrapper">
-    <ul class="nav nav-tabs nav-tabs-bold nav-tabs-line nav-tabs-line-brand m-0" role="tablist">
-      <% @results.each do |result_hash| %>
-      <li class="nav-item">
-        <a class="nav-link p-1" data-toggle="tab" href="#kt_portlet_tabs_<%= result_hash[:account].id %>_content" role="tab">
-          <%= result_hash[:account].name %>
-        </a>
-      </li>
-      <% end %>
-    </ul>
-  </div>
-</div>
-<% end %>
 
-<div class="tab-content">
 <% @results.each do |result_hash| %>
-<div class="tab-pane" id="kt_portlet_tabs_<%= result_hash[:account].id %>_content" role="tabpanel">
+
 
   <div class="kt-portlet">
     <div class="kt-portlet__head">
@@ -29,6 +13,9 @@
           <%= result_hash[:carrier].display_name %>
         </h3>
       </div>
+      <div class="kt-portlet__head-toolbar">
+					<%= result_hash[:account].name %>
+			</div>
     </div>
 
     <div class="kt-portlet__body">
@@ -60,12 +47,4 @@
       </div>
     </div>
   </div>
-
-</div>
 <% end %>
-</div>
-
-<script>
-$('.nav-link').first().addClass('active');
-$('.tab-pane').first().addClass('active');
-</script>

@@ -112,7 +112,7 @@ class ShipmentsController < ApplicationController
     redirect_to @shipment
   end
 
-  def sync_to_carriers
+  def send_to_carriers
     results = []
     available_carriers.each do |carrier|
       current_company.accounts.each do |account|
