@@ -104,11 +104,16 @@ class ShipmentsController < ApplicationController
     end
   end
 
-  def send_to_carrier
+  def send_to_carrier # POST route for sending a single shipment to carrier
     raise Exception.new('Carrier not found') if @carrier.blank?
     sync_result = @carrier.send_to_carrier([@shipment])
     message = sync_result.first[:message]
     sync_result.first[:success] ? flash[:success] = message : flash[:error] = message
+    redirect_to @shipment
+  end
+
+  def set_as_shipped
+    @shipment.update(status:'shipped')
     redirect_to @shipment
   end
 
