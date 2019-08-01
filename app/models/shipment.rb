@@ -54,6 +54,10 @@ class Shipment < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  def tracking_url
+    carrier.tracking_url.gsub("{tracking}",tracking_number)
+  end
+
   def carrier
     "Carrier::#{carrier_name.titleize}".constantize rescue nil
   end
