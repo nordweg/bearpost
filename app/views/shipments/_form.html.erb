@@ -160,7 +160,7 @@
               <div class="col-lg-6">
                 <div class="form-group">
                   <%= form.label 'Transportadora' %>
-                  <%= form.select(:carrier_name, Rails.configuration.carriers.map{|carrier| [carrier.display_name, carrier.id]}, {}, class: 'form-control') %>
+                  <%= form.select(:carrier_id, carrier_selector, {}, class: 'form-control') %>
                 </div>
               </div>
             </div>
@@ -243,11 +243,11 @@
   update_shipping_method_field();
 
   $('#shipment_account_id').on('change', function() { update_shipping_method_field() });
-  $('#shipment_carrier_name').on('change', function() { update_shipping_method_field() });
+  $('#shipment_carrier_id').on('change', function() { update_shipping_method_field() });
 
   function update_shipping_method_field() {
     selected_account = $('#shipment_account_id option:selected').text();
-    selected_carrier = $('#shipment_carrier_name option:selected').text();
+    selected_carrier = $('#shipment_carrier_id option:selected').text();
     available_shipping_methods = <%= raw @available_shipping_methods.to_json %>;
     items = available_shipping_methods[selected_account][selected_carrier];
     $('#shipment_shipping_method').empty();

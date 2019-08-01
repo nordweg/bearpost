@@ -9,7 +9,7 @@ class CarriersController < ApplicationController
   end
   def send_to_carrier
     @carrier  = helpers.carrier_from_id(params[:id])
-    shipments = current_company.shipments.ready.where(carrier_name:@carrier.id)
+    shipments = current_company.shipments.ready.where(carrier_id:@carrier.id)
     begin
       shipments.each do |shipment|
         @carrier.send_to_carrier(shipment)
@@ -19,6 +19,6 @@ class CarriersController < ApplicationController
     rescue Exception => e
       flash[:error] = e.message
     end
-    redirect_to edit_carrier_path(@carrier.id)    
+    redirect_to edit_carrier_path(@carrier.id)
   end
 end

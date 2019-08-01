@@ -46,6 +46,10 @@ class Carrier
       raise ::NotImplementedError, 'You must implement send_to_carrier method for this carrier.'
     end
 
+    def shipments
+      Shipment.where(carrier_id:self.id)
+    end
+
     def get_tracking_number(shipment)
       # This method should return a tracking number for the shipment, as a string.
     end
@@ -64,7 +68,7 @@ class Carrier
     end
 
     def display_name
-      id.titleize
+      name.demodulize.titleize
     end
 
     def settings_field

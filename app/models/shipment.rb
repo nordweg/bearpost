@@ -59,7 +59,7 @@ class Shipment < ApplicationRecord
   end
 
   def carrier
-    "Carrier::#{carrier_name.titleize}".constantize rescue nil
+    "Carrier::#{carrier_id.titleize}".constantize rescue nil
   end
 
   def as_json(*)

@@ -16,4 +16,8 @@ module ApplicationHelper
       ['Cancelado','cancelled']
     ]
   end
+
+  def carrier_selector
+    Rails.configuration.carriers.map{|carrier| [carrier.display_name, carrier.id]}
+  end
 end
