@@ -1,7 +1,7 @@
 class ShipmentsController < ApplicationController
 
   before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number,
-     :get_labels, :ship, :send_to_carrier, :set_as_shipped]
+     :get_labels, :ship, :send_to_carrier, :set_as_shipped, :get_delivery_updates]
   # include ApplicationHelper
 
   def index
@@ -97,6 +97,16 @@ class ShipmentsController < ApplicationController
 
   def set_as_shipped
     @shipment.update(status:'shipped')
+    redirect_to @shipment
+  end
+
+  def get_delivery_updates
+    begin
+      @carrier.get_delivery_updates(@shipment)
+      flash[:success] = 'Histórico atualizado'
+    rescue Exception => e
+      flash[:error] = e.message
+    end
     redirect_to @shipment
   end
 

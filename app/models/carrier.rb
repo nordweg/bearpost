@@ -63,6 +63,10 @@ class Carrier
       []
     end
 
+    def get_delivery_updates(shipment)
+      raise Exception.new("Esta transportadora não está integrada para rastreamento de entrega.")
+    end
+
     def id
       name.demodulize.downcase
     end
