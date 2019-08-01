@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get  'get_labels',           to: "shipments#get_labels", format: :pdf
       post 'send_to_carrier',      to: "shipments#send_to_carrier"
       post 'set_as_shipped',       to: "shipments#set_as_shipped"
+      post 'get_delivery_updates',          to: "shipments#get_delivery_updates"
     end
   end
 

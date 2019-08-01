@@ -1,31 +1,34 @@
 <%
-  case history.category
-  when 'status'
-    icon_class = "flaticon-rotate kt-font-info"
-  when 'carrier'
-    icon_class = "flaticon2-box kt-font-brand"
-  when 'error'
-    icon_class = "flaticon-bell kt-font-danger"
-  end
+case history.category
+when 'status'
+  icon_class = "flaticon-rotate kt-font-info"
+when 'carrier'
+  icon_class = "flaticon2-box kt-font-brand"
+when 'error'
+  icon_class = "flaticon-bell kt-font-danger"
+end
 %>
 
-<!--Begin::Item -->
-  <div class="kt-timeline__item kt-timeline__item--brand">
-    <div class="kt-timeline__item-section">
-      <div class="kt-timeline__item-section-border">
-        <div class="kt-timeline__item-section-icon">
-          <i class="<%= icon_class %>"></i>
-        </div>
+
+<div class="kt-timeline__item kt-timeline__item--brand">
+  <div class="kt-timeline__item-section">
+    <div class="kt-timeline__item-section-border">
+      <div class="kt-timeline__item-section-icon">
+        <i class="<%= icon_class %>"></i>
       </div>
-      <span class="kt-timeline__item-datetime mr-3">
-        <%= history.created_at.strftime("%d/%m/%Y %H:%M") %>
-      </span>
     </div>
-    <p class="kt-timeline__item-text">
-        <%= history.description %>
-    </p>
-    <div class="kt-timeline__item-info">
-        Alterado por <%= history.user.try(:full_name) %>
-    </div>
+    <span class="kt-timeline__item-datetime mr-3">
+      <%= history.created_at.strftime("%d/%m/%Y %H:%M") %>
+    </span>
   </div>
-<!--End::Item -->
+  <span class="kt-timeline__item-text">
+    <%= history.description %>
+  </span>
+  <div class="kt-timeline__item-info">
+    <% if history.user %>
+    Alterado por <%= history.user.try(:full_name) %>
+    <% else %>
+    <%= history.changed_by %>
+    <% end %>
+  </div>
+</div>
