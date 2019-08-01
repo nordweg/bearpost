@@ -55,7 +55,7 @@ class Shipment < ApplicationRecord
   end
 
   def tracking_url
-    carrier.tracking_url.gsub("{tracking}",tracking_number)
+    carrier.tracking_url.gsub("{tracking}","#{tracking_number}")
   end
 
   def carrier
