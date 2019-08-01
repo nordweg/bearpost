@@ -26,7 +26,7 @@
             <td><%= link_to shipment.shipment_number, shipment, class: "kt-link" %></td>
             <td><%= shipment.order_number %></td>
             <td><%= shipment.carrier_name.try(:capitalize) %></td>
-            <td><%= shipment.recipient_full_name %></td>
+            <td><%= shipment.full_name %></td>
             <td class="shipment-status" data-id="<%= shipment.id %>" id="<%= shipment.id %>"><i class="la la-ellipsis-h mr-2"></i> <span></span></td>
           </tr>
           <% end %>

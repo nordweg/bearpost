@@ -31,7 +31,7 @@
           <tbody>
             <% result_hash[:sync_result].each do |result| %>
             <tr>
-              <td><%= link_to "#{result[:shipment].shipment_number} - #{result[:shipment].recipient_full_name}", shipment_path(result[:shipment]), class: "kt-link" %> </td>
+              <td><%= link_to "#{result[:shipment].shipment_number} - #{result[:shipment].full_name}", shipment_path(result[:shipment]), class: "kt-link" %> </td>
               <td>
                 <% if result[:success] %>
                 <i class="la la-check-circle"></i>

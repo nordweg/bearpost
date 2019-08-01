@@ -227,16 +227,16 @@ var KTDatatableDataLocalDemo = function() {
           title: 'Transportadora',
           class: 'text-capitalize'
         }, {
-          field: 'recipient_last_name',
+          field: 'last_name',
           title: 'Nome',
           template: function(row) {
-            return row.recipient_first_name + ' ' + row.recipient_last_name;
+            return row.first_name + ' ' + row.last_name;
           },
         }, {
-          field: 'recipient_city',
+          field: 'city',
           title: 'Cidade',
           template: function(row) {
-            return row.recipient_city + ' - ' + row.recipient_state;
+            return row.city + ' - ' + row.state;
           },
         }, {
           field: 'created_at',
