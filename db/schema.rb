@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_31_175007) do
+ActiveRecord::Schema.define(version: 2019_08_01_142043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 2019_07_31_175007) do
     t.string "shipment_number"
     t.string "order_number"
     t.float "cost"
-    t.string "carrier_name"
+    t.string "carrier_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "invoice_series"

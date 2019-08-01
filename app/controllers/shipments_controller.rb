@@ -104,7 +104,7 @@ class ShipmentsController < ApplicationController
     results = []
     available_carriers.each do |carrier|
       current_company.accounts.each do |account|
-        shipments = Shipment.ready_to_ship.where(carrier_name: carrier.id, account_id: account.id)
+        shipments = Shipment.ready_to_ship.where(carrier_id: carrier.id, account_id: account.id)
         carrier_hash = {
           account: account,
           carrier: carrier,
@@ -165,7 +165,7 @@ class ShipmentsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_shipment
     @shipment = Shipment.find(params[:id])
-    @carrier  = helpers.carrier_from_id(@shipment.carrier_name) rescue nil
+    @carrier  = helpers.carrier_from_id(@shipment.carrier_id) rescue nil
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

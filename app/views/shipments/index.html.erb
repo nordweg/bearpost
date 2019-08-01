@@ -223,7 +223,7 @@ var KTDatatableDataLocalDemo = function() {
           field: 'order_number',
           title: 'Pedido',
         }, {
-          field: 'carrier_name',
+          field: 'carrier_id',
           title: 'Transportadora',
           class: 'text-capitalize'
         }, {
@@ -291,7 +291,7 @@ var KTDatatableDataLocalDemo = function() {
       });
 
       $('#kt_form_carrier').on('change', function() {
-        datatable.search($(this).val(), 'carrier_name');
+        datatable.search($(this).val(), 'carrier_id');
       });
 
       $('#kt_form_synced_with_carrier').on('change', function() {
