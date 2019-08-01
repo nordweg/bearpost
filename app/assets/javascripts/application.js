@@ -40,4 +40,6 @@
 // Keen Global Theme Bundle (used by all pages)
 //= require keen/scripts.bundle.js
 
+//= require clipboard.min.js
+
 //= require_tree .
