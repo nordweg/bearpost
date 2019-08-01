@@ -50,8 +50,8 @@ class Shipment < ApplicationRecord
     shipped_at.present?
   end
 
-  def recipient_full_name
-    "#{recipient_first_name} #{recipient_last_name}"
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
   def carrier

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725125133) do
+ActiveRecord::Schema.define(version: 2019_07_31_175007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,34 +80,7 @@ ActiveRecord::Schema.define(version: 20190725125133) do
     t.datetime "updated_at", null: false
     t.integer "invoice_series"
     t.integer "invoice_number"
-    t.string "sender_first_name"
-    t.string "sender_last_name"
-    t.string "sender_email"
-    t.string "sender_phone"
-    t.string "sender_cpf"
-    t.string "sender_street"
-    t.string "sender_number"
-    t.string "sender_complement"
-    t.string "sender_neighborhood"
-    t.string "sender_zip"
-    t.string "sender_city"
-    t.string "sender_city_code"
-    t.string "sender_state"
-    t.string "recipient_first_name"
-    t.string "recipient_last_name"
-    t.string "recipient_email"
-    t.string "recipient_phone"
-    t.string "recipient_cpf"
-    t.string "recipient_street"
-    t.string "recipient_number"
-    t.string "recipient_complement"
-    t.string "recipient_neighborhood"
-    t.string "recipient_zip"
-    t.string "recipient_city"
-    t.string "recipient_city_code"
-    t.string "recipient_state"
-    t.string "sender_country"
-    t.string "recipient_country"
+    t.string "country"
     t.integer "account_id"
     t.string "shipping_method"
     t.string "tracking_number"
@@ -115,6 +88,19 @@ ActiveRecord::Schema.define(version: 20190725125133) do
     t.xml "invoice_xml"
     t.integer "company_id"
     t.boolean "sent_to_carrier", default: false
+    t.string "state"
+    t.string "city_code"
+    t.string "city"
+    t.string "zip"
+    t.string "neighborhood"
+    t.string "complement"
+    t.string "number"
+    t.string "street"
+    t.string "cpf"
+    t.string "phone"
+    t.string "email"
+    t.string "last_name"
+    t.string "first_name"
   end
 
   create_table "shipping_methods", force: :cascade do |t|
