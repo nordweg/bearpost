@@ -86,8 +86,9 @@ module Api::V1
 
     def shipment_params
       if params[:shipment][:account]
-        params[:shipment][:account] = current_company.accounts.find_by(name:params[:shipment][:account])
+        params[:shipment][:account] = Account.find_by(name:params[:shipment][:account])
       end
+      params[:shipment][:carrier_id] = params[:shipment][:carrier].downcase
       params.require(:shipment).permit!
     end
 
