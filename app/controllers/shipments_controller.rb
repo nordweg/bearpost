@@ -17,33 +17,6 @@ class ShipmentsController < ApplicationController
     @available_shipping_methods = get_shipping_methods
   end
 
-  def get_info_from_xml
-    hash = {}
-    doc = Nokogiri::XML(params[:invoice_xml]["invoice_xml"].read)
-    name = doc.at_css('dest xNome').content
-    first_name = name.split(" ").first
-    last_name  = name.gsub(first_name, "").strip
-    hash[:first_name] = first_name
-    hash[:last_name] = last_name
-    hash[:email] = doc.at_css('dest email').try(:content)
-    hash[:phone] = doc.at_css('dest fone').try(:content)
-    hash[:cpf] = doc.at_css('dest CPF').try(:content)
-    hash[:street] = doc.at_css('dest xLgr').try(:content)
-    hash[:number] = doc.at_css('dest nro').try(:content)
-    hash[:complement] = doc.at_css('dest xCpl').try(:content)
-    hash[:neighborhood] = doc.at_css('dest xBairro').try(:content)
-    hash[:zip] = doc.at_css('dest CEP').try(:content)
-    hash[:city] = doc.at_css('dest xMun').try(:content)
-    hash[:city_code] = doc.at_css('dest cMun').try(:content)
-    hash[:state] = doc.at_css('dest UF').try(:content)
-    hash[:country] = doc.at_css('dest xPais').try(:content)
-    hash[:invoice_series] = doc.at_css('serie').try(:content)
-    hash[:invoice_number] = doc.at_css('nNF').try(:content)
-    hash[:cost] = doc.at_css('vNF').try(:content)
-    hash[:invoice_xml] = doc.inner_html.strip
-    hash
-  end
-
   # GET /shipments/1/edit
   def edit
     @available_shipping_methods = get_shipping_methods
@@ -87,14 +60,6 @@ class ShipmentsController < ApplicationController
     end
   end
 
-  def send_to_carrier # POST route for sending a single shipment to carrier
-    raise Exception.new('Carrier not found') if @carrier.blank?
-    sync_result = @carrier.send_to_carrier([@shipment])
-    message = sync_result.first[:message]
-    sync_result.first[:success] ? flash[:success] = message : flash[:error] = message
-    redirect_to @shipment
-  end
-
   def set_as_shipped
     @shipment.update(status:'shipped')
     redirect_to @shipment
@@ -128,6 +93,14 @@ class ShipmentsController < ApplicationController
       format.html
       format.json { render json: @results.to_json }
     end
+  end
+
+  def send_to_carrier # POST route for sending a single shipment to carrier
+    raise Exception.new('Carrier not found') if @carrier.blank?
+    sync_result = @carrier.send_to_carrier([@shipment])
+    message = sync_result.first[:message]
+    sync_result.first[:success] ? flash[:success] = message : flash[:error] = message
+    redirect_to @shipment
   end
 
   def create
@@ -172,6 +145,34 @@ class ShipmentsController < ApplicationController
   end
 
   private
+
+  def get_info_from_xml
+    hash = {}
+    doc = Nokogiri::XML(params[:invoice_xml]["invoice_xml"].read)
+    name = doc.at_css('dest xNome').content
+    first_name = name.split(" ").first
+    last_name  = name.gsub(first_name, "").strip
+    hash[:first_name] = first_name
+    hash[:last_name] = last_name
+    hash[:email] = doc.at_css('dest email').try(:content)
+    hash[:phone] = doc.at_css('dest fone').try(:content)
+    hash[:cpf] = doc.at_css('dest CPF').try(:content)
+    hash[:street] = doc.at_css('dest xLgr').try(:content)
+    hash[:number] = doc.at_css('dest nro').try(:content)
+    hash[:complement] = doc.at_css('dest xCpl').try(:content)
+    hash[:neighborhood] = doc.at_css('dest xBairro').try(:content)
+    hash[:zip] = doc.at_css('dest CEP').try(:content)
+    hash[:city] = doc.at_css('dest xMun').try(:content)
+    hash[:city_code] = doc.at_css('dest cMun').try(:content)
+    hash[:state] = doc.at_css('dest UF').try(:content)
+    hash[:country] = doc.at_css('dest xPais').try(:content)
+    hash[:invoice_series] = doc.at_css('serie').try(:content)
+    hash[:invoice_number] = doc.at_css('nNF').try(:content)
+    hash[:cost] = doc.at_css('vNF').try(:content)
+    hash[:invoice_xml] = doc.inner_html.strip
+    hash
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_shipment
     @shipment = Shipment.find(params[:id])
