@@ -8,6 +8,7 @@ class Shipment < ApplicationRecord
   validates_uniqueness_of :shipment_number, scope: :company_id
 
   scope :ready_to_ship, -> { where(status: 'ready', sent_to_carrier:false) }
+  scope :shipped,       -> { where(status: 'shipped' }
 
   has_many    :packages
   has_many    :histories
