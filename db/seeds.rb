@@ -7,6 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 company = Company.create(name:"Test")
 user    = company.users.new
-user.email    = "test@change.me"
-user.password = "123456"
+user.email    = "test@test.com"
+user.password = "password"
 user.save
+account = company.accounts.create(name:"Conta1")

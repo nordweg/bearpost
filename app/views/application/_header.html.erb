@@ -286,13 +286,13 @@
             </div>
             <div class="kt-user-card__details">
               <div class="kt-user-card__name"><%= current_user.full_name %></div>
-              <div class="kt-user-card__position"><%= current_user.company.name %></div>
+              <div class="kt-user-card__position"><%= current_user.company.try(:name) %></div>
             </div>
           </div>
         </div>
         <ul class="kt-nav kt-margin-b-10">
           <li class="kt-nav__item">
-            <%= link_to user_path(current_user), class: "kt-nav__link" do %>
+            <%= link_to current_user, class: "kt-nav__link" do %>
             <span class="kt-nav__link-icon"><i class="flaticon2-calendar-3"></i></span>
             <span class="kt-nav__link-text">Minha conta</span>
             <% end %>
