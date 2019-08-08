@@ -1,5 +1,5 @@
 class SettingsController < ApplicationController
   def index
-    @accounts = current_company.accounts
+    @accounts = Account.all
   end
 end
