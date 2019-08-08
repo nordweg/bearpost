@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   post 'accounts/:id/update_carrier_settings',       to: "accounts#update_carrier_settings"
 
   devise_for :users
-  resources :users, only: [:show,:edit,:update]
+  resources :users
   resources :accounts
   resources :packages
   resources :companies

@@ -83,6 +83,19 @@ ActiveRecord::Schema.define(version: 2019_08_01_162959) do
     t.datetime "updated_at", null: false
     t.integer "invoice_series"
     t.integer "invoice_number"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.string "phone"
+    t.string "cpf"
+    t.string "street"
+    t.string "number"
+    t.string "complement"
+    t.string "neighborhood"
+    t.string "zip"
+    t.string "city"
+    t.string "city_code"
+    t.string "state"
     t.string "country"
     t.integer "account_id"
     t.string "shipping_method"
@@ -91,25 +104,6 @@ ActiveRecord::Schema.define(version: 2019_08_01_162959) do
     t.xml "invoice_xml"
     t.integer "company_id"
     t.boolean "sent_to_carrier", default: false
-    t.string "state"
-    t.string "city_code"
-    t.string "city"
-    t.string "zip"
-    t.string "neighborhood"
-    t.string "complement"
-    t.string "number"
-    t.string "street"
-    t.string "cpf"
-    t.string "phone"
-    t.string "email"
-    t.string "last_name"
-    t.string "first_name"
-  end
-
-  create_table "shipping_methods", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
