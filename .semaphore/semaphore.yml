@@ -6,7 +6,7 @@ agent:
     os_image: ubuntu1804
 
 blocks:
-    - name: Setup
+  - name: "Build"
     task:
       env_vars:
         - name: APP_ENV
