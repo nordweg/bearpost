@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/nordweg/bearpost_azul.git
-  revision: b8969a95867c51b9792b89b923a2b646b34838f7
+  revision: 3b9a0b1f52d22793b4c8f81b75f1ba671e0a87e4
   specs:
     bearpost_azul (0.1.2)
       rails (~> 5.2)
@@ -141,7 +141,7 @@ GEM
     multi_json (1.13.1)
     multipart-post (2.1.1)
     nio4r (2.4.0)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
     orm_adapter (0.5.0)
