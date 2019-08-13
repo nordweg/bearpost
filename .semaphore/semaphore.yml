@@ -14,20 +14,13 @@ blocks:
       jobs:
         - name: bundle
           commands:
-          # Checkout code from Git repository. This step is mandatory if the
-          # job is to work with your code.
-          # Optionally you may use --use-cache flag to avoid roundtrip to
-          # remote repository.
-          # See https://docs.semaphoreci.com/article/54-toolbox-reference#checkout
           - checkout
           # Restore dependencies from cache.
           # Read about caching: https://docs.semaphoreci.com/article/54-toolbox-reference#cache
           - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH-,gems-master-
           # Set Ruby version:
-          - sem-version ruby 2.6.0
-          - bundle install --deployment -j 4 --path vendor/bundle
-          # Store the latest version of dependencies in cache,
-          # to be used in next blocks and future workflows:
+          - sem-version ruby 2.5.1
+          - bundle install
           - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) vendor/bundle
           - ls -1
           - echo $APP_ENV
@@ -42,10 +35,10 @@ blocks:
         commands:
           - checkout
           - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH-,gems-master-
+          - sem-version ruby 2.5.1
           # Start Postgres database service.
           # See https://docs.semaphoreci.com/article/54-toolbox-reference#sem-service
           - sem-service start postgres
-          - sem-version ruby 2.6.0
           - bundle install
           - bundle exec rake db:setup
       jobs:
