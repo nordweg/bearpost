@@ -15,6 +15,7 @@ blocks:
         - name: bundle
           commands:
           - checkout
+          - sem-service start postgres 11
           - bundle install
           - bundle exec rake db:setup
           - bundle exec rake db:test:prepare
