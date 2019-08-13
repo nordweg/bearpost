@@ -6,7 +6,7 @@ agent:
     os_image: ubuntu1804
 
 blocks:
-  - name: "Build"
+  - name: "Setup"
     task:
       env_vars:
         - name: APP_ENV
@@ -15,14 +15,20 @@ blocks:
         - name: bundle
           commands:
           - checkout
-          - sem-service start postgres 11
+          - cache restore
           - bundle install
-          - bundle exec rake db:setup
-          - bundle exec rake db:test:prepare
-
+          - cache store
 
   - name: Tests
     task:
+      prologue:
+        commands:
+          - checkout
+          - cache restore
+          - bundle install
+          - sem-service start postgres 11
+          - bundle exec rake db:setup
+          - bundle exec rake db:test:prepare
       jobs:
       - name: RSpec
         commands:
