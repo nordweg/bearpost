@@ -15,16 +15,17 @@ blocks:
         - name: bundle
           commands:
           - checkout
-          - cache restore
+          - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock)
           - bundle install
           - cache store
+          - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) vendor/bundle
 
   - name: Tests
     task:
       prologue:
         commands:
           - checkout
-          - cache restore
+          - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock)
           - bundle install
           - sem-service start postgres 11
           - bundle exec rake db:setup
