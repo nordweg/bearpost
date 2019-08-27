@@ -28,9 +28,20 @@ class Shipment < ApplicationRecord
         histories.create(
           user: Current.user,
           description: "Status alterado de #{before} para #{after}",
-          category:'status'
+          category:'status',
+          date: DateTime.now,
         )
     end
+  end
+
+  def sent_to_carrier!
+    update(sent_to_carrier:true)
+    histories.create(
+      user: Current.user,
+      description: "Pedido enviado para a transportadora #{carrier.display_name}",
+      category:'status',
+      date: DateTime.now,
+    )
   end
 
   def update_invoice_number
