@@ -13,7 +13,7 @@ class CarriersController < ApplicationController
     begin
       shipments.each do |shipment|
         @carrier.send_to_carrier(shipment)
-        shipment.update(sent_to_carrier:true)
+        shipment.sent_to_carrier!
       end
       flash[:success] = 'Todos pedidos foram sincronizados'
     rescue Exception => e

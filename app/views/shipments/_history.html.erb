@@ -24,9 +24,9 @@ end
   <span class="kt-timeline__item-text">
     <%= history.description %>
   </span>
-  <div class="kt-timeline__item-info">
+  <div class="kt-timeline__item-info"><i class="la la-user"></i>
     <% if history.user %>
-    Alterado por <%= history.user.try(:full_name) %>
+    <%= history.user.try(:full_name) %>
     <% else %>
     <%= history.changed_by %>
     <% end %>
