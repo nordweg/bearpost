@@ -122,8 +122,9 @@
                 <th>Link de rastreio</th>
                 <td>
                   <% if @shipment.tracking_number.present? %>
-                    <%= link_to "Clique aqui", @shipment.tracking_url, class: "kt-link", id:"tracking-url", target: "_blank" %>
-                    <button type="button" class="btn-light btn-circle p-0 ml-1 clipboard-btn"><i class="la la-copy"></i></button>
+                  <%= link_to "Clique aqui", @shipment.tracking_url, class: "kt-link", id:"tracking-url", target: "_blank" %>
+                  <button type="button" class="btn-light btn-circle p-0 ml-1 clipboard-btn"><i class="la la-copy"></i></button>
+                  <% end %>
                 </td>
               </tr>
               <tr>
