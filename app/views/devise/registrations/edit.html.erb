@@ -1,3 +1,8 @@
+<style>
+  .new-password {
+    display: none;
+  }
+</style>
 <div class="kt-login-v2__title">
   <h3>Editando usuário</h3>
 </div>
@@ -6,38 +11,36 @@
   <%= render "devise/shared/error_messages", resource: resource %>
 
   <div class="form-group">
-    <%= f.email_field :email, autofocus: true, placeholder: "email", autocomplete: "email", class: "form-control" %>
+    <%= f.email_field :email, autofocus: true, placeholder: "Email", autocomplete: "email", class: "form-control" %>
   </div>
 
+  <div class="form-group new-password">
+    <%= f.password_field :password, placeholder: "Nova senha", autocomplete: "new-password", class: "form-control" %>
+  </div>
 
-
-    <!-- <div class="form-group">
-      <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-      <%= f.password_field :password, placeholder: "Nova senha", autocomplete: "new-password", class: "form-control" %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :password_confirmation %><br />
-      <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-    </div> -->
-
-  <div class="form-group">
-    <%= f.text_field :first_name, autofocus: true, placeholder: "Nome", autocomplete: "first_name", class: "form-control" %>
+  <div class="form-group new-password">
+    <%= f.password_field :password_confirmation, placeholder: "Confirmar nova senha", autocomplete: "new-password", class: "form-control" %>
   </div>
 
   <div class="form-group">
-    <%= f.text_field :last_name, autofocus: true, placeholder: "Sobrenome", autocomplete: "last_name", class: "form-control" %>
+    <%= f.password_field :current_password, placeholder: "Senha atual", autocomplete: "current-password", class: "form-control" %>
+    <i>(Precisamos de sua senha para confirmar as alterações)</i>
   </div>
 
-  <div class="form-group">
-    <%= f.password_field :current_password, placeholder: "Senha", autocomplete: "current-password", class: "form-control" %>
-    <i>(Precisamos de sua senha para confirmar as mudanças)</i>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Atualizar" %>
+  <div class="kt-login-v2__actions">
+    <a href="javascript:;" class="kt-link kt-link--brand" onclick='toggleNewPassword()'>
+      Alterar senha?
+    </a>
+    <%= f.submit "Atualizar", class:"btn btn-brand btn-elevate btn-pill" %>
   </div>
 
 
 
 <% end %>
+
+<script>
+function toggleNewPassword()
+{
+  $('.new-password').slideToggle();
+}
+</script>
