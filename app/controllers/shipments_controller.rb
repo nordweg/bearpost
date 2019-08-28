@@ -5,7 +5,7 @@ class ShipmentsController < ApplicationController
   # include ApplicationHelper
 
   def index
-    @shipments = current_user.shipments
+    @shipments = current_user.shipments.order(created_at: :desc)
   end
 
   def show
