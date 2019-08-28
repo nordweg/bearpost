@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/nordweg/bearpost_correios.git
-  revision: 4a63a132091221ac9f90c6a3b1a06ec356def659
+  revision: 94b31c2b9573e04a58e47fce1385ce440f76cbd5
   specs:
     bearpost_correios (0.1.22)
       rails (~> 5.2)
@@ -138,7 +138,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.11.3)
     multipart-post (2.1.1)
-    nio4r (2.4.0)
+    nio4r (2.5.0)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
