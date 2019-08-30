@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get  'accounts/:id/:carrier_id/edit',              to: "accounts#edit_carrier"
   post 'accounts/:id/update_carrier_settings',       to: "accounts#update_carrier_settings"
 
+  get  'track/:shipment_number',                     to: "tracking#show"
+
   devise_for :users
   resources :users
   resources :accounts
