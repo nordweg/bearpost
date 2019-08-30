@@ -17,7 +17,6 @@
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
       <%= link_to "Marcar como enviado", set_as_shipped_shipment_path, class: "dropdown-item", method:'post' %>
       <%= link_to "Informações adicionais", "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
-      <%= link_to "Checar atualizações de entrega", get_delivery_updates_shipment_path, class: "dropdown-item", method:'post' %>
       <div class="dropdown-divider"></div>
       <% @carrier.shipment_menu_links.each do |text, path| %>
       <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
@@ -235,11 +234,11 @@
           <div class="kt-portlet__head">
             <div class="kt-portlet__head-label">
               <h3 class="kt-portlet__head-title">
-                <i class="la la-cube"></i> Pacote <%= @shipment.packages.index(package) + 1 %>/<%= total_shipments %>
+                </i> Pacote <%= @shipment.packages.index(package) + 1 %>
               </h3>
             </div>
             <div class="kt-portlet__head-toolbar">
-              <%= link_to "Editar", edit_package_path(package), class: "float-right" %>
+              <%= link_to "Editar", edit_package_path(package), class: "float-right kt-link" %>
             </div>
           </div>
           <div class="kt-portlet__body">
@@ -267,11 +266,16 @@
             Histórico
           </h3>
         </div>
+        <div class="kt-portlet__head-toolbar">
+          <%= link_to get_delivery_updates_shipment_path, class: "btn btn-sm btn-outline-brand btn-elevate btn-circle btn-icon", method:'post' do %>
+            <i class="la la-refresh"></i>
+          <% end %>
+        </div>
       </div>
       <div class="kt-portlet__body">
         <!--Begin::Timeline -->
         <div class="kt-timeline">
-          <% @shipment.histories.each do |history| %>
+          <% @shipment.histories.recent_first.each do |history| %>
             <%= render 'history', history: history %>
           <% end %>
         </div>

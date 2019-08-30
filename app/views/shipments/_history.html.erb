@@ -1,16 +1,15 @@
 <%
 case history.category
 when 'status'
-  icon_class = "flaticon-rotate kt-font-info"
+  icon_class = "flaticon-rotate kt-font-warning"
+  event_type = "kt-timeline__item kt-timeline__item--warning"
 when 'carrier'
-  icon_class = "flaticon2-box kt-font-brand"
-when 'error'
-  icon_class = "flaticon-bell kt-font-danger"
+  icon_class = "flaticon-paper-plane-1 kt-font-brand"
+  event_type = "kt-timeline__item kt-timeline__item--brand"
 end
 %>
 
-
-<div class="kt-timeline__item kt-timeline__item--brand">
+<div class="<%= event_type %>">
   <div class="kt-timeline__item-section">
     <div class="kt-timeline__item-section-border">
       <div class="kt-timeline__item-section-icon">
@@ -18,13 +17,14 @@ end
       </div>
     </div>
     <span class="kt-timeline__item-datetime mr-3">
-      <%= history.created_at.strftime("%d/%m/%Y %H:%M") %>
+      <%= history.date.strftime("%d/%m/%Y %H:%M") if history.date %>
     </span>
   </div>
   <span class="kt-timeline__item-text">
     <%= history.description %>
   </span>
   <div class="kt-timeline__item-info"><i class="la la-user"></i>
+    Atualizado por
     <% if history.user %>
     <%= history.user.try(:full_name) %>
     <% else %>
