@@ -19,6 +19,16 @@ class Shipment < ApplicationRecord
   after_create :create_package
   before_save  :update_invoice_number
   after_update :save_history
+  after_create :first_history
+
+  def first_history
+    histories.create(
+      user: Current.user,
+      description: "Pedido criado",
+      category:'status',
+      date: DateTime.now,
+    )
+  end
 
   def save_history
     if saved_changes.include?("status")
