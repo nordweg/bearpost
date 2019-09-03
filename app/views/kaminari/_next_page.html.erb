@@ -1,0 +1,7 @@
+<li>
+  <% unless current_page.last? %>
+    <%= link_to url, rel: 'next', remote: remote, class: 'kt-datatable__pager-link kt-datatable__pager-link--next' do %>
+      <i class="flaticon2-next"></i>
+    <% end %>
+  <% end %>
+</li>
