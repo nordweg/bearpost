@@ -160,7 +160,7 @@ pt-BR:
       one_page:
         display_entries: "%{count} %{entry_name}"
       more_pages:
-        display_entries: "%{entry_name} %{first} - %{last} de %{total}"
+        display_entries: "%{first} - %{last} de %{total}"
     select:
       prompt: Por favor selecione
     submit:
