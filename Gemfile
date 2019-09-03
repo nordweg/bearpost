@@ -47,6 +47,7 @@ gem 'barby', require: %w(barby barby/barcode/code_128 barby/outputter/png_output
 gem 'devise'
 gem 'active_model_serializers'
 gem 'awesome_print', :require => 'ap' # Print with indentation on rails console
+gem 'kaminari'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw] # Call 'byebug' anywhere in the code to stop execution and get a debugger console

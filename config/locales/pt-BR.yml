@@ -1,5 +1,12 @@
 ---
 pt-BR:
+  views:
+    pagination:
+      first: "&laquo; Primeiro"
+      last: "Último &raquo;"
+      previous: "&lsaquo; Anterior"
+      next: "Próximo &rsaquo;"
+      truncate: "&hellip;"
   pending: Pendente
   shipped: Enviado
   ready: Pronto para envio
@@ -149,6 +156,11 @@ pt-BR:
         one: 'Não foi possível gravar %{model}: 1 erro'
         other: 'Não foi possível gravar %{model}: %{count} erros'
   helpers:
+    page_entries_info:
+      one_page:
+        display_entries: "%{count} %{entry_name}"
+      more_pages:
+        display_entries: "%{entry_name} %{first} - %{last} de %{total}"
     select:
       prompt: Por favor selecione
     submit:

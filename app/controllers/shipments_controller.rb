@@ -5,7 +5,25 @@ class ShipmentsController < ApplicationController
   # include ApplicationHelper
 
   def index
-    @shipments = current_user.shipments.order(created_at: :desc)
+    if params[:search].present?
+      @shipments = Shipment.where(
+        "CONCAT(first_name, ' ' ,last_name) ILIKE :search
+        OR regexp_replace(cpf, '\\D', '', 'g') ILIKE regexp_replace(:search, '\\D', '', 'g')
+        OR order_number ILIKE :search
+        OR city ILIKE :search",
+        search: "%#{params[:search]}%"
+      )
+    else
+      @shipments = Shipment.all
+    end
+    @shipments = @shipments.where(status:params[:status]) if params[:status].present?
+    @shipments = @shipments.where(carrier_id:params[:carrier]) if params[:carrier].present?
+    if params[:date_range].present?
+      start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
+      end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day
+      @shipments = @shipments.where("created_at > ? AND created_at < ?", start_date, end_date)
+    end
+    @shipments = @shipments.order(created_at: :desc).page(params[:page])
   end
 
   def show

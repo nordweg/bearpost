@@ -1,0 +1,9 @@
+<% if page.current? %>
+  <li>
+    <%= content_tag :a, page, data: { remote: remote }, rel: page.rel, class: 'kt-datatable__pager-link kt-datatable__pager-link-number kt-datatable__pager-link--active' %>
+  </li>
+<% else %>
+  <li>
+    <%= link_to page, url, remote: remote, rel: page.rel, class: 'kt-datatable__pager-link kt-datatable__pager-link-number' %>
+  </li>
+<% end %>
