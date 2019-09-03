@@ -1,0 +1,962 @@
+/*
+  Flaticon icon font: Flaticon
+  Creation date: 20/03/2017 20:02
+  */
+@font-face {
+  font-family: "Flaticon2";
+  src: url(/assets/flaticon2/font/Flaticon2-c04e668713de92817a99a3454e834d7f4d4071ad69a4b51e9eb455a9769aa946.eot);
+  src: url(/assets/flaticon2/font/Flaticon2-c04e668713de92817a99a3454e834d7f4d4071ad69a4b51e9eb455a9769aa946.eot?#iefix) format("embedded-opentype"), url(/assets/flaticon2/font/Flaticon2-edc19a461d9c98786dbe3dc737f32b25a123dbe86b709367ccebfb57945a4540.woff) format("woff"), url(/assets/flaticon2/font/Flaticon2-cb4028a85826b66e779d82dc94599e1fef1c98c23da8af03c1d550662a00b822.ttf) format("truetype"), url(/assets/flaticon2/font/Flaticon2-e458f2a56b1a759c5adc5b35428d0c220819fe631cc8fdcf0dbebfb9716d8669.svg#Flaticon2) format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  @font-face {
+    font-family: "Flaticon2";
+    src: url(/assets/flaticon2/font/Flaticon2-e458f2a56b1a759c5adc5b35428d0c220819fe631cc8fdcf0dbebfb9716d8669.svg#Flaticon2) format("svg");
+  }
+}
+/* line 25, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+[class^="flaticon2-"]:before,
+[class*=" flaticon2-"]:before {
+  font-family: Flaticon2;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+/* line 40, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-notification:before {
+  content: "\f100";
+}
+
+/* line 41, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-settings:before {
+  content: "\f101";
+}
+
+/* line 42, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-search:before {
+  content: "\f102";
+}
+
+/* line 43, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-delete:before {
+  content: "\f103";
+}
+
+/* line 44, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-psd:before {
+  content: "\f104";
+}
+
+/* line 45, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-list:before {
+  content: "\f105";
+}
+
+/* line 46, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-box:before {
+  content: "\f106";
+}
+
+/* line 47, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-download:before {
+  content: "\f107";
+}
+
+/* line 48, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-shield:before {
+  content: "\f108";
+}
+
+/* line 49, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-paperplane:before {
+  content: "\f109";
+}
+
+/* line 50, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-avatar:before {
+  content: "\f10a";
+}
+
+/* line 51, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-bell:before {
+  content: "\f10b";
+}
+
+/* line 52, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-fax:before {
+  content: "\f10c";
+}
+
+/* line 53, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-chart2:before {
+  content: "\f10d";
+}
+
+/* line 54, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-supermarket:before {
+  content: "\f10e";
+}
+
+/* line 55, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-phone:before {
+  content: "\f10f";
+}
+
+/* line 56, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-envelope:before {
+  content: "\f110";
+}
+
+/* line 57, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-pin:before {
+  content: "\f111";
+}
+
+/* line 58, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-chat:before {
+  content: "\f112";
+}
+
+/* line 59, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-chart:before {
+  content: "\f113";
+}
+
+/* line 60, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-infographic:before {
+  content: "\f114";
+}
+
+/* line 61, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-grids:before {
+  content: "\f115";
+}
+
+/* line 62, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-menu:before {
+  content: "\f116";
+}
+
+/* line 63, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-plus:before {
+  content: "\f117";
+}
+
+/* line 64, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-list-1:before {
+  content: "\f118";
+}
+
+/* line 65, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-talk:before {
+  content: "\f119";
+}
+
+/* line 66, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-file:before {
+  content: "\f11a";
+}
+
+/* line 67, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-user:before {
+  content: "\f11b";
+}
+
+/* line 68, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-line-chart:before {
+  content: "\f11c";
+}
+
+/* line 69, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-percentage:before {
+  content: "\f11d";
+}
+
+/* line 70, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-menu-1:before {
+  content: "\f11e";
+}
+
+/* line 71, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-paper-plane:before {
+  content: "\f11f";
+}
+
+/* line 72, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-menu-2:before {
+  content: "\f120";
+}
+
+/* line 73, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-shopping-cart:before {
+  content: "\f121";
+}
+
+/* line 74, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-pie-chart:before {
+  content: "\f122";
+}
+
+/* line 75, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-box-1:before {
+  content: "\f123";
+}
+
+/* line 76, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-map:before {
+  content: "\f124";
+}
+
+/* line 77, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-favourite:before {
+  content: "\f125";
+}
+
+/* line 78, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-checking:before {
+  content: "\f126";
+}
+
+/* line 79, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-safe:before {
+  content: "\f127";
+}
+
+/* line 80, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-heart-rate-monitor:before {
+  content: "\f128";
+}
+
+/* line 81, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-layers:before {
+  content: "\f129";
+}
+
+/* line 82, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-delivery-package:before {
+  content: "\f12a";
+}
+
+/* line 83, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-sms:before {
+  content: "\f12b";
+}
+
+/* line 84, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-image-file:before {
+  content: "\f12c";
+}
+
+/* line 85, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-plus-1:before {
+  content: "\f12d";
+}
+
+/* line 86, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-send:before {
+  content: "\f12e";
+}
+
+/* line 87, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-graphic-design:before {
+  content: "\f12f";
+}
+
+/* line 88, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-cup:before {
+  content: "\f130";
+}
+
+/* line 89, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-website:before {
+  content: "\f131";
+}
+
+/* line 90, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-gift:before {
+  content: "\f132";
+}
+
+/* line 91, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-chronometer:before {
+  content: "\f133";
+}
+
+/* line 92, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-bar-chart:before {
+  content: "\f134";
+}
+
+/* line 93, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-browser:before {
+  content: "\f135";
+}
+
+/* line 94, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-digital-marketing:before {
+  content: "\f136";
+}
+
+/* line 95, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar:before {
+  content: "\f137";
+}
+
+/* line 96, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-1:before {
+  content: "\f138";
+}
+
+/* line 97, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-rocket:before {
+  content: "\f139";
+}
+
+/* line 98, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-analytics:before {
+  content: "\f13a";
+}
+
+/* line 99, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-pie-chart-1:before {
+  content: "\f13b";
+}
+
+/* line 100, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-pie-chart-2:before {
+  content: "\f13c";
+}
+
+/* line 101, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-analytics-1:before {
+  content: "\f13d";
+}
+
+/* line 102, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-google-drive-file:before {
+  content: "\f13e";
+}
+
+/* line 103, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-pie-chart-3:before {
+  content: "\f13f";
+}
+
+/* line 104, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-poll-symbol:before {
+  content: "\f140";
+}
+
+/* line 105, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-gear:before {
+  content: "\f141";
+}
+
+/* line 106, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-magnifier-tool:before {
+  content: "\f142";
+}
+
+/* line 107, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-add:before {
+  content: "\f143";
+}
+
+/* line 108, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-cube:before {
+  content: "\f144";
+}
+
+/* line 109, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-gift-1:before {
+  content: "\f145";
+}
+
+/* line 110, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-list-2:before {
+  content: "\f146";
+}
+
+/* line 111, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-shopping-cart-1:before {
+  content: "\f147";
+}
+
+/* line 112, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-2:before {
+  content: "\f148";
+}
+
+/* line 113, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-laptop:before {
+  content: "\f149";
+}
+
+/* line 114, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-cube-1:before {
+  content: "\f14a";
+}
+
+/* line 115, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-layers-1:before {
+  content: "\f14b";
+}
+
+/* line 116, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-chat-1:before {
+  content: "\f14c";
+}
+
+/* line 117, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-copy:before {
+  content: "\f14d";
+}
+
+/* line 118, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-paper:before {
+  content: "\f14e";
+}
+
+/* line 119, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-hospital:before {
+  content: "\f14f";
+}
+
+/* line 120, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-3:before {
+  content: "\f150";
+}
+
+/* line 121, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-speaker:before {
+  content: "\f151";
+}
+
+/* line 122, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-pie-chart-4:before {
+  content: "\f152";
+}
+
+/* line 123, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-schedule:before {
+  content: "\f153";
+}
+
+/* line 124, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-expand:before {
+  content: "\f154";
+}
+
+/* line 125, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-menu-3:before {
+  content: "\f155";
+}
+
+/* line 126, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-download-1:before {
+  content: "\f156";
+}
+
+/* line 127, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-help:before {
+  content: "\f157";
+}
+
+/* line 128, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-list-3:before {
+  content: "\f158";
+}
+
+/* line 129, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-notepad:before {
+  content: "\f159";
+}
+
+/* line 130, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-graph:before {
+  content: "\f15a";
+}
+
+/* line 131, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-browser-1:before {
+  content: "\f15b";
+}
+
+/* line 132, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-photograph:before {
+  content: "\f15c";
+}
+
+/* line 133, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-browser-2:before {
+  content: "\f15d";
+}
+
+/* line 134, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-hourglass:before {
+  content: "\f15e";
+}
+
+/* line 135, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-mail:before {
+  content: "\f15f";
+}
+
+/* line 136, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-cardiogram:before {
+  content: "\f160";
+}
+
+/* line 137, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-document:before {
+  content: "\f161";
+}
+
+/* line 138, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-contract:before {
+  content: "\f162";
+}
+
+/* line 139, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-graph-1:before {
+  content: "\f163";
+}
+
+/* line 140, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-graphic:before {
+  content: "\f164";
+}
+
+/* line 141, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-position:before {
+  content: "\f165";
+}
+
+/* line 142, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-soft-icons:before {
+  content: "\f166";
+}
+
+/* line 143, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-circle-vol-2:before {
+  content: "\f167";
+}
+
+/* line 144, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-rocket-1:before {
+  content: "\f168";
+}
+
+/* line 145, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-lorry:before {
+  content: "\f169";
+}
+
+/* line 146, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-cd:before {
+  content: "\f16a";
+}
+
+/* line 147, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-file-1:before {
+  content: "\f16b";
+}
+
+/* line 148, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-reload:before {
+  content: "\f16c";
+}
+
+/* line 149, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-placeholder:before {
+  content: "\f16d";
+}
+
+/* line 150, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-refresh:before {
+  content: "\f16e";
+}
+
+/* line 151, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-medical-records:before {
+  content: "\f16f";
+}
+
+/* line 152, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-rectangular:before {
+  content: "\f170";
+}
+
+/* line 153, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-medical-records-1:before {
+  content: "\f171";
+}
+
+/* line 154, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-indent-dots:before {
+  content: "\f172";
+}
+
+/* line 155, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-search-1:before {
+  content: "\f173";
+}
+
+/* line 156, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-edit:before {
+  content: "\f174";
+}
+
+/* line 157, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-new-email:before {
+  content: "\f175";
+}
+
+/* line 158, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-4:before {
+  content: "\f176";
+}
+
+/* line 159, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-add-circular-button:before {
+  content: "\f177";
+}
+
+/* line 160, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-close-cross:before {
+  content: "\f178";
+}
+
+/* line 161, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-attention:before {
+  content: "\f179";
+}
+
+/* line 162, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-information:before {
+  content: "\f17a";
+}
+
+/* line 163, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-rocket-2:before {
+  content: "\f17b";
+}
+
+/* line 164, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-maps:before {
+  content: "\f17c";
+}
+
+/* line 165, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-link:before {
+  content: "\f17d";
+}
+
+/* line 166, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-download-symbol:before {
+  content: "\f17e";
+}
+
+/* line 167, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-power:before {
+  content: "\f17f";
+}
+
+/* line 168, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-console:before {
+  content: "\f180";
+}
+
+/* line 169, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-open-text-book:before {
+  content: "\f181";
+}
+
+/* line 170, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-download-2:before {
+  content: "\f182";
+}
+
+/* line 171, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-zig-zag-line-sign:before {
+  content: "\f183";
+}
+
+/* line 172, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-tools-and-utensils:before {
+  content: "\f184";
+}
+
+/* line 173, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-crisp-icons:before {
+  content: "\f185";
+}
+
+/* line 174, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-trash:before {
+  content: "\f186";
+}
+
+/* line 175, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-lock:before {
+  content: "\f187";
+}
+
+/* line 176, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-bell-1:before {
+  content: "\f188";
+}
+
+/* line 177, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-bell-alarm-symbol:before {
+  content: "\f189";
+}
+
+/* line 178, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-setup:before {
+  content: "\f18a";
+}
+
+/* line 179, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-menu-4:before {
+  content: "\f18b";
+}
+
+/* line 180, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-architecture-and-city:before {
+  content: "\f18c";
+}
+
+/* line 181, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-shelter:before {
+  content: "\f18d";
+}
+
+/* line 182, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-add-1:before {
+  content: "\f18e";
+}
+
+/* line 183, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-checkmark:before {
+  content: "\f18f";
+}
+
+/* line 184, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-circular-arrow:before {
+  content: "\f190";
+}
+
+/* line 185, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-user-outline-symbol:before {
+  content: "\f191";
+}
+
+/* line 186, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-rhombus:before {
+  content: "\f192";
+}
+
+/* line 187, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-crisp-icons-1:before {
+  content: "\f193";
+}
+
+/* line 188, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-soft-icons-1:before {
+  content: "\f194";
+}
+
+/* line 189, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-hexagonal:before {
+  content: "\f195";
+}
+
+/* line 190, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-time:before {
+  content: "\f196";
+}
+
+/* line 191, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-contrast:before {
+  content: "\f197";
+}
+
+/* line 192, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-note:before {
+  content: "\f198";
+}
+
+/* line 193, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-telegram-logo:before {
+  content: "\f199";
+}
+
+/* line 194, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-hangouts-logo:before {
+  content: "\f19a";
+}
+
+/* line 195, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-analytics-2:before {
+  content: "\f19b";
+}
+
+/* line 196, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-wifi:before {
+  content: "\f19c";
+}
+
+/* line 197, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-protected:before {
+  content: "\f19d";
+}
+
+/* line 198, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-drop:before {
+  content: "\f19e";
+}
+
+/* line 199, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-mail-1:before {
+  content: "\f19f";
+}
+
+/* line 200, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-delivery-truck:before {
+  content: "\f1a0";
+}
+
+/* line 201, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-writing:before {
+  content: "\f1a1";
+}
+
+/* line 202, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-5:before {
+  content: "\f1a2";
+}
+
+/* line 203, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-protection:before {
+  content: "\f1a3";
+}
+
+/* line 204, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-6:before {
+  content: "\f1a4";
+}
+
+/* line 205, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-7:before {
+  content: "\f1a5";
+}
+
+/* line 206, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-calendar-8:before {
+  content: "\f1a6";
+}
+
+/* line 207, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-bell-2:before {
+  content: "\f1a7";
+}
+
+/* line 208, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-hourglass-1:before {
+  content: "\f1a8";
+}
+
+/* line 209, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-next:before {
+  content: "\f1a9";
+}
+
+/* line 210, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-chat-2:before {
+  content: "\f1aa";
+}
+
+/* line 211, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-correct:before {
+  content: "\f1ab";
+}
+
+/* line 212, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-right-arrow:before {
+  content: "\f1ac";
+}
+
+/* line 213, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-down-arrow:before {
+  content: "\f1ad";
+}
+
+/* line 214, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-photo-camera:before {
+  content: "\f1ae";
+}
+
+/* line 215, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-fast-next:before {
+  content: "\f1af";
+}
+
+/* line 216, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-fast-back:before {
+  content: "\f1b0";
+}
+
+/* line 217, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-down:before {
+  content: "\f1b1";
+}
+
+/* line 218, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-back:before {
+  content: "\f1b2";
+}
+
+/* line 219, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-up:before {
+  content: "\f1b3";
+}
+
+/* line 220, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-arrow-down:before {
+  content: "\f1b4";
+}
+
+/* line 221, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-arrow-up:before {
+  content: "\f1b5";
+}
+
+/* line 222, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-accept:before {
+  content: "\f1b6";
+}
+
+/* line 223, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-sort:before {
+  content: "\f1b7";
+}
+
+/* line 224, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-arrow:before {
+  content: "\f1b8";
+}
+
+/* line 225, /Users/lucaskuhn/apps/bearpost/app/assets/stylesheets/flaticon2.scss */
+.flaticon2-back-1:before {
+  content: "\f1b9";
+}
