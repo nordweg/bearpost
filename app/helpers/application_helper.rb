@@ -10,6 +10,7 @@ module ApplicationHelper
 
   def status_selector
     [
+      ['Todos', nil],
       ['Pendente','pending'],
       ['Pronto para envio','ready'],
       ['Enviado','shipped'],
@@ -18,6 +19,6 @@ module ApplicationHelper
   end
 
   def carrier_selector
-    Rails.configuration.carriers.map{|carrier| [carrier.display_name, carrier.id]}
+    [['Todas',nil]] + Rails.configuration.carriers.map{|carrier| [carrier.display_name, carrier.id]}
   end
 end
