@@ -13,3 +13,4 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 Rails.application.config.assets.precompile += %w( keen/skins/aside/navy.css )
+Rails.application.config.assets.precompile += %w( ^[^_]*.css *.css.erb )
