@@ -15,3 +15,4 @@ Rails.application.config.assets.paths << Rails.root.join("app", "assets", "fonts
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 # Rails.application.config.assets.precompile += %w( keen/skins/aside/navy.css )
+Rails.application.config.assets.precompile += %w( *.css *.scss *.js )
