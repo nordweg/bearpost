@@ -1,0 +1,1 @@
+!function(r){if(void 0===r)throw new TypeError("Bootstrap's JavaScript requires jQuery. jQuery must be included before Bootstrap's JavaScript.");var t=r.fn.jquery.split(" ")[0].split("."),e=1,s=2,a=9,o=1,i=4;if(t[0]<s&&t[1]<a||t[0]===e&&t[1]===a&&t[2]<o||t[0]>=i)throw new Error("Bootstrap's JavaScript requires at least jQuery v1.9.1 but less than v4.0.0")}($);
