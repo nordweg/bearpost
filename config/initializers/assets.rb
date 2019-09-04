@@ -9,7 +9,8 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.paths << Rails.root.join('node_modules')
 
 # Rails.application.config.assets.paths += Dir["#{Rails.root}/vendor/assets/*"].sort_by { |dir| -dir.size }
-Rails.application.config.assets.paths << Rails.root.join("vendor", "assets")
+# Rails.application.config.assets.paths << Rails.root.join("vendor", "assets")
+Rails.application.config.assets.paths << Rails.root.join("app", "assets", "vendor")
 Rails.application.config.assets.paths << Rails.root.join("app", "assets", "fonts")
 
 # Precompile additional assets.
