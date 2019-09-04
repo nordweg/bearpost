@@ -10,6 +10,15 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+
+ *= require vendor/perfect-scrollbar.css
+ *= require vendor/jquery-ui.css
+ *= require vendor/bootstrap-select.min.css
+ *= require vendor/daterangepicker.css
+
+ *= require keen/style.bundle.css
+ *= require keen/skins/aside/navy.css
+
  *= require_tree .
  *= require_self
  */
