@@ -7,6 +7,8 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.paths << Emoji.images_path
 # Add Yarn node_modules folder to the asset load path.
 # Rails.application.config.assets.paths << Rails.root.join('node_modules')
+
+# Rails.application.config.assets.paths += Dir["#{Rails.root}/vendor/assets/*"].sort_by { |dir| -dir.size }
 Rails.application.config.assets.paths << Rails.root.join("vendor", "assets")
 Rails.application.config.assets.paths << Rails.root.join("app", "assets", "fonts")
 
@@ -15,4 +17,4 @@ Rails.application.config.assets.paths << Rails.root.join("app", "assets", "fonts
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 # Rails.application.config.assets.precompile += %w( keen/skins/aside/navy.css )
-Rails.application.config.assets.precompile += %w( *.css *.scss *.js )
+Rails.application.config.assets.precompile += %w( *.js ^[^_]*.css *.css.erb )
