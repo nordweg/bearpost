@@ -28,10 +28,10 @@
 //= require jquery-form/dist/jquery.form.min.js
 //= require block-ui/jquery.blockUI.js
 //= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js
-//= require js/vendors/bootstrap-datepicker.init.js
+//= require js/bootstrap-datepicker.init.js
 //= require bootstrap-datetime-picker/js/bootstrap-datetimepicker.min.js
 //= require bootstrap-timepicker/js/bootstrap-timepicker.min.js
-//= require js/vendors/bootstrap-timepicker.init.js
+//= require js/bootstrap-timepicker.init.js
 //= require bootstrap-daterangepicker/daterangepicker.js
 //= require bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js
 //= require bootstrap-maxlength/src/bootstrap-maxlength.js
