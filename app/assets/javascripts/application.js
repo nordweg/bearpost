@@ -13,33 +13,17 @@
 //= require rails-ujs
 //= require turbolinks
 
-// Keen Global Mandatory Vendors
-//= require jquery/dist/jquery.js
-//= require popper.js/dist/umd/popper.js
-//= require bootstrap/dist/js/bootstrap.min.js
-//= require js-cookie/src/js.cookie.js
-//= require moment/min/moment.min.js
-//= require tooltip.js/dist/umd/tooltip.min.js
-//= require perfect-scrollbar/dist/perfect-scrollbar.js
-//= require sticky-js/dist/sticky.min.js
-//= require wnumb/wNumb.js
+//= require vendor/jquery-3.4.1.min.js
+//= require vendor/bootstrap.bundle.min.js
+//= require vendor/jquery-ui.js
+//= require vendor/sticky.min.js
+//= require vendor/moment.min.js
+//= require vendor/daterangepicker.js
+//= require vendor/perfect-scrollbar.min.js
+//= require vendor/jquery.blockUI.js
+//= require vendor/js.cookie.js
+//= require vendor/bootstrap-select.min.js
 
-// Keen Global Optional Vendors
-//= require jquery-form/dist/jquery.form.min.js
-//= require block-ui/jquery.blockUI.js
-//= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js
-//= require js/vendors/bootstrap-datepicker.init.js
-//= require bootstrap-datetime-picker/js/bootstrap-datetimepicker.min.js
-//= require bootstrap-timepicker/js/bootstrap-timepicker.min.js
-//= require js/vendors/bootstrap-timepicker.init.js
-//= require bootstrap-daterangepicker/daterangepicker.js
-//= require bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js
-//= require bootstrap-maxlength/src/bootstrap-maxlength.js
-//= require bootstrap-select/dist/js/bootstrap-select.js
 
-// Keen Global Theme Bundle (used by all pages)
 //= require keen/scripts.bundle.js
-
-//= require clipboard.min.js
-
-//= require_tree .
+//= require keen/dashboard.js
