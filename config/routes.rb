@@ -7,6 +7,18 @@ Rails.application.routes.draw do
 
   get  'track/:shipment_number',                     to: "tracking#show"
 
+  # CORREIOS ROUTES - DELETE ONCE SETTINGS ARE NOT SPECIFIC
+  post "/correios/:shipment_id/get_plp",                        to: "correios#get_plp"
+  post "/correios/:account_id/:shipping_method/send_plp",       to: "correios#send_plp"
+  post "/correios/:account_id/:shipping_method/",               to: "correios#save_new_range"
+
+  # AZUL ROUTES - DELETE ONCE SETTINGS ARE NOT SPECIFIC
+  namespace :azul do
+    post "authenticate_user_ajax"
+    post "send_to_carrier"
+    get  "get_awbs"
+  end
+
   devise_for :users
   resources :users
   resources :accounts
