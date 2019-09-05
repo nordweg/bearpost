@@ -190,7 +190,6 @@ class ShipmentsController < ApplicationController
     hash[:neighborhood] = doc.at_css('dest xBairro').try(:content)
     hash[:zip] = doc.at_css('dest CEP').try(:content)
     hash[:city] = doc.at_css('dest xMun').try(:content)
-    hash[:city_code] = doc.at_css('dest cMun').try(:content)
     hash[:state] = doc.at_css('dest UF').try(:content)
     hash[:country] = doc.at_css('dest xPais').try(:content)
     hash[:invoice_series] = doc.at_css('serie').try(:content)
