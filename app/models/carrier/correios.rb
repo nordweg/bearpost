@@ -7,12 +7,16 @@ class Carrier::Correios < Carrier
       ]
     end
 
+    def settings_view
+      'correios_settings'
+    end
+
     def general_settings
       [
-        'Usuário Rastreamento',
-        'Senha Rastreamento',
         'Usuário',
         'Senha',
+        'Usuário Rastreamento',
+        'Senha Rastreamento',
         'Código Administrativo',
         'Contrato',
         'Codigo Serviço',

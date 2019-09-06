@@ -89,5 +89,10 @@ class Carrier
     def shipping_methods
       shipping_method_settings.keys
     end
+
+    # Overwrite this method if you want to use a personalized view instead of views/carriers/_general_settings
+    def settings_view
+      'general_settings'
+    end
   end
 end
