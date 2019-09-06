@@ -1,0 +1,87 @@
+<% shipment = package.shipment %>
+<% total_packages = shipment.packages.size %>
+<style>
+.label {
+  font-size: 20px;
+  font-family: helvetica;
+  padding: 25px;
+  line-height: 1.3;
+}
+.address {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+.mt20 {
+  margin-top: 20px;
+}
+
+.package {
+  text-align: right;
+}
+
+.sender-address li {
+  font-size: 17px;
+}
+
+h4 {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
+
+<div class="label">
+  <div class="space-between">
+    <div>
+      <%= shipment.carrier.display_name %>
+    </div>
+    <div>
+      Pacote <%= shipment.packages.index(package) + 1 %>/<%= total_packages %><br>
+    </div>
+  </div>
+
+  <div class="package">
+    Pacote <%= shipment.packages.index(package) + 1 %>/<%= total_packages %><br>
+  </div>
+
+  <% if shipment.tracking_number.present? %>
+  <div class='text-center mt20'>
+    <%= shipment.tracking_number %><br>
+    <%= image_tag(Barby::Code128.new(shipment.tracking_number).to_image(xdim:2).to_data_url) %>
+  </div>
+  <% end %>
+
+  <hr>
+
+  <h4>DESTINATÁRIO</h4>
+  <ul class="address">
+    <li><%= shipment.first_name %> <%= shipment.last_name %></li>
+    <li><%= shipment.street %>, <%= shipment.number %></li>
+    <li><%= "#{shipment.complement}," if shipment.complement.present? %> <%= shipment.neighborhood %></li>
+    <li><strong><%= shipment.zip %></strong> <%= shipment.city %> / <%= shipment.state %></li>
+
+    <% if shipment.zip.present? %>
+    <%= image_tag(Barby::Code128.new(shipment.zip.delete("^0-9")).to_image(xdim:2).to_data_url) %>
+    <% end %>
+  </ul>
+
+  <hr>
+
+  <h4>REMETENTE</h4>
+  <% account = shipment.account %>
+  <ul class="address sender-address">
+    <li><%= account.name %></li>
+    <li><%= account.street %>, <%= account.number %></li>
+    <li><%= "#{account.complement}," if account.complement.present? %> <%= account.neighborhood %></li>
+    <li><strong><%= account.zip %></strong> <%= account.city %> / <%= account.state %></li>
+  </ul>
+</div>

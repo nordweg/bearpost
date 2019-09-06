@@ -36,10 +36,6 @@ gem 'savon'   # SOAP requests
 gem 'faraday' # REST requests
 gem 'faraday_middleware'
 
-
-gem 'bearpost_correios', :git => 'https://github.com/nordweg/bearpost_correios.git'
-gem 'bearpost_azul',     :git => 'https://github.com/nordweg/bearpost_azul.git'
-
 gem 'wicked_pdf'
 gem "wkhtmltopdf-binary"
 gem "chunky_png"
