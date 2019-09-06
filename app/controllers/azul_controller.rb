@@ -14,22 +14,6 @@ class AzulController < ApplicationController
     end
   end
 
-  def send_to_carrier # Button in settings to send shipments to azul
-    carrier   = Carrier::Azul
-    account   = Account.find(params["account"])
-    shipments = carrier.shipment.ready_to_ship.where(account:account)
-    begin
-      shipments.each do |shipment|
-        carrier.send_to_carrier(shipment)
-        shipment.update(sent_to_carrier:true)
-      end
-      flash[:success] = 'Todos pedidos foram sincronizados'
-    rescue Exception => e
-      flash[:error] = e.message
-    end
-    redirect_to edit_carrier_path(carrier.id)
-  end
-
   def get_awbs
     @results = []
     Carrier::Azul.shipments.where(tracking_number:nil,account:params[:account]).each do |shipment|

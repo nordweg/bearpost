@@ -3,3 +3,5 @@ module CarriersHelper
     "Carrier::#{carrier_id.titleize}".constantize rescue nil
   end
 end
+
+@carrier = shipment.carrier."Carrier::Azul".constantize.name
