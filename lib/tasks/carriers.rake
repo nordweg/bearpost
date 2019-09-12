@@ -8,7 +8,7 @@ namespace :carriers do
           carrier.get_delivery_updates(shipment)
           puts "OK"
         rescue Exception => e
-          puts "ERRO (#{carrier.display_name})"
+          puts "ERRO (#{carrier.name})"
           puts e.message
         end
         puts ""

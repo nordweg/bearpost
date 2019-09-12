@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   root 'shipments#index'
 
   get  'settings',                                   to: "settings#index"
-  get  'accounts/:id/:carrier_id/edit',              to: "accounts#edit_carrier"
+  get  'accounts/:id/:carrier_class/edit',           to: "accounts#edit_carrier"
   post 'accounts/:id/update_carrier_settings',       to: "accounts#update_carrier_settings"
 
   get  'track/:shipment_number',                     to: "tracking#show"
@@ -12,13 +12,6 @@ Rails.application.routes.draw do
   post "/correios/:account_id/:shipping_method/send_plp",       to: "correios#send_plp"
   post "/correios/:account_id/:shipping_method/",               to: "correios#save_new_range"
 
-  # AZUL ROUTES - DELETE ONCE SETTINGS ARE NOT SPECIFIC
-  namespace :azul do
-    post "authenticate_user_ajax"
-    post "send_to_carrier"
-    get  "get_awbs"
-  end
-
   devise_for :users
   resources :users
   resources :accounts
@@ -27,6 +20,7 @@ Rails.application.routes.draw do
   resources :carriers do
     member do
       post 'send_to_carrier'
+      post "validate_credentials_ajax"
     end
   end
   resources :shipments do
@@ -40,7 +34,7 @@ Rails.application.routes.draw do
       get  'get_labels',           to: "shipments#get_labels", format: :pdf
       post 'send_to_carrier',      to: "shipments#send_to_carrier"
       post 'set_as_shipped',       to: "shipments#set_as_shipped"
-      post 'get_delivery_updates',          to: "shipments#get_delivery_updates"
+      post 'get_delivery_updates', to: "shipments#get_delivery_updates"
     end
   end
 

@@ -17,7 +17,7 @@ class ShipmentsController < ApplicationController
       @shipments = Shipment.all
     end
     @shipments = @shipments.where(status:params[:status]) if params[:status].present?
-    @shipments = @shipments.where(carrier_id:params[:carrier]) if params[:carrier].present?
+    @shipments = @shipments.where(carrier_class:params[:carrier]) if params[:carrier].present?
     if params[:date_range].present?
       start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
       end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day
@@ -45,8 +45,7 @@ class ShipmentsController < ApplicationController
     current_user.company.accounts.each do |account|
       hash[account.name] = {}
       Rails.configuration.carriers.each do |carrier|
-        hash[account.name][carrier.display_name] = {}
-        hash[account.name][carrier.display_name] = account.selected_shipping_methods(carrier)
+        hash[account.name][carrier.name] = carrier::SERVICES
       end
     end
     hash
@@ -54,8 +53,8 @@ class ShipmentsController < ApplicationController
 
   def get_tracking_number
     begin
-      tracking_number = @carrier.get_tracking_number(@shipment)
-      @shipment.update(tracking_number:tracking_number)
+      @carrier.authenticate!
+      @shipment.update(tracking_number: @carrier.get_tracking_number(@shipment))
       flash[:success] = 'Rastreio atualizado'
     rescue Exception => e
       flash[:error] = e.message
@@ -85,13 +84,14 @@ class ShipmentsController < ApplicationController
 
   def get_delivery_updates
     begin
+      @carrier.authenticate!
       delivery_updates = @carrier.get_delivery_updates(@shipment)
       delivery_updates.each do |delivery_update|
         next if @shipment.histories.find_by(description:delivery_update[:description], date:delivery_update[:date])
         @shipment.histories.create(
           description: delivery_update[:description],
           date: delivery_update[:date],
-          changed_by: @carrier.display_name,
+          changed_by: @carrier.name,
           category: 'carrier',
         )
       end
@@ -106,7 +106,7 @@ class ShipmentsController < ApplicationController
     results = []
     available_carriers.each do |carrier|
       current_company.accounts.each do |account|
-        shipments = Shipment.ready_to_ship.where(carrier_id: carrier.id, account_id: account.id)
+        shipments = Shipment.ready_to_ship.where(carrier_class: carrier.to_s, account_id: account.id)
         carrier_hash = {
           account: account,
           carrier: carrier,
@@ -122,8 +122,7 @@ class ShipmentsController < ApplicationController
     end
   end
 
-  def send_to_carrier # POST route for sending a single shipment to carrier
-    raise Exception.new('Carrier not found') if @carrier.blank?
+  def send_to_carrier # Single shipment
     sync_result = @carrier.send_to_carrier([@shipment])
     message = sync_result.first[:message]
     sync_result.first[:success] ? flash[:success] = message : flash[:error] = message
@@ -202,7 +201,7 @@ class ShipmentsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_shipment
     @shipment = Shipment.find(params[:id])
-    @carrier  = helpers.carrier_from_id(@shipment.carrier_id) rescue nil
+    @carrier = @shipment.carrier.new(@shipment.carrier_setting)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

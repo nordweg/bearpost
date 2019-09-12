@@ -1,98 +1,109 @@
 class Carrier
-  class << self
-    def general_settings
-      # Define an array of general settings for the carrier, eg.
-      # ['username','password','posting_card_number']
-      raise ::NotImplementedError, 'You must implement general_settings method for this carrier.'
-    end
+  attr_reader   :test_mode
+  alias_method  :test_mode?, :test_mode
+  attr_accessor :carrier_setting, :settings
 
-    def shipping_method_settings
-      # Define a hash of available shipping methods and settings required, eg.
-      # {
-      #   'PAC': [
-      #     'carrier_service_id',
-      #     'label_minimum_quantity',
-      #     'label_reorder_quantity',
-      #   ],
-      #   'Sedex': [
-      #     'carrier_service_id',
-      #     'label_minimum_quantity',
-      #     'label_reorder_quantity'
-      #   ]
-      # }
-      raise ::NotImplementedError, 'You must implement shipping_method_settings method for this carrier.'
-    end
+  TEST_URL = ""
+  LIVE_URL = ""
+  SERVICES = []
 
-    def tracking_url
-      raise ::NotImplementedError, 'You must implement tracking_url method for this carrier.'
-    end
-
-    def send_to_carrier(shipments)
-      # This method should respond with the an array of hashes, including the shipment,
-      # a boolean stating if the sync was successful, and any message (error or success) from the result of the process.
-      # eg:
-      # [
-      #   {
-      #     shipment: shipment
-      #     success: false
-      #     message: 'Package size is not valid'
-      #   },
-      #   {
-      #     shipment: shipment,
-      #     success: true,
-      #     message: 'Envio recebido com sucesso'
-      #   }
-      # ]
-      raise ::NotImplementedError, 'You must implement send_to_carrier method for this carrier.'
-    end
-
-    def shipments
-      Shipment.where(carrier_id:self.id)
-    end
-
-    def get_tracking_number(shipment)
-      # This method should return a tracking number for the shipment, as a string.
-    end
-
-    def prepare_label(shipment)
-      # If any, all the hooks that are required before a label should be set here.
-      # This method is optional
-    end
-
-    def shipment_menu_links
-      []
-    end
-
-    def get_delivery_updates(shipment)
-      raise Exception.new("Esta transportadora não está integrada para rastreamento de entrega.")
-    end
-
-    def id
-      name.demodulize.downcase
-    end
-
-    def display_name
-      name.demodulize.titleize
-    end
-
-    def settings_field
-      "#{id}_settings"
-    end
-
-    def settings
-      {
-        'general': general_settings,
-        'shipping_methods': shipping_methods
-      }.with_indifferent_access
-    end
-
-    def shipping_methods
-      shipping_method_settings.keys
-    end
-
-    # Overwrite this method if you want to use a personalized view instead of views/carriers/_general_settings
-    def settings_view
-      'general_settings'
-    end
+  def initialize(carrier_setting, test_mode = false)
+    @carrier_setting = carrier_setting
+    @settings = carrier_setting.settings
+    @test_mode = test_mode
   end
+
+  # Define an array of general settings for the carrier, eg.
+  # ['username','password','posting_card_number']
+  def general_settings
+    raise ::NotImplementedError, 'You must implement general_settings method for this carrier.'
+  end
+
+  # Define a hash of available shipping methods and settings required for each, eg.
+  # {
+  #   'PAC': [
+  #     'label_minimum_quantity',
+  #     'label_reorder_quantity',
+  #   ],
+  #   'Sedex': [
+  #     'label_minimum_quantity',
+  #     'label_reorder_quantity'
+  #   ]
+  # }
+  def self.shipping_methods_settings
+    []
+  end
+
+  # Validate credentials with a call to the API.
+  #
+  # By default this just does a `find_rates` call with the origin and destination both as
+  # the carrier's default_location. Override to provide alternate functionality, such as
+  # checking for `test_mode` to use test servers, etc.
+  #
+  # @return [Boolean] Should return `true` if the provided credentials proved to work,
+  #   `false` otherswise.
+  def valid_credentials?
+    location = self.class.default_location
+    find_rates(location, location, Package.new(100, [5, 15, 30]), :test => test_mode)
+  rescue ActiveShipping::ResponseError
+    false
+  else
+    true
+  end
+
+  # should return an array of DeliveryUpdate objects
+  def get_delivery_updates(shipment)
+    raise ::NotImplementedError, "#get_delivery_updates is not implemented for #{self.class.name}"
+  end
+
+  def self.tracking_url
+    raise ::NotImplementedError, 'You must implement tracking_url method for this carrier.'
+  end
+
+  # This method should respond with the an array of hashes, including the shipment,
+  # a boolean stating if the sync was successful, and any message (error or success) from the result of the process.
+  # eg:
+  # [
+  #   {
+  #     shipment: shipment
+  #     success: false
+  #     message: 'Package size is not valid'
+  #   },
+  #   {
+  #     shipment: shipment,
+  #     success: true,
+  #     message: 'Envio recebido com sucesso'
+  #   }
+  # ]
+  def send_to_carrier(shipments)
+    raise ::NotImplementedError, 'You must implement send_to_carrier method for this carrier.'
+  end
+
+  def shipments
+    Shipment.where(carrier_class:self.to_s)
+  end
+
+  # This method should return a tracking number for the shipment, as a string.
+  def get_tracking_number(shipment)
+    raise ::NotImplementedError, "#send_to_carrier is not implemented for #{self.class.name}"
+  end
+
+  # If any, all the hooks that are required before a label should be set here.
+  # This method is optional
+  def prepare_label(shipment)
+  end
+
+  def shipment_menu_links
+    []
+  end
+
+  def self.shipping_methods
+    []
+  end
+
+  # Overwrite this method if you want to use a personalized view instead of views/carriers/_general_settings
+  def self.settings_view
+    'general_settings'
+  end
+
 end
