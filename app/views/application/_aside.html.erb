@@ -47,7 +47,7 @@
 
               <% Rails.configuration.carriers.each do |carrier| %>
               <li class="kt-menu__item  kt-menu__item--submenu" aria-haspopup="true">
-                <%= link_to edit_carrier_path(carrier), class: "kt-menu__link" do %>
+                <%= link_to edit_carrier_path(carrier.name), class: "kt-menu__link" do %>
                 <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                 <span class="kt-menu__link-text"><%= carrier.name %>
                 </span>

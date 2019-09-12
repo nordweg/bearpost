@@ -19,21 +19,6 @@ class Carrier
     raise ::NotImplementedError, 'You must implement general_settings method for this carrier.'
   end
 
-  # Define a hash of available shipping methods and settings required for each, eg.
-  # {
-  #   'PAC': [
-  #     'label_minimum_quantity',
-  #     'label_reorder_quantity',
-  #   ],
-  #   'Sedex': [
-  #     'label_minimum_quantity',
-  #     'label_reorder_quantity'
-  #   ]
-  # }
-  def self.shipping_methods_settings
-    []
-  end
-
   # Validate credentials with a call to the API.
   #
   # By default this just does a `find_rates` call with the origin and destination both as
@@ -94,10 +79,6 @@ class Carrier
   end
 
   def shipment_menu_links
-    []
-  end
-
-  def self.shipping_methods
     []
   end
 
