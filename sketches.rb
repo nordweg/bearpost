@@ -253,3 +253,44 @@ message = {
 }
 
 prod_client.call(:busca_cliente, message:message)
+
+
+array = []
+Account.all.each do |account|
+  hash = {}
+  hash[:account] = account.name
+  hash[:carriers] = []
+  Carriers.all.each do |carrier|
+    carrier_hash = {}
+    carrier_hash[:name] = carrier.name
+    carrier_hash[:class_name] = carrier.to_s
+    carrier_hash[:shipping_methods] = carrier.shipping_methods
+    hash[:carriers] << carrier_hash
+  end
+  array << hash
+end
+
+message = {
+  "IDCotacao": 0,
+  "BaseOrigem": "",
+  "CEPOrigem": "13179180",
+  "BaseDestino": "",
+  "CEPDestino": "13080650",
+  "PesoCubado": 30,
+  "PesoReal": 30,
+  "Volume": 1,
+  "ValorTotal": 100,
+  "Pedido": "",
+  "Itens": [
+    {
+      "Volume": 1,
+      "Peso": 30,
+      "Altura": 15,
+      "Comprimento": 40,
+      "Largura": 30,
+      "EspecieId": 0
+    }
+  ]
+}
+
+@carrier.connection.post("api/Cotacao/Enviar", message)

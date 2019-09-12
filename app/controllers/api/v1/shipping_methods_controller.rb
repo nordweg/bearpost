@@ -2,15 +2,15 @@ module Api::V1
   class ShippingMethodsController < ApiController
 
     def index
-      hash = {}
-      current_company.accounts.each do |account|
-        hash[account.name] = {}
-        Rails.configuration.carriers.each do |carrier|
-          hash[account.name][carrier.name] = {}
-          hash[account.name][carrier.name] = account.selected_shipping_methods(carrier)
-        end
+      array = []
+      Carriers.all.each do |carrier|
+        carrier_hash = {}
+        carrier_hash[:carrier] = carrier.name
+        carrier_hash[:shipping_methods] = carrier.shipping_methods
+        array << carrier_hash
       end
-      render json: hash
+      array
+      render json: array
     end
 
   end

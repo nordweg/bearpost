@@ -31,6 +31,10 @@ class Carrier::Correios < Carrier
     'correios_settings'
   end
 
+  def self.shipping_methods
+    ['PAC','SEDEX']
+  end
+
   def authenticate!
     verify_service_availability
   end

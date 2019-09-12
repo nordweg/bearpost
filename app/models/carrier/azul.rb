@@ -10,6 +10,10 @@ class Carrier::Azul < Carrier
     ['email','password','document']
   end
 
+  def self.shipping_methods
+    ['Standart']
+  end
+
   def self.tracking_url
     "http://www.azulcargo.com.br/Rastreio.aspx?n={tracking}&tipoAwb=Nacional"
   end

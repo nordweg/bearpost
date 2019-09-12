@@ -10,6 +10,7 @@ class ShipmentsController < ApplicationController
         "CONCAT(first_name, ' ' ,last_name) ILIKE :search
         OR regexp_replace(cpf, '\\D', '', 'g') ILIKE regexp_replace(:search, '\\D', '', 'g')
         OR order_number ILIKE :search
+        OR shipment_number ILIKE :search
         OR city ILIKE :search",
         search: "%#{params[:search]}%"
       )

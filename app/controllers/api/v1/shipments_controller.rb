@@ -89,7 +89,7 @@ module Api::V1
         params[:shipment][:account] = Account.find_by!(name:params[:shipment][:account])
       end
       if params[:shipment][:carrier]
-        params[:shipment][:carrier_class]
+        params[:shipment][:carrier_class] = Carriers.find(params[:shipment][:carrier]).to_s
         params[:shipment].delete :carrier
       end
       params.require(:shipment).permit!

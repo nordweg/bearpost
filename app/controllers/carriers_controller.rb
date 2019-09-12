@@ -4,7 +4,7 @@ class CarriersController < ApplicationController
     @accounts = current_company.accounts
   end
   def edit
-    @carrier = Object.const_get params[:id]
+    @carrier = Carriers.find(params[:id])
     @accounts = current_company.accounts
   end
   def send_to_carrier
