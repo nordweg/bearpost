@@ -22,6 +22,10 @@ class Shipment < ApplicationRecord
   after_update :save_history
   after_create :first_history
 
+  def carrier_setting
+    CarrierSetting.find_by(account_id:account_id,carrier_class:carrier_class)
+  end
+
   def first_history
     histories.create(
       user: Current.user,
@@ -49,7 +53,7 @@ class Shipment < ApplicationRecord
     update(sent_to_carrier:true)
     histories.create(
       user: Current.user,
-      description: "Pedido enviado para a transportadora #{carrier.display_name}",
+      description: "Pedido enviado para a transportadora #{carrier.name}",
       category:'status',
       date: DateTime.now,
     )
@@ -82,12 +86,13 @@ class Shipment < ApplicationRecord
   end
 
   def carrier
-    "Carrier::#{carrier_id.titleize}".constantize rescue nil
+    Object.const_get carrier_class
   end
 
   def as_json(*)
     super.except("updated_at","invoice_xml").tap do |hash|
       hash["synced_with_carrier"] = sent_to_carrier ? 'true' : 'false'
+      hash["carrier"] = carrier.name
     end
   end
 end

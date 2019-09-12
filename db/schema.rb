@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_05_132924) do
+ActiveRecord::Schema.define(version: 2019_09_10_201035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
-    t.jsonb "correios_settings", default: {}
     t.string "cnpj"
     t.string "razao_social"
     t.string "inscricao_estadual"
@@ -31,8 +30,15 @@ ActiveRecord::Schema.define(version: 2019_09_05_132924) do
     t.string "zip"
     t.string "state"
     t.string "country"
-    t.jsonb "azul_settings", default: {}
     t.integer "company_id"
+  end
+
+  create_table "carrier_settings", force: :cascade do |t|
+    t.integer "account_id"
+    t.string "carrier_class"
+    t.jsonb "settings", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "companies", force: :cascade do |t|
@@ -78,7 +84,7 @@ ActiveRecord::Schema.define(version: 2019_09_05_132924) do
     t.string "shipment_number"
     t.string "order_number"
     t.float "cost"
-    t.string "carrier_id"
+    t.string "carrier_class"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "invoice_series"

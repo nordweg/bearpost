@@ -1,8 +1,7 @@
 <% content_for :subheader_title do %>
-<%= @carrier.display_name %>
+<%= @carrier.name %>
 <% end %>
 <% content_for :subheader_toolbar do %>
-
 <div class="kt-subheader__toolbar">
   <div class="kt-subheader__wrapper">
     <ul class="nav nav-tabs nav-tabs-bold nav-tabs-line nav-tabs-line-brand m-0" role="tablist">
@@ -16,15 +15,16 @@
     </ul>
   </div>
 </div>
-
 <% end %>
 
 <div class="tab-content">
   <% @accounts.each do |account| %>
-  <% settings = account.send(@carrier.settings_field) %>
+  <% settings = account.settings_for(@carrier).settings.with_indifferent_access %>
   <div class="tab-pane" id="kt_portlet_tabs_1_<%= account.id %>_content" role="tabpanel">
 
     <%= form_for :settings, url: "/accounts/#{account.id}/update_carrier_settings" do |f| %>
+    <%= hidden_field_tag 'carrier_class', @carrier.to_s %>
+    <%= hidden_field_tag 'account_id', account.id %>
 
     <div class="row">
       <div class="col-md-8">
@@ -38,25 +38,47 @@
           </div>
 
           <div class="kt-portlet__body">
-            <%= hidden_field_tag 'carrier_id', @carrier.id %>
-            <%= f.fields_for 'general' do |ff| %>
             <div class="row">
-              <% @carrier.settings['general'].each do |setting| %>
+              <% @carrier.settings.each do |setting| %>
               <div class="col-md-4">
                 <div class="form-group">
-                  <%= ff.label setting %>
-                  <%= ff.text_field setting, value: settings.dig('general',setting), class:'form-control' %>
+                  <%= f.label t(setting) %>
+                  <%= f.text_field setting, value: settings.dig(setting), class:'form-control' %>
                 </div>
               </div>
               <% end %>
             </div>
-            <% end %>
+            <div>
+              <%= link_to "javascript:;", class:"connect" do %>
+              <button type="button" class="btn btn-sm btn-default"><i class="la la-refresh"></i> Validar credenciais</button>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="kt-portlet">
+          <div class="kt-portlet__head">
+            <div class="kt-portlet__head-label">
+              <h3 class="kt-portlet__head-title">
+                Sincronização de pedidos
+              </h3>
+            </div>
+          </div>
+
+          <div class="kt-portlet__body" kt-hidden-height="163" style="">
+            <div class="kt-portlet__content">
+              <p>
+                Enviar para a transportadora <%= @carrier.name %>
+                todos os pedidos com o status <i><u>pronto para envio</i></u>
+                que ainda não foram enviados
+              </p>
+              <%= link_to "Enviar", send_to_carrier_carrier_path(account:account), class: "btn btn-secondary", method:'post' %>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-
 
     <div class="row">
       <div class="col-lg-6">
@@ -74,4 +96,24 @@
 <script>
 $('.nav-link').first().addClass('active');
 $('.tab-pane').first().addClass('active');
+</script>
+
+
+<script>
+$('.connect').click(function(){
+  form = $(this).parents('form')
+  data = form.serialize();
+  var request = $.ajax({
+    url: "<%= validate_credentials_ajax_carrier_url %>",
+    method: "POST",
+    dataType: 'json',
+    data: data
+  });
+  request.done(function(response) {
+      alert(response);
+  });
+  request.fail(function( jqXHR, textStatus ) {
+    alert("Request failed: " + textStatus);
+  });
+})
 </script>

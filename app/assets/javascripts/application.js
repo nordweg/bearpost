@@ -23,6 +23,7 @@
 //= require vendor/jquery.blockUI.js
 //= require vendor/js.cookie.js
 //= require vendor/bootstrap-select.min.js
+//= require vendor/clipboard.min.js
 
 
 //= require keen/scripts.bundle.js

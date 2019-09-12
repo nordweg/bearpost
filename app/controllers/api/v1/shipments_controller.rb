@@ -79,7 +79,7 @@ module Api::V1
     end
 
     def get_carrier(shipment)
-      carrier = shipment.carrier
+      carrier = shipment.carrier.new(shipment.carrier_setting)
       raise Exception.new('Carrier not found') if carrier.blank?
       carrier
     end
@@ -89,7 +89,7 @@ module Api::V1
         params[:shipment][:account] = Account.find_by!(name:params[:shipment][:account])
       end
       if params[:shipment][:carrier]
-        params[:shipment][:carrier_id] = params[:shipment][:carrier].downcase
+        params[:shipment][:carrier_class]
         params[:shipment].delete :carrier
       end
       params.require(:shipment).permit!

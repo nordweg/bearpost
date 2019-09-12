@@ -1,5 +1,5 @@
 class AccountsController < ApplicationController
-  before_action :set_account, only: [:show, :edit, :update, :destroy]
+  before_action :set_account, only: [:show, :edit, :update, :destroy, :update_carrier_settings]
 
   def index
     @accounts = Account.all
@@ -16,21 +16,15 @@ class AccountsController < ApplicationController
   end
 
   def update_carrier_settings
-    @account = Account.find(params[:id])
-    @carrier = helpers.carrier_from_id(params[:carrier_id])
-
-    # make checkboxes become true/false
-    # params[:settings][:shipping_methods].each do |k,v|
-    #   params[:settings][:shipping_methods][k]["selected"] = ActiveRecord::Type::Boolean.new.cast(params[:settings][:shipping_methods][k]["selected"])
-    # end
-
-    current_settings = @account.send(@carrier.settings_field)
-    new_settings     = current_settings.deep_merge(settings_params.to_h)
-
-    if @account.update(@carrier.settings_field => new_settings)
-      redirect_to edit_carrier_path(@carrier.id), notice: 'Configurações atualizadas com sucesso'
+    @carrier = Object.const_get params[:carrier_class]
+    current_settings = @account.settings_for(@carrier).settings
+    new_settings = current_settings.deep_merge(settings_params.to_h)
+    carrier_setting = CarrierSetting.where(account:@account,carrier_class:params[:carrier_class]).first_or_initialize
+    carrier_setting.settings = new_settings
+    if carrier_setting.save
+      redirect_to edit_carrier_path(@carrier.to_s), notice: 'Configurações atualizadas com sucesso'
     else
-      redirect_to edit_carrier_path(@carrier.id), notice: 'algo deu errado'
+      redirect_to edit_carrier_path(@carrier.to_s), notice: 'algo deu errado'
     end
   end
 

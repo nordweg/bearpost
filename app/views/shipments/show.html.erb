@@ -103,7 +103,7 @@
               </tr>
               <tr>
                 <th>Transportadora</th>
-                <td><%= link_to @carrier.display_name, edit_carrier_path(@carrier.id), class: "kt-link" if @carrier %></td>
+                <td><%= link_to @carrier.name, edit_carrier_path(@carrier.class), class: "kt-link" if @carrier %></td>
               </tr>
               <tr>
                 <th>Método de envio</th>
@@ -286,9 +286,11 @@
 </div>
 
 <script>
-new ClipboardJS('.clipboard-btn', {
+$( document ).on('turbolinks:load', function() {
+  new ClipboardJS('.clipboard-btn', {
     text: function(trigger) {
-        return $("#tracking-url").attr('href');
+      return $("#tracking-url").attr('href');
     }
+  });
 });
 </script>

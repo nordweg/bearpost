@@ -1,6 +1,10 @@
 ---
 pt-BR:
+  email: Email
+  password: Senha
+  document: Documento
   views:
+    email: oi
     pagination:
       first: "&laquo; Primeiro"
       last: "Último &raquo;"

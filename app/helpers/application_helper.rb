@@ -19,6 +19,6 @@ module ApplicationHelper
   end
 
   def carrier_selector
-    [['Todas',nil]] + Rails.configuration.carriers.map{|carrier| [carrier.display_name, carrier.id]}
+    [['Todas',nil]] + Rails.configuration.carriers.map{|carrier| [carrier.name, carrier.to_s]}
   end
 end
