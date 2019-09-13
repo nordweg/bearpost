@@ -3,6 +3,18 @@ pt-BR:
   email: Email
   password: Senha
   document: Documento
+  sigep_user: Usuário do SIGEP
+  sigep_password: Senha do SIGEP
+  tracking_user: Usuário do rastreamento
+  tracking_password: Senha do rastreamento
+  administrative_code: Código administrativo
+  contract: Contrato
+  posting_card: Cartão de postagem
+  cnpj: CNPJ
+  pac_label_minimum_quantity: "PAC: Quantidade mínima de etiquetas"
+  pac_label_reorder_quantity: "PAC: Quantidade de reposição de etiquetas"
+  sedex_label_minimum_quantity: "SEDEX: Quantidade mínima de etiquetas"
+  sedex_label_reorder_quantity: "SEDEX: Quantidade de reposição de etiquetas"
   views:
     email: oi
     pagination:

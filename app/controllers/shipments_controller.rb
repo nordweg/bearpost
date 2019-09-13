@@ -85,7 +85,6 @@ class ShipmentsController < ApplicationController
 
   def get_delivery_updates
     begin
-      @carrier.authenticate!
       delivery_updates = @carrier.get_delivery_updates(@shipment)
       delivery_updates.each do |delivery_update|
         next if @shipment.histories.find_by(description:delivery_update[:description], date:delivery_update[:date])
@@ -203,6 +202,9 @@ class ShipmentsController < ApplicationController
   def set_shipment
     @shipment = Shipment.find(params[:id])
     @carrier = @shipment.carrier.new(@shipment.carrier_setting)
+    if @carrier.valid_credentials? == false
+      @carrier.authenticate!
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

@@ -27,6 +27,7 @@ class Carrier::Azul < Carrier
   end
 
   def get_delivery_updates(shipment)
+    authenticate!
     check_tracking_number(shipment)
     token = settings['token']
     response = connection.get("api/Ocorrencias/Consultar?Token=#{token}&AWB=#{shipment.tracking_number}")

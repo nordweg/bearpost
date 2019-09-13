@@ -27,36 +27,34 @@ class Carrier::Correios < Carrier
     '81850' => "(Grupo 3 ) e-SEDEX, com contrato",
   }
 
-  def self.settings_view
-    'correios_settings'
-  end
 
   def self.shipping_methods
     ['PAC','SEDEX']
   end
 
   def authenticate!
-    verify_service_availability
+    true
+  end
+
+  def valid_credentials?
+    true
   end
 
   def self.settings
-    {
-      'general':[
-        'Usuário',
-        'Senha',
-        'Usuário Rastreamento',
-        'Senha Rastreamento',
-        'Código Administrativo',
-        'Contrato',
-        'Codigo Serviço',
-        'Cartão',
-        'CNPJ'
-      ],
-      'shipping_method':    {
-        'PAC':   ['carrier_service_id','label_minimum_quantity','label_reorder_quantity'],
-        'Sedex': ['carrier_service_id','label_minimum_quantity','label_reorder_quantity']
-      }
-    }.with_indifferent_access
+    [
+      :sigep_user,
+      :sigep_password,
+      :tracking_user,
+      :tracking_password,
+      :administrative_code,
+      :contract,
+      :posting_card,
+      :cnpj,
+      :pac_label_minimum_quantity,
+      :pac_label_reorder_quantity,
+      :sedex_label_minimum_quantity,
+      :sedex_label_reorder_quantity,
+    ]
   end
 
   def self.tracking_url
@@ -95,15 +93,17 @@ class Carrier::Correios < Carrier
 
   def get_delivery_updates(shipment)
     message = {
-      "usuario" => shipment.settings.dig('general','Usuário Rastreamento'),
-      "senha" => shipment.settings.dig('general','Senha Rastreamento'),
+      "usuario" => settings[:tracking_user],
+      "senha" => settings[:tracking_password],
       "tipo" => "L",
       "resultado" => "T",
       "lingua" => "101",
       "objetos" => shipment.tracking_number
     }
-    response = tracking_client.call(:busca_eventos, message:message)
+    response = tracking_connection.call(:busca_eventos, message:message)
     events = response.body.dig(:busca_eventos_response,:return,:objeto,:evento)
+    error = response.body.dig(:busca_eventos_response,:return,:objeto,:erro)
+    raise Exception.new("Correios: #{error}") if error
     delivery_updates = []
     events.each do |event|
       delivery_updates << {
@@ -156,13 +156,10 @@ class Carrier::Correios < Carrier
   end
 
   def check_posting_card(account)
-    user     = settings.dig('general','Usuário')
-    password = settings.dig('general','Senha')
-    posting_card = settings.dig('general','Cartão')
     message = {
-      "usuario" => user,
-      "senha" => password,
-      "numeroCartaoPostagem" =>  posting_card,
+      "usuario" => settings[:sigep_user],
+      "senha" => settings[:sigep_password],
+      "numeroCartaoPostagem" =>  settings[:posting_card],
     }
     response = client(account).call(:get_status_cartao_postagem, message:message)
 
@@ -172,28 +169,25 @@ class Carrier::Correios < Carrier
   def get_ranges_from_correios(shipping_method)
     reorder_quantity = settings.dig('shipping_methods',shipping_method,'label_reorder_quantity')
     reorder_quantity = '10' if reorder_quantity.blank?
-    user     = settings.dig('general','Usuário')
-    password = settings.dig('general','Senha')
-    cnpj     = settings.dig('general','CNPJ')
 
     message = {
       "tipoDestinatario" =>  "C",
-      "identificador" => cnpj,
+      "identificador" => settings[:cnpj],
       "idServico" => "124884",
       "qtdEtiquetas" => reorder_quantity,
-      "usuario" => user,
-      "senha" => password,
+      "usuario" => settings[:sigep_user],
+      "senha" => settings[:sigep_password],
     }
-    response = client.call(:solicita_etiquetas, message:message)
+    response = connection.call(:solicita_etiquetas, message:message)
     ranges   = response.body.dig(:solicita_etiquetas_response,:return)
     ranges.split(',')
   end
 
   def create_plp(shipments)
     account  = shipments.first.account
-    user     = settings.dig('general','Usuário')
-    password = settings.dig('general','Senha')
-    posting_card = settings.dig('general','Cartão')
+    user     = settings[:sigep_user]
+    password = settings[:sigep_password]
+    posting_card = settings[:posting_card]
     xml = build_xml(shipments)
     labels = []
     shipments.each do |shipment|
@@ -211,12 +205,10 @@ class Carrier::Correios < Carrier
   end
 
   def get_plp_xml(account,plp_number)
-    user     = settings.dig('general','Usuário')
-    password = settings.dig('general','Senha')
     message = {
       "idPlpMaster" => plp_number,
-      "usuario" => user,
-      "senha" => password,
+      "usuario" => settings[:sigep_user],
+      "senha" => settings[:sigep_password],
     }
     client(account).call(:solicita_xml_plp, message:message)
   end
@@ -249,13 +241,11 @@ class Carrier::Correios < Carrier
     response
   end
 
-
-
   def build_xml(shipments)
     account  = shipments.first.account
-    posting_card = settings.dig('general','Cartão')
-    contract = settings.dig('general','Contrato')
-    administrative_code = settings.dig('general','Código Administrativo')
+    posting_card = settings[:posting_card]
+    contract = settings[:contract]
+    administrative_code = settings[:administrative_code]
 
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.correioslog {
@@ -363,10 +353,10 @@ class Carrier::Correios < Carrier
 
   def busca_cliente(account)
     settings = CarrierSetting.carrier(Carrier::Correios).settings
-    user = settings.dig('general','Usuário')
-    password = settings.dig('general','Senha')
-    posting_card = settings.dig('general','Cartão')
-    contract = settings.dig('general','Contrato')
+    user = settings[:sigep_user]
+    password = settings[:sigep_password]
+    posting_card = settings[:posting_card]
+    contract = settings[:contract]
 
     message = {
       "idContrato" => contract,
@@ -379,33 +369,33 @@ class Carrier::Correios < Carrier
   end
 
   def consulta_cep(account)
-    client.call(:consulta_cep, message:{'cep'=>'70002900'})
+    connection.call(:consulta_cep, message:{'cep'=>'70002900'})
   end
 
   def verify_service_availability
     message = {
-      "codAdministrativo" => "17000190",
+      "codAdministrativo" => settings[:administrative_code],
       "numeroServico" => "04162",
-      "cepOrigem" => "05311900",
-      "cepDestino" => "05311900",
-      "usuario" => "sigep",
-      "senha" => "n5f9t8",
+      "cepOrigem" => "95166000",
+      "cepDestino" => "95150000",
+      "usuario" => settings[:sigep_user],
+      "senha" => settings[:sigep_password],
     }
-    client.call(:verifica_disponibilidade_servico, message:message)
+    connection.call(:verifica_disponibilidade_servico, message:message)
   end
 
-  def client
-    user = settings.dig('general','Usuário')
-    password = settings.dig('general','Senha')
+  def connection
+    url = test_mode? ? TEST_URL : LIVE_URL
+    user = settings.dig(:sigep_user)
+    password = settings.dig(:sigep_password)
     Savon.client(
-      wsdl: "https://apphom.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl", # ambiente de testes
-      # wsdl: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl",
+      wsdl: url,
       basic_auth: [user,password],
       headers: { 'SOAPAction' => '' }
     )
   end
 
-  def tracking_client
+  def tracking_connection
     Savon.client(
       wsdl: "http://webservice.correios.com.br/service/rastro/Rastro.wsdl",
       headers: { 'SOAPAction' => '' }
