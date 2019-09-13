@@ -66,7 +66,7 @@ module Api::V1
       if shipment.save
         render json: shipment.to_json(except: [:invoice_xml])
       else
-        render json: shipment.errors.full_messages
+        raise Exception.new shipment.errors.full_messages.join(", ")
       end
     end
 
