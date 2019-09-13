@@ -22,9 +22,9 @@ class AccountsController < ApplicationController
     carrier_setting = CarrierSetting.where(account:@account,carrier_class:params[:carrier_class]).first_or_initialize
     carrier_setting.settings = new_settings
     if carrier_setting.save
-      redirect_to edit_carrier_path(@carrier.to_s), notice: 'Configurações atualizadas com sucesso'
+      redirect_to edit_carrier_path(@carrier.name), notice: 'Configurações atualizadas com sucesso'
     else
-      redirect_to edit_carrier_path(@carrier.to_s), notice: 'algo deu errado'
+      redirect_to edit_carrier_path(@carrier.name), notice: 'algo deu errado'
     end
   end
 

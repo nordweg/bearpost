@@ -19,7 +19,7 @@ class CarriersController < ApplicationController
     rescue Exception => e
       flash[:error] = e.message
     end
-    redirect_to edit_carrier_path(@carrier)
+    redirect_to edit_carrier_path(@carrier.name)
   end
   def validate_credentials_ajax
     begin

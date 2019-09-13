@@ -9,7 +9,7 @@ class Carrier
 
   def initialize(carrier_setting, test_mode = false)
     @carrier_setting = carrier_setting
-    @settings = carrier_setting.settings
+    @settings = carrier_setting.settings.with_indifferent_access
     @test_mode = test_mode
   end
 
@@ -30,7 +30,7 @@ class Carrier
   def valid_credentials?
     location = self.class.default_location
     find_rates(location, location, Package.new(100, [5, 15, 30]), :test => test_mode)
-  rescue ActiveShipping::ResponseError
+  rescue
     false
   else
     true
