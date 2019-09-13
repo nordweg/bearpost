@@ -1,5 +1,5 @@
 <% content_for :subheader_title do %>
-<%= @carrier.display_name %>
+<%= @carrier.name %>
 <% end %>
 <% content_for :subheader_toolbar do %>
 
@@ -38,7 +38,7 @@
           </div>
 
           <div class="kt-portlet__body">
-            <%= hidden_field_tag 'carrier_id', @carrier.id %>
+            <%= hidden_field_tag 'carrier_class', @carrier.to_s %>
             <%= f.fields_for 'general' do |ff| %>
             <div class="row">
               <% @carrier.settings['general'].each do |setting| %>

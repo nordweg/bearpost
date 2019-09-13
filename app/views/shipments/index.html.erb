@@ -219,7 +219,7 @@ $(document).ready(function() {
           field: 'order_number',
           title: 'Pedido',
         }, {
-          field: 'carrier_id',
+          field: 'carrier',
           title: 'Transportadora',
           class: 'text-capitalize'
         }, {
@@ -287,7 +287,7 @@ $(document).ready(function() {
       });
 
       $('#kt_form_carrier').on('change', function() {
-        datatable.search($(this).val(), 'carrier_id');
+        datatable.search($(this).val(), 'carrier');
       });
 
       $('#kt_form_synced_with_carrier').on('change', function() {
@@ -308,5 +308,13 @@ $(document).ready(function() {
             $('#kt_datatable_group_action_form').collapse('hide');
           }
         });
+});
+
+$(document).on('turbolinks:load', function () {
+	$('.selectpicker').each(function (i, el) {
+		if (!$(el).parent().hasClass('bootstrap-select')) {
+			$(el).selectpicker('refresh');
+		}
+	});
 });
 </script>

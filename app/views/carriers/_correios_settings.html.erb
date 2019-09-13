@@ -1,5 +1,5 @@
 <% content_for :subheader_title do %>
-<%= @carrier.display_name %>
+<%= @carrier.name %>
 <% end %>
 <% content_for :subheader_toolbar do %>
 
@@ -21,7 +21,8 @@
 
 <div class="tab-content">
   <% @accounts.each do |account| %>
-  <% settings = account.send(@carrier.settings_field) %>
+  <% carrier_setting = account.settings_for(@carrier) %>
+  <% settings = carrier_setting.settings %>
   <div class="tab-pane" id="kt_portlet_tabs_1_<%= account.id %>_content" role="tabpanel">
 
     <%= form_for :settings, url: "/accounts/#{account.id}/update_carrier_settings" do |f| %>
@@ -38,7 +39,7 @@
           </div>
 
           <div class="kt-portlet__body">
-            <%= hidden_field_tag 'carrier_id', @carrier.id %>
+            <%= hidden_field_tag 'carrier_class', @carrier.to_s %>
             <%= f.fields_for 'general' do |ff| %>
             <div class="row">
               <% @carrier.settings['general'].each do |setting| %>
@@ -140,7 +141,7 @@
                 <% end %>
                 <tfoot>
                   <td colspan="4">Total</td>
-                  <td><%= @carrier.count_available_labels(account,'PAC') %></td>
+                  <td><%= @carrier.new(carrier_setting).count_available_labels('PAC') %></td>
                 </tfoot>
               </table>
               <% end %>
@@ -210,7 +211,7 @@
                 <% end %>
                 <tfoot>
                   <td colspan="4">Total</td>
-                  <td><%= @carrier.count_available_labels(account,'Sedex') %></td>
+                  <td><%= @carrier.new(carrier_setting).count_available_labels('Sedex') %></td>
                 </tfoot>
               </table>
               <% end %>
