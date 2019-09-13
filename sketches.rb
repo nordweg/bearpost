@@ -171,3 +171,126 @@ def translate_status(status)
   when 'canceled' then "Cancelado"
   end
 end
+
+Shipment.all.each do |shipment|
+  if shipment.carrier_class == 'azul'
+    shipment.update(carrier_class:"Carrier::Azul")
+  elsif shipment.carrier_class == 'correios'
+    shipment.update(carrier_class:"Carrier::Correios")
+  end
+end
+
+
+# <% if @carrier.shipping_methods_settings.present? %>
+# <div class="row">
+#   <%= f.fields_for 'shipping_methods' do |ff| %>
+#   <% @carrier.shipping_methods_settings.each do |shipping_method, sm_settings| %>
+#   <%= ff.fields_for shipping_method do |fff| %>
+#   <div class="col-md-4">
+#     <div class="kt-portlet">
+#       <div class="kt-portlet__head">
+#         <div class="kt-portlet__head-label">
+#           <h3 class="kt-portlet__head-title">
+#             <%= shipping_method %>
+#           </h3>
+#         </div>
+#       </div>
+#       <div class="kt-portlet__body" kt-hidden-height="163" style="">
+#         <div class="kt-portlet__content">
+#           <div class="row">
+#             <% sm_settings.each do |setting| %>
+#             <div class="col-md-6">
+#               <div class="form-group">
+#                 <%= fff.label setting %>
+#                 <%= fff.text_field setting, value:settings.dig('shipping_methods',shipping_method,setting), class: "form-control" %>
+#               </div>
+#             </div>
+#             <% end %>
+#           </div>
+#         </div>
+#       </div>
+#     </div>
+#   </div>
+#   <% end %>
+#   <% end %>
+#   <% end %>
+# </div>
+# <% end %>
+
+
+
+prod_client = 9912292007
+
+user = "igor@nordweg.com"
+password = "n5wa9q"
+prod_client = Savon.client(
+  wsdl: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl",
+  basic_auth: [user,password],
+  headers: { 'SOAPAction' => '' }
+)
+
+message = {
+  "idContrato" => "9912292007",
+  "idCartaoPostagem" => "0073034193",
+  "usuario" => user,
+  "senha" => password,
+}
+
+prod_client.call(:busca_cliente, message:message)
+
+
+prod_client = Savon.client(
+  wsdl: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl",
+  basic_auth: ["igor@nordweg.com","n5wa9q"],
+  headers: { 'SOAPAction' => '' }
+)
+
+message = {
+  "idContrato" => "9912292007",
+  "idCartaoPostagem" => "0063292882",
+  "usuario" => "igor@nordweg.com",
+  "senha" => "n5wa9q",
+}
+
+prod_client.call(:busca_cliente, message:message)
+
+
+array = []
+Account.all.each do |account|
+  hash = {}
+  hash[:account] = account.name
+  hash[:carriers] = []
+  Carriers.all.each do |carrier|
+    carrier_hash = {}
+    carrier_hash[:name] = carrier.name
+    carrier_hash[:class_name] = carrier.to_s
+    carrier_hash[:shipping_methods] = carrier.shipping_methods
+    hash[:carriers] << carrier_hash
+  end
+  array << hash
+end
+
+message = {
+  "IDCotacao": 0,
+  "BaseOrigem": "",
+  "CEPOrigem": "13179180",
+  "BaseDestino": "",
+  "CEPDestino": "13080650",
+  "PesoCubado": 30,
+  "PesoReal": 30,
+  "Volume": 1,
+  "ValorTotal": 100,
+  "Pedido": "",
+  "Itens": [
+    {
+      "Volume": 1,
+      "Peso": 30,
+      "Altura": 15,
+      "Comprimento": 40,
+      "Largura": 30,
+      "EspecieId": 0
+    }
+  ]
+}
+
+@carrier.connection.post("api/Cotacao/Enviar", message)

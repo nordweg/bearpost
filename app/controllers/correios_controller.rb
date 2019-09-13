@@ -3,8 +3,10 @@ class CorreiosController < ActionController::Base
   def save_new_range
     account         = Account.find_by(id:params[:account_id])
     shipping_method = params[:shipping_method]
-    Carrier::Correios.save_new_range(account,shipping_method)
-    redirect_to edit_carrier_path(Carrier::Correios.id)
+    carrier_setting = account.settings_for(Carrier::Correios)
+    @carrier = Carrier::Correios.new(carrier_setting)
+    @carrier.save_new_range(shipping_method)
+    redirect_to edit_carrier_path(@carrier)
   end
 
   def send_plp
@@ -28,7 +30,7 @@ class CorreiosController < ActionController::Base
     else
       flash[:alert] = 'Não há envios novos'
     end
-    redirect_to edit_carrier_path(Carrier::Correios.id)
+    redirect_to edit_carrier_path(Carrier::Correios)
   end
 
   def get_plp
