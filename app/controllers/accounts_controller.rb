@@ -17,7 +17,7 @@ class AccountsController < ApplicationController
 
   def update_carrier_settings
     @carrier = Object.const_get params[:carrier_class]
-    current_settings = @account.carrier_setting_for(@carrier).settings
+    current_settings = @account.carrier_setting_for(@carrier).try(:settings) || {}
     new_settings = current_settings.deep_merge(settings_params.to_h)
     carrier_setting = CarrierSetting.where(account:@account,carrier_class:params[:carrier_class]).first_or_initialize
     carrier_setting.settings = new_settings
