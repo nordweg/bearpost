@@ -1,12 +1,6 @@
 class Shipment < ApplicationRecord
-  # paginates_per 10
-  # validates_uniqueness_of :shipment_number, scope: :order_number
-  # validates_presence_of   :invoice_series
-  # validates_presence_of   :invoice_number
-  # If we want unique invoice numbers in a series
-  # validates_uniqueness_of :invoice_number, scope: :invoice_series
-
-  validates_uniqueness_of :shipment_number, scope: :company_id
+  validates_uniqueness_of :shipment_number
+  validates_presence_of :carrier_class
 
   scope :ready_to_ship, -> { where(status: 'ready', sent_to_carrier:false) }
   scope :shipped,       -> { where(status: 'shipped') }

@@ -21,7 +21,7 @@
 
 <div class="tab-content">
   <% @accounts.each do |account| %>
-  <% carrier_setting = account.settings_for(@carrier) %>
+  <% carrier_setting = account.carrier_setting_for(@carrier) %>
   <% settings = carrier_setting.settings %>
   <div class="tab-pane" id="kt_portlet_tabs_1_<%= account.id %>_content" role="tabpanel">
 

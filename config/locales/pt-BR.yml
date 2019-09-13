@@ -28,6 +28,9 @@ pt-BR:
   ready: Pronto para envio
   cancelled: Cancelado
   activerecord:
+    attributes:
+      shipment:
+        carrier_class: Transportadora
     errors:
       messages:
         record_invalid: 'A validação falhou: %{errors}'
