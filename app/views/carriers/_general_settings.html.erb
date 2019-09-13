@@ -19,7 +19,8 @@
 
 <div class="tab-content">
   <% @accounts.each do |account| %>
-  <% settings = account.settings_for(@carrier).settings.with_indifferent_access %>
+  <% carrier_setting = account.carrier_setting_for(@carrier) %>
+  <% settings = carrier_setting ? carrier_setting.settings.with_indifferent_access : {} %>
   <div class="tab-pane" id="kt_portlet_tabs_1_<%= account.id %>_content" role="tabpanel">
 
     <%= form_for :settings, url: "/accounts/#{account.id}/update_carrier_settings" do |f| %>
