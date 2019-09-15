@@ -64,23 +64,19 @@ class Carrier::Correios < Carrier
   def get_tracking_number(shipment)
     account         = shipment.account
     shipping_method = shipment.shipping_method
-
     check_tracking_number_availability(account,shipping_method)
-
     current_range = settings['shipping_methods'][shipping_method]['ranges'].first
     prefix        = current_range['prefix']
     number        = current_range['next_number']
     sufix         = current_range['sufix']
     verification_digit = get_verification_digit(number)
     tracking_number    = "#{prefix}#{number}#{verification_digit}#{sufix}"
-
     if current_range['next_number'] + 1 > current_range['last_number']
       settings['shipping_methods'][shipping_method]['ranges'].delete(current_range)
     else
       current_range['next_number'] += 1
     end
     carrier_setting.save
-
     tracking_number
   end
 
