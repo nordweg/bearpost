@@ -84,7 +84,7 @@ class ShipmentsController < ApplicationController
   end
 
   def get_delivery_updates
-    begin
+    # begin
       delivery_updates = @carrier.get_delivery_updates(@shipment)
       delivery_updates.each do |delivery_update|
         next if @shipment.histories.find_by(description:delivery_update[:description], date:delivery_update[:date])
@@ -96,9 +96,9 @@ class ShipmentsController < ApplicationController
         )
       end
       flash[:success] = 'Histórico atualizado'
-    rescue Exception => e
-      flash[:error] = e.message
-    end
+    # rescue Exception => e
+    #   flash[:error] = e.message
+    # end
     redirect_to @shipment
   end
 
