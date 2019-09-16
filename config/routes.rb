@@ -30,11 +30,11 @@ Rails.application.routes.draw do
       get  'send_to_carriers',     to: "shipments#send_to_carriers"
     end
     member do
-      get  'get_tracking_number',  to: "shipments#get_tracking_number"
-      get  'get_labels',           to: "shipments#get_labels", format: :pdf
-      post 'send_to_carrier',      to: "shipments#send_to_carrier"
-      post 'set_as_shipped',       to: "shipments#set_as_shipped"
-      post 'get_delivery_updates', to: "shipments#get_delivery_updates"
+      get  'get_tracking_number',   to: "shipments#get_tracking_number"
+      get  'get_labels',            to: "shipments#get_labels", format: :pdf
+      post 'send_to_carrier',       to: "shipments#send_to_carrier"
+      post 'set_as_shipped',        to: "shipments#set_as_shipped"
+      post 'save_delivery_updates', to: "shipments#save_delivery_updates"
     end
   end
 

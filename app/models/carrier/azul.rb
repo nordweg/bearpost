@@ -7,7 +7,7 @@ class Carrier::Azul < Carrier
   SERVICES = ['Standart']
 
   def self.settings
-    ['email','password','document']
+    ['email','password','document'] # REFACTOR > Is document = CNPJ? Maybe rename?
   end
 
   def self.shipping_methods
@@ -123,16 +123,16 @@ class Carrier::Azul < Carrier
 
   def valid_credentials?
     authenticate_user(
-      settings["email"],
-      settings["password"],
-      settings["document"]
+      carrier_setting.settings["email"],
+      carrier_setting.settings["password"],
+      carrier_setting.settings["document"]
     )
   end
 
   def get_delivery_updates(shipment)
     authenticate!
     check_tracking_number(shipment)
-    token = settings['token']
+    token = carrier_setting.settings['token'] # REFACTOR > Call it authentication_token. Had to read the rest of the code to figure out what token it is
     response = connection.get("api/Ocorrencias/Consultar?Token=#{token}&AWB=#{shipment.tracking_number}")
     check_response(response)
     events = response.body.dig("Value", 0, "Ocorrencias")
@@ -141,31 +141,42 @@ class Carrier::Azul < Carrier
       delivery_updates << {
         date: event["DataHora"],
         description: "#{event['Descricao']} - #{event['UnidadeMunicipio']}, #{event['UnidadeUF']}",
-        bearpost_macro_status: STATUS_CODES.try(:[], event["Codigo"]).try(:[], :"bearpost_status")
+        bearpost_status: STATUS_CODES.try(:[], event["Codigo"]).try(:[], :"bearpost_status")
       }
     end
     delivery_updates
   end
 
-  def authenticate!
-    token_expire_date = settings['token_expire_date'].try(:to_datetime)
+  def authenticate! # REFACTOR > hard to know difference between authenticate! and authenticate_user
+    token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
     if token_expire_date.blank? || token_expire_date < DateTime.now
       renew_token
     end
   end
 
   def renew_token
-    user     = settings['email']
-    password = settings['password']
-    cpf_cnpj = settings['document']
-    response = authenticate_user(user, password, cpf_cnpj)
+    response = authenticate_user
     token    = response.body["Value"]
-    settings['token'] = token
-    settings['token_expire_date'] = DateTime.now + 7.hours
+    carrier_setting.settings['token'] = token
+    carrier_setting.settings['token_expire_date'] = DateTime.now + 7.hours
     carrier_setting.save
   end
 
-  def check_tracking_number(shipment)
+  def authenticate_user
+    credentials = {
+        "Email" => carrier_setting.settings["email"], # REFACTOR > settings.settings looks bad
+        "Senha" => carrier_setting.settings["password"],
+        "CpfCnpj" => carrier_setting.settings["document"]
+    }
+    response = connection.post("api/Autenticacao/ValidarUsuarioPortalClienteEdi", credentials)
+    if response.body["HasErrors"]
+      raise Exception.new("Azul - Authentication Error: #{response.body["ErrorText"]}")
+    else
+      response
+    end
+  end
+
+  def check_tracking_number(shipment) # REFACTOR > Make this default for all instead of carrier defining this logic? Or could check for tracking automatically if not present. Probably enough logic to create an TrackingCodeChecker
     raise Exception.new("Azul - Este envio não tem um código de rastreio (AWB)") if shipment.tracking_number.blank?
   end
 
@@ -183,20 +194,6 @@ class Carrier::Azul < Carrier
       conn.request :json
       conn.response :json, :content_type => /\bjson$/
       conn.adapter Faraday.default_adapter
-    end
-  end
-
-  def authenticate_user(user, password, cpf_cnpj)
-    credentials = {
-        "Email" => user,
-        "Senha" => password,
-        "CpfCnpj" => cpf_cnpj
-    }
-    response = connection.post("api/Autenticacao/ValidarUsuarioPortalClienteEdi", credentials)
-    if response.body["HasErrors"]
-      raise Exception.new("Azul - Authentication Error: #{response.body["ErrorText"]}")
-    else
-      response
     end
   end
 

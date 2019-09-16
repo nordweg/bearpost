@@ -1,8 +1,8 @@
 class ShipmentsController < ApplicationController
 
-  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number,
-     :get_labels, :ship, :send_to_carrier, :set_as_shipped, :get_delivery_updates]
-  # include ApplicationHelper
+  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number, :get_labels, :ship, :send_to_carrier, :set_as_shipped, :get_delivery_updates, :save_delivery_updates]
+  before_action :set_carrier, only: [:show, :get_delivery_updates, :save_delivery_updates]
+
 
   def index
     if params[:search].present?
@@ -52,14 +52,9 @@ class ShipmentsController < ApplicationController
     hash
   end
 
-  def get_tracking_number
-    begin
-      @carrier.authenticate!
-      @shipment.update(tracking_number: @carrier.get_tracking_number(@shipment))
-      flash[:success] = 'Rastreio atualizado'
-    rescue Exception => e
-      flash[:error] = e.message
-    end
+  def get_tracking_number # REFACTOR > THIS WASN'T SINGLE RESPONSABILITY. IT WAS GETTING AND SAVING TRACKING CODE. RENAME TO UPDATE_TRACKING_NUMBER
+    tracking_number = @shipment.get_tracking_number
+    @shipment.update(tracking_number: tracking_number)
     redirect_to @shipment
   end
 
@@ -83,26 +78,34 @@ class ShipmentsController < ApplicationController
     redirect_to @shipment
   end
 
-  def get_delivery_updates
+  def get_delivery_updates # REFACTOR > Move to own model DeliveryUpdatesRequester
     # begin
       delivery_updates = @carrier.get_delivery_updates(@shipment)
-      delivery_updates.each do |delivery_update|
-        next if @shipment.histories.find_by(description:delivery_update[:description], date:delivery_update[:date])
-        @shipment.histories.create(
-          description: delivery_update[:description],
-          date: delivery_update[:date],
-          changed_by: @carrier.name,
-          category: 'carrier',
-        )
-      end
-      flash[:success] = 'Histórico atualizado'
     # rescue Exception => e
     #   flash[:error] = e.message
+    #   redirect_to @shipment
     # end
+    delivery_updates
+  end
+
+  def save_delivery_updates # REFACTOR > Less logic? See https://github.com/spree/spree/blob/master/backend/app/controllers/spree/admin/orders_controller.rb
+    delivery_updates = get_delivery_updates
+    delivery_updates.each do |delivery_update|
+      next if @shipment.histories.find_by(description:delivery_update[:description], date:delivery_update[:date])
+      @shipment.histories.create(
+        description: delivery_update[:description],
+        date: delivery_update[:date],
+        changed_by: @carrier.name,
+        category: 'carrier',
+      )
+    end
+    current_status = @shipment.histories.recent_first.first[:"bearpost_status"]
+    @shipment.update(status: current_status)
+    flash[:success] = 'Histórico atualizado com sucesso'
     redirect_to @shipment
   end
 
-  def send_to_carriers
+  def send_to_carriers # REFACTOR > Are we asking one shipment to send all shipments to all carriers? Maybe we should create a CarrierSynchonizer
     results = []
     available_carriers.each do |carrier|
       current_company.accounts.each do |account|
@@ -199,12 +202,16 @@ class ShipmentsController < ApplicationController
   end
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_shipment
+  def set_shipment # REFACTOR > It's also setting carrier, which needs authentication just to view shipment. Make single responsability. No need to autenticate with carrier just to view shipment
     @shipment = Shipment.find(params[:id])
-    @carrier = @shipment.carrier.new(@shipment.carrier_setting)
-    if @carrier.valid_credentials? == false
-      @carrier.authenticate!
-    end
+    # @carrier = @shipment.carrier.new(@shipment.carrier_settings)
+    # if @carrier.valid_credentials? == false # REFACTOR > This was making viewing a shipment slow. What's the need to authenticate with carrier at this state?
+    #   @carrier.authenticate!
+    # end
+  end
+
+  def set_carrier
+    @carrier = @shipment.carrier.new(@shipment.carrier_settings)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
