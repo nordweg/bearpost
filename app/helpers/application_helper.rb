@@ -23,15 +23,17 @@ module ApplicationHelper
   end
 
   def status_label(status)
-    class_list = {
-      'pending' => 'kt-badge--metal',
-      'ready' =>'kt-badge--brand',
-      'shipped' => 'kt-badge--success',
-      'canceled' => 'kt-badge--warning'
-    }
-    right_class = class_list[status] || 'kt-badge--metal'
+    right_class = case status
+      when 'pending'    then "kt-badge--metal"
+      when 'ready'      then "kt-badge--brand"
+      when 'shipped'    then "kt-badge--success"
+      when 'canceled'   then "kt-badge--warning"
+      else "kt-badge--metal"
+    end
     "<span class='kt-badge #{right_class} kt-badge--inline kt-badge--pill'>#{ I18n.t(status) }</span>".html_safe
   end
+
+
 
 
 end

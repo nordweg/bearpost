@@ -17,7 +17,7 @@ class Shipment < ApplicationRecord
   after_create :first_history
 
   def carrier_settings
-    CarrierSettingsManager.get_carrier_settings_from_shipment(self)
+    CarrierSetting.get_settings_from_shipment(self)
   end
 
   def first_history # REFACTOR > Rename this
@@ -100,4 +100,47 @@ class Shipment < ApplicationRecord
       hash["carrier"] = carrier.name
     end
   end
+
+  def save_delivery_updates()
+    delivery_updates = get_delivery_updates
+    delivery_updates.each do |delivery_update|
+      self.histories.create(
+        description: delivery_update[:description],
+        date: delivery_update[:date],
+        changed_by: carrier.name,
+        category: 'carrier',
+      )
+    end
+    current_status = self.histories.recent_first.first[:"bearpost_status"]
+    self.update(status: current_status)
+  end
+
+  def get_delivery_updates
+    carrier.new(carrier_settings).get_delivery_updates(self)
+  end
+
+  def self.filter(params)
+    if params[:search].present?
+      shipments = self.where(
+        "CONCAT(first_name, ' ' ,last_name) ILIKE :search
+        OR regexp_replace(cpf, '\\D', '', 'g') ILIKE regexp_replace(:search, '\\D', '', 'g')
+        OR order_number ILIKE :search
+        OR shipment_number ILIKE :search
+        OR city ILIKE :search",
+        search: "%#{params[:search]}%"
+      )
+    else
+      shipments = self.all
+    end
+    shipments = shipments.where(status:params[:status]) if params[:status].present?
+    shipments = shipments.where(carrier_class:params[:carrier]) if params[:carrier].present?
+    if params[:date_range].present?
+      start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
+      end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day
+      shipments = shipments.where("created_at > ? AND created_at < ?", start_date, end_date)
+    end
+    shipments
+  end
+
+
 end

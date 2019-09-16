@@ -26,11 +26,11 @@ Rails.application.routes.draw do
   resources :shipments do
     collection do
       get  '/',                    to: "shipments#index"
-      post 'new',                  to: "shipments#new"
+      post 'new_from_xml',         to: "shipments#new_from_xml"
       get  'send_to_carriers',     to: "shipments#send_to_carriers"
     end
     member do
-      get  'get_tracking_number',   to: "shipments#get_tracking_number"
+      get  'save_tracking_number',  to: "shipments#save_tracking_number"
       get  'get_labels',            to: "shipments#get_labels", format: :pdf
       post 'send_to_carrier',       to: "shipments#send_to_carrier"
       post 'set_as_shipped',        to: "shipments#set_as_shipped"
@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :shipments do
         member do
-          get  'get_tracking_number',  to: "shipments#get_tracking_number"
+          get  'save_tracking_number', to: "shipments#save_tracking_number"
           get  'get_labels',           to: "shipments#get_labels", format: :pdf
           post 'send_to_carrier',      to: "shipments#send_to_carrier"
           post 'update_invoice_xml',   to: "shipments#update_invoice_xml"

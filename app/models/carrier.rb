@@ -9,7 +9,7 @@ class Carrier
 
   def initialize(carrier_setting, test_mode = false)
     @carrier_setting = carrier_setting
-    # @settings = carrier_setting #.settings.with_indifferent_access
+    # @settings = carrier_setting.settings.with_indifferent_access
     @test_mode = test_mode
   end
 

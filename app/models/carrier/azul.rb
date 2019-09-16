@@ -147,22 +147,20 @@ class Carrier::Azul < Carrier
     delivery_updates
   end
 
-  def authenticate! # REFACTOR > hard to know difference between authenticate! and authenticate_user
+  def authenticate!
     token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
     if token_expire_date.blank? || token_expire_date < DateTime.now
-      renew_token
+      get_authentication_token
     end
   end
 
-  def renew_token
-    response = authenticate_user
-    token    = response.body["Value"]
+  def save_authentication_token(token)
     carrier_setting.settings['token'] = token
     carrier_setting.settings['token_expire_date'] = DateTime.now + 7.hours
     carrier_setting.save
   end
 
-  def authenticate_user
+  def get_authentication_token
     credentials = {
         "Email" => carrier_setting.settings["email"], # REFACTOR > settings.settings looks bad
         "Senha" => carrier_setting.settings["password"],
@@ -172,7 +170,9 @@ class Carrier::Azul < Carrier
     if response.body["HasErrors"]
       raise Exception.new("Azul - Authentication Error: #{response.body["ErrorText"]}")
     else
-      response
+      token = response.body["Value"]
+      save_authentication_token(token)
+      token
     end
   end
 
