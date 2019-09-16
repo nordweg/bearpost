@@ -9,7 +9,7 @@ class Carrier
 
   def initialize(carrier_setting, test_mode = false)
     @carrier_setting = carrier_setting
-    @settings = carrier_setting.settings.with_indifferent_access
+    # @settings = carrier_setting #.settings.with_indifferent_access
     @test_mode = test_mode
   end
 
@@ -82,9 +82,15 @@ class Carrier
     []
   end
 
-  # Overwrite this method if you want to use a personalized view instead of views/carriers/_general_settings
-  def self.settings_view
+
+  # Sets which view should be used in carrier settings. Will use views/carriers/_general_settings as default or
+  # overwrite if you want to use a personalized view instead.
+  def self.settings_view # REFACTOR > RENAME TO
     'general_settings'
   end
+
+  # def settings(account_id) # REFACTOR > DON'T LIKE THE CARRIER KNOWING WHICH ACCOUNT IT'S FROM. IT SHOULD ONLY GET THE OPTIONS/CREDENTIAL AND THATS IT. IT DOESN'T NEED TO KNOW THERE ARE MORE THEN ONE ACCOUNTS ARE THERE
+  #   CarrierSetting.find_by(account_id: account_id, carrier_class: self.class)
+  # end
 
 end

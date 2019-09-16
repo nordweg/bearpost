@@ -105,7 +105,7 @@ class Carrier::Correios < Carrier
       delivery_updates << {
         date: "#{event[:data]} #{event[:hora]}",
         description: "#{event[:descricao]} em #{event[:cidade]}, #{event[:uf]}. #{event[:local]}",
-        bearpost_macro_status: 'Entregue'
+        bearpost_status: 'Entregue'
       }
     end
     delivery_updates

@@ -13,14 +13,14 @@ class Shipment < ApplicationRecord
 
   after_create :create_package
   before_save  :update_invoice_number
-  after_update :save_history
+  after_update :save_status_change_to_history
   after_create :first_history
 
-  def carrier_setting
-    CarrierSetting.find_by(account_id:account_id,carrier_class:carrier_class)
+  def carrier_settings
+    CarrierSettingsManager.get_carrier_settings_from_shipment(self)
   end
 
-  def first_history
+  def first_history # REFACTOR > Rename this
     histories.create(
       user: Current.user,
       description: "Pedido criado",
@@ -29,11 +29,10 @@ class Shipment < ApplicationRecord
     )
   end
 
-  def save_history
+  def save_status_change_to_history
     if saved_changes.include?("status")
         before = I18n.t saved_changes["status"][0]
         after  = I18n.t saved_changes["status"][1]
-
         histories.create(
           user: Current.user,
           description: "Status alterado de #{before} para #{after}",
@@ -43,7 +42,19 @@ class Shipment < ApplicationRecord
     end
   end
 
-  def sent_to_carrier!
+  def get_tracking_number
+    begin
+      carrier = carrier.new(carrier_settings)
+      carrier.authenticate! # REFACTOR > WHY DO WE NEED TO AUTHENTICATE FROM HERE? WOULDN'T IT BE BETTER TO INITIALIZE THE CARRIER AND JUST ASK FOR THE TRACKING CODE?
+      tracking_number = carrier.get_tracking_number(@shipment)
+      flash[:success] = 'Rastreio atualizado'
+    rescue Exception => e
+      flash[:error] = e.message
+    end
+    redirect_to @shipment
+  end
+
+  def sent_to_carrier! # REFACTOR > Not to easy to understand what this is doing
     update(sent_to_carrier:true)
     histories.create(
       user: Current.user,
@@ -71,7 +82,7 @@ class Shipment < ApplicationRecord
     shipped_at.present?
   end
 
-  def full_name
+  def full_name # REFACTOR > Receipient full name?
     "#{first_name} #{last_name}"
   end
 
@@ -80,7 +91,7 @@ class Shipment < ApplicationRecord
   end
 
   def carrier
-    Object.const_get carrier_class
+    Object.const_get(carrier_class)
   end
 
   def as_json(*)

@@ -10,6 +10,13 @@
 <% end %>
 
 <%= content_for :subheader_toolbar do %>
+
+  <%= link_to get_labels_shipment_path(format: :pdf), class: "btn btn-sm btn-secondary btn-label-brand", target:'_blank' do %>
+  <i class="la la-print"></i> Imprimir etiquetas
+  <% end %>
+
+  <%= link_to "Editar", edit_shipment_path, class: "btn btn-sm btn-elevate btn-brand btn-elevate" %>
+
   <div class="btn-group">
     <button type="button" class="btn btn-pill btn-outline-brand btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Opções
@@ -24,11 +31,6 @@
     </div>
   </div>
 
-  <%= link_to get_labels_shipment_path(format: :pdf), class: "btn btn-sm btn-secondary btn-label-brand", target:'_blank' do %>
-  <i class="la la-print"></i> Imprimir etiquetas
-  <% end %>
-
-  <%= link_to "Editar", edit_shipment_path, class: "btn btn-sm btn-elevate btn-brand btn-elevate" %>
 <% end %>
 
 <!-- Modal de Informações Adicionais-->
@@ -74,7 +76,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-8">
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -83,8 +85,6 @@
           </h3>
         </div>
       </div>
-
-
       <div class="kt-portlet__body">
         <div class="kt-portlet__content">
           <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
@@ -155,34 +155,8 @@
         </div>
       </div>
     </div>
-  </div>
 
-
-  <div class="col-md-6">
-    <div class="kt-portlet kt-portlet--height-fluid">
-      <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">
-            Informações adicionais
-          </h3>
-        </div>
-      </div>
-
-
-      <div class="kt-portlet__body">
-        <div class="kt-portlet__content">
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<div class="row">
-  <div class="col-md-6">
-
-    <div class="kt-portlet kt-portlet--height-fluid">
+    <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
@@ -197,34 +171,6 @@
         </div>
       </div>
     </div>
-
-  </div>
-  <div class="col-md-6">
-
-    <div class="kt-portlet kt-portlet--height-fluid">
-      <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">
-            Remetente
-          </h3>
-        </div>
-      </div>
-
-      <div class="kt-portlet__body">
-        <div class="kt-portlet__content">
-          <%= render "account_address", account: @shipment.account %>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-<div class="row">
-
-  <div class="col-md-6">
-
     <% total_shipments = @shipment.packages.size %>
     <div class="row">
 
@@ -256,9 +202,9 @@
     <%= link_to new_package_path(shipment_id:@shipment.id), class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
     <i class="flaticon2-plus"></i> Novo pacote
     <% end %>
-  </div>
+  </div><!-- End of first column -->
 
-  <div class="col-md-6">
+  <div class="col-md-4">
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -267,7 +213,7 @@
           </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-          <%= link_to get_delivery_updates_shipment_path, class: "btn btn-sm btn-outline-brand btn-elevate btn-circle btn-icon", method:'post' do %>
+          <%= link_to save_delivery_updates_shipment_path, class: "btn btn-sm btn-outline-brand btn-elevate btn-circle btn-icon", method:'post' do %>
             <i class="la la-refresh"></i>
           <% end %>
         </div>
