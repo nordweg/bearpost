@@ -18,7 +18,7 @@ Envios
   </button>
   <div class="dropdown-menu dropdown-menu-right">
     <h6 class="dropdown-header">Criar a partir de uma nota fiscal</h6>
-    <%= form_for :invoice_xml, url: new_shipment_path, html: {class: 'd-none'} do |f| %>
+    <%= form_for :invoice_xml, url: new_from_xml_shipments_path, html: {class: 'd-none'} do |f| %>
     <%= f.file_field :invoice_xml, id:"fileinput" %><br><br>
     <%= f.submit 'Enviar' %>
     <% end  %>
@@ -245,7 +245,7 @@ $(document).ready(function() {
             return formattedDate;
           },
         }, {
-          field: 'status',
+          field: 'status',  // REFACTOR > make regular table and use helper for color label
           title: 'Status',
           // callback function support for column rendering
           template: function(row) {

@@ -3,27 +3,8 @@ class ShipmentsController < ApplicationController
   before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number, :get_labels, :ship, :send_to_carrier, :set_as_shipped, :get_delivery_updates, :save_delivery_updates]
   before_action :set_carrier, only: [:show, :get_delivery_updates, :save_delivery_updates]
 
-
   def index
-    if params[:search].present?
-      @shipments = Shipment.where(
-        "CONCAT(first_name, ' ' ,last_name) ILIKE :search
-        OR regexp_replace(cpf, '\\D', '', 'g') ILIKE regexp_replace(:search, '\\D', '', 'g')
-        OR order_number ILIKE :search
-        OR shipment_number ILIKE :search
-        OR city ILIKE :search",
-        search: "%#{params[:search]}%"
-      )
-    else
-      @shipments = Shipment.all
-    end
-    @shipments = @shipments.where(status:params[:status]) if params[:status].present?
-    @shipments = @shipments.where(carrier_class:params[:carrier]) if params[:carrier].present?
-    if params[:date_range].present?
-      start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
-      end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day
-      @shipments = @shipments.where("created_at > ? AND created_at < ?", start_date, end_date)
-    end
+    @shipments = Shipment.filter(params)
     @shipments = @shipments.order(created_at: :desc).page(params[:page])
   end
 
@@ -31,28 +12,17 @@ class ShipmentsController < ApplicationController
   end
 
   def new
-    shipment_data = params[:invoice_xml] ? get_info_from_xml : nil
-    @shipment = Shipment.new(shipment_data)
-    @available_shipping_methods = get_shipping_methods
+    @shipment = Shipment.new
   end
 
-  # GET /shipments/1/edit
+  def new_from_xml
+    @shipment = Shipment.new(get_info_from_xml)
+  end
+
   def edit
-    @available_shipping_methods = get_shipping_methods
   end
 
-  def get_shipping_methods
-    hash = {}
-    current_user.company.accounts.each do |account|
-      hash[account.name] = {}
-      Rails.configuration.carriers.each do |carrier|
-        hash[account.name][carrier.name] = carrier::SERVICES
-      end
-    end
-    hash
-  end
-
-  def get_tracking_number # REFACTOR > THIS WASN'T SINGLE RESPONSABILITY. IT WAS GETTING AND SAVING TRACKING CODE. RENAME TO UPDATE_TRACKING_NUMBER
+  def save_tracking_number
     tracking_number = @shipment.get_tracking_number
     @shipment.update(tracking_number: tracking_number)
     redirect_to @shipment
@@ -63,45 +33,18 @@ class ShipmentsController < ApplicationController
     require "barby/outputter/png_outputter"
     @carrier.prepare_label(@shipment)
     respond_to do |format|
-      format.html do
-        render layout: 'pdf'
-      end
-      format.pdf do
-        render pdf: "Etiqueta-#{@shipment.shipment_number}",
-        template: "shipments/get_labels.html.erb"
-      end
+      format.html { render layout: 'pdf' }
+      format.pdf { render pdf: "Etiqueta-#{@shipment.shipment_number}", template: "shipments/get_labels.html.erb" }
     end
-  end
-
-  def set_as_shipped
-    @shipment.update(status:'shipped')
-    redirect_to @shipment
-  end
-
-  def get_delivery_updates # REFACTOR > Move to own model DeliveryUpdatesRequester
-    # begin
-      delivery_updates = @carrier.get_delivery_updates(@shipment)
-    # rescue Exception => e
-    #   flash[:error] = e.message
-    #   redirect_to @shipment
-    # end
-    delivery_updates
   end
 
   def save_delivery_updates # REFACTOR > Less logic? See https://github.com/spree/spree/blob/master/backend/app/controllers/spree/admin/orders_controller.rb
-    delivery_updates = get_delivery_updates
-    delivery_updates.each do |delivery_update|
-      next if @shipment.histories.find_by(description:delivery_update[:description], date:delivery_update[:date])
-      @shipment.histories.create(
-        description: delivery_update[:description],
-        date: delivery_update[:date],
-        changed_by: @carrier.name,
-        category: 'carrier',
-      )
-    end
-    current_status = @shipment.histories.recent_first.first[:"bearpost_status"]
-    @shipment.update(status: current_status)
-    flash[:success] = 'Histórico atualizado com sucesso'
+    # begin
+      @shipment.save_delivery_updates
+      flash[:success] = 'Histórico atualizado com sucesso'
+    # rescue Exception => e
+    #   flash[:error] = e.message
+    # end
     redirect_to @shipment
   end
 
@@ -133,44 +76,27 @@ class ShipmentsController < ApplicationController
   end
 
   def create
-    @shipment         = Shipment.new(shipment_params)
+    @shipment = Shipment.new(shipment_params)
     @shipment.company = current_user.company
-    respond_to do |format|
-      if @shipment.save
-        format.html { redirect_to @shipment, notice: 'Shipment was successfully created.' }
-        format.json { render :show, status: :created, location: @shipment }
-      else
-        format.html {
-          flash[:error] = @shipment.errors.full_messages
-          render :new
-        }
-        format.json { render json: @shipment.errors, status: :unprocessable_entity }
-      end
+    if @shipment.save
+      redirect_to @shipment, notice: 'O envio foi criado com sucesso!'
+    else
+      flash[:error] = @shipment.errors.full_messages
+      render :new
     end
   end
 
-  # PATCH/PUT /shipments/1
-  # PATCH/PUT /shipments/1.json
   def update
-    respond_to do |format|
-      if @shipment.update(shipment_params)
-        format.html { redirect_to @shipment, notice: 'Shipment was successfully updated.' }
-        format.json { render :show, status: :ok, location: @shipment }
-      else
-        format.html { render :edit }
-        format.json { render json: @shipment.errors, status: :unprocessable_entity }
-      end
+    if @shipment.update(shipment_params)
+      redirect_to @shipment, notice: 'O envio foi atualizado com sucesso!'
+    else
+      render :edit
     end
   end
 
-  # DELETE /shipments/1
-  # DELETE /shipments/1.json
   def destroy
     @shipment.destroy
-    respond_to do |format|
-      format.html { redirect_to shipments_url, notice: 'Shipment was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    redirect_to shipments_url, notice: 'O envio apagado com sucesso!'
   end
 
   private

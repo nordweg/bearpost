@@ -22,7 +22,7 @@
       Opções
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-      <%= link_to "Marcar como enviado", set_as_shipped_shipment_path, class: "dropdown-item", method:'post' %>
+      <%= link_to "Marcar como enviado", shipment_path(@shipment, shipment: {status: "shipped"}), class: "dropdown-item", method:'patch' %>
       <%= link_to "Informações adicionais", "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
       <div class="dropdown-divider"></div>
       <% @carrier.shipment_menu_links.each do |text, path| %>
@@ -125,7 +125,7 @@
                     <% if @shipment.tracking_number.present? %>
                       <%= link_to @shipment.tracking_number, @shipment.tracking_url, class: "kt-link", id:"tracking-url", target: "_blank" %>
                     <% else %>
-                      <%= link_to "Obter rastreio", get_tracking_number_shipment_path, class: "kt-link" %>
+                      <%= link_to "Obter rastreio", save_tracking_number_shipment_path, class: "kt-link" %>
                     <% end %>
                   </td>
                 </tr>
