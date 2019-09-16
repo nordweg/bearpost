@@ -77,81 +77,75 @@
 
 <div class="row">
   <div class="col-md-8">
+
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
             Geral
           </h3>
+          <span class="ml-3"><%= status_label(@shipment.status) %></span>
+
         </div>
       </div>
       <div class="kt-portlet__body">
         <div class="kt-portlet__content">
-          <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-            <tbody>
-              <tr>
-                <th>Status</th>
-                <td><%= t @shipment.status %></td>
-              </tr>
-              <tr>
-                <th>Número do pedido</th>
-                <td><%= @shipment.order_number %></td>
-              </tr>
-              <tr>
-                <th>Conta</th>
-                <td><%= @shipment.account.name if @shipment.account %></td>
-              </tr>
-              <tr>
-                <th>Transportadora</th>
-                <td><%= link_to @carrier.name, edit_carrier_path(@carrier.class), class: "kt-link" if @carrier %></td>
-              </tr>
-              <tr>
-                <th>Método de envio</th>
-                <td><%= @shipment.shipping_method %></td>
-              </tr>
-              <tr>
-                <th>Série da nota fiscal</th>
-                <td><%= @shipment.invoice_series %></td>
-              </tr>
-              <tr>
-                <th>Número da nota fiscal</th>
-                <td><%= @shipment.invoice_number %></td>
-              </tr>
-              <tr>
-                <th>Link de rastreio</th>
-                <td>
-                  <% if @shipment.tracking_number.present? %>
-                  <%= link_to "Clique aqui", @shipment.tracking_url, class: "kt-link", id:"tracking-url", target: "_blank" %>
-                  <button type="button" class="btn-light btn-circle p-0 ml-1 clipboard-btn"><i class="la la-copy"></i></button>
-                  <% end %>
-                </td>
-              </tr>
-              <tr>
-                <th>Rastreamento</th>
-                <td>
-                  <% if @shipment.tracking_number.present? %>
-                    <%= @shipment.tracking_number %>
+          <div class="col-md-5 float-left">
+            <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+              <tbody>
+                <tr>
+                  <th>Número do pedido</th>
+                  <td><%= @shipment.order_number %></td>
+                </tr>
+                <tr>
+                  <th>Conta</th>
+                  <td><%= @shipment.account.name if @shipment.account %></td>
+                </tr>
+                <tr>
+                  <th>Transportadora</th>
+                  <td><%= link_to @carrier.name, edit_carrier_path(@carrier.class), class: "kt-link" if @carrier %></td>
+                </tr>
+                <tr>
+                  <th>Método de envio</th>
+                  <td><%= @shipment.shipping_method %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-5 float-left">
+            <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+              <tbody>
+                <tr>
+                  <th>Nota fiscal / série</th>
+                  <td><%= link_to "#{@shipment.invoice_number} / #{@shipment.invoice_series}", "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal', class: "kt-link" %></td>
+                </tr>
+                <tr>
+                  <th>Rastreamento</th>
+                  <td>
+                    <% if @shipment.tracking_number.present? %>
+                      <%= link_to @shipment.tracking_number, @shipment.tracking_url, class: "kt-link", id:"tracking-url", target: "_blank" %>
+                    <% else %>
+                      <%= link_to "Obter rastreio", get_tracking_number_shipment_path, class: "kt-link" %>
+                    <% end %>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Nota Fiscal</th>
+                  <td><%= link_to 'Ver XML', "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal', class: "kt-link" %></td>
+                </tr>
+                <tr>
+                  <th>Sincronizado</th>
+                  <td>
+                  <% if @shipment.sent_to_carrier %>
+                    Sim <i class="la la-check-circle"></i>
                   <% else %>
-                    <%= link_to "Obter rastreio", get_tracking_number_shipment_path, class: "kt-link" %>
+                    <%= link_to "Não", send_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
                   <% end %>
-                </td>
-              </tr>
-              <tr>
-                <th>Nota Fiscal</th>
-                <td><%= link_to 'Ver XML', "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal', class: "kt-link" %></td>
-              </tr>
-              <tr>
-                <th>Sincronizado com a transportadora</th>
-                <td>
-                <% if @shipment.sent_to_carrier %>
-                  Sim <i class="la la-check-circle"></i>
-                <% else %>
-                  <%= link_to "Enviar para a transportadora", send_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
-                <% end %>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -167,7 +161,69 @@
 
       <div class="kt-portlet__body">
         <div class="kt-portlet__content">
-          <%= render "shipment_address", shipment: @shipment %>
+          <div class="row">
+            <div class="col-xl-6">
+
+              <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+                <tbody>
+                  <tr>
+                    <th style="width:150px">Nome</th>
+                    <td><%= @shipment.full_name %></td>
+                  </tr>
+                  <tr>
+                    <th>Email</th>
+                    <td><%= @shipment.email %></td>
+                  </tr>
+                  <tr>
+                    <th>Telefone</th>
+                    <td><%= @shipment.phone %></td>
+                  </tr>
+                  <tr>
+                    <th>CPF</th>
+                    <td><%= @shipment.cpf %></td>
+                  </tr>
+                  <tr>
+                    <th>Rua</th>
+                    <td><%= @shipment.street %></td>
+                  </tr>
+                  <tr>
+                    <th>Número</th>
+                    <td><%= @shipment.number %></td>
+                  </tr>
+                </tbody>
+              </table>
+
+
+            </div>
+            <div class="col-xl-6">
+              <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+                <tbody>
+
+                  <tr>
+                    <th style="width:150px">Complemento</th>
+                    <td><%= @shipment.complement %></td>
+                  </tr>
+                  <tr>
+                    <th>Bairro</th>
+                    <td><%= @shipment.neighborhood %></td>
+                  </tr>
+                  <tr>
+                    <th>Cep</th>
+                    <td><%= @shipment.zip %></td>
+                  </tr>
+                  <tr>
+                    <th>Cidade</th>
+                    <td><%= @shipment.city %></td>
+                  </tr>
+                  <tr>
+                    <th>Estado</th>
+                    <td><%= @shipment.state %></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
