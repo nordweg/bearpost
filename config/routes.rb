@@ -18,23 +18,24 @@ Rails.application.routes.draw do
   resources :packages
   resources :companies
   resources :carriers do
+    collection do
+      get  'sync_ready_shipments',  to: "carriers#sync_ready_shipments"
+    end
     member do
-      post 'send_to_carrier'
       post "validate_credentials_ajax"
     end
   end
   resources :shipments do
     collection do
-      get  '/',                    to: "shipments#index"
-      post 'new',                  to: "shipments#new"
-      get  'send_to_carriers',     to: "shipments#send_to_carriers"
+      get  '/',                     to: "shipments#index"
+      post 'new_from_xml',          to: "shipments#new_from_xml"
     end
     member do
-      get  'get_tracking_number',  to: "shipments#get_tracking_number"
-      get  'get_labels',           to: "shipments#get_labels", format: :pdf
-      post 'send_to_carrier',      to: "shipments#send_to_carrier"
-      post 'set_as_shipped',       to: "shipments#set_as_shipped"
-      post 'get_delivery_updates', to: "shipments#get_delivery_updates"
+      get  'save_tracking_number',  to: "shipments#save_tracking_number"
+      get  'get_labels',            to: "shipments#get_labels", format: :pdf
+      post 'send_to_carrier',       to: "shipments#send_to_carrier"
+      post 'set_as_shipped',        to: "shipments#set_as_shipped"
+      post 'save_delivery_updates', to: "shipments#save_delivery_updates"
     end
   end
 
@@ -42,7 +43,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :shipments do
         member do
-          get  'get_tracking_number',  to: "shipments#get_tracking_number"
+          get  'save_tracking_number', to: "shipments#save_tracking_number"
           get  'get_labels',           to: "shipments#get_labels", format: :pdf
           post 'send_to_carrier',      to: "shipments#send_to_carrier"
           post 'update_invoice_xml',   to: "shipments#update_invoice_xml"

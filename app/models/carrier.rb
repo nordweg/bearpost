@@ -9,7 +9,7 @@ class Carrier
 
   def initialize(carrier_setting, test_mode = false)
     @carrier_setting = carrier_setting
-    @settings = carrier_setting.settings.with_indifferent_access
+    # @settings = carrier_setting.settings.with_indifferent_access
     @test_mode = test_mode
   end
 
@@ -47,6 +47,7 @@ class Carrier
 
   # This method should respond with the an array of hashes, including the shipment,
   # a boolean stating if the sync was successful, and any message (error or success) from the result of the process.
+  # It receives an array of shipments it should sync.
   # eg:
   # [
   #   {
@@ -60,17 +61,17 @@ class Carrier
   #     message: 'Envio recebido com sucesso'
   #   }
   # ]
-  def send_to_carrier(shipments)
-    raise ::NotImplementedError, 'You must implement send_to_carrier method for this carrier.'
+  def sync_shipments(shipments)
+    raise ::NotImplementedError, 'You must implement sync_shipments method for this carrier.'
   end
 
-  def shipments
+  def self.shipments
     Shipment.where(carrier_class:self.to_s)
   end
 
   # This method should return a tracking number for the shipment, as a string.
   def get_tracking_number(shipment)
-    raise ::NotImplementedError, "#send_to_carrier is not implemented for #{self.class.name}"
+    raise ::NotImplementedError, "#get_tracking_number is not implemented for #{self.class.name}"
   end
 
   # If any, all the hooks that are required before a label should be set here.
@@ -82,9 +83,15 @@ class Carrier
     []
   end
 
-  # Overwrite this method if you want to use a personalized view instead of views/carriers/_general_settings
-  def self.settings_view
+
+  # Sets which view should be used in carrier settings. Will use views/carriers/_general_settings as default or
+  # overwrite if you want to use a personalized view instead.
+  def self.settings_view # REFACTOR > RENAME TO
     'general_settings'
   end
+
+  # def settings(account_id) # REFACTOR > DON'T LIKE THE CARRIER KNOWING WHICH ACCOUNT IT'S FROM. IT SHOULD ONLY GET THE OPTIONS/CREDENTIAL AND THATS IT. IT DOESN'T NEED TO KNOW THERE ARE MORE THEN ONE ACCOUNTS ARE THERE
+  #   CarrierSetting.find_by(account_id: account_id, carrier_class: self.class)
+  # end
 
 end
