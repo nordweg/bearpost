@@ -22,7 +22,7 @@
       Opções
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-      <%= link_to "Marcar como enviado", shipment_path(@shipment, shipment: {status: "shipped"}), class: "dropdown-item", method:'patch' %>
+      <%= link_to "Marcar como enviado", shipment_path(@shipment, shipment: {status: "On the way"}), class: "dropdown-item", method:'patch' %>
       <%= link_to "Informações adicionais", "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
       <div class="dropdown-divider"></div>
       <% @carrier.shipment_menu_links.each do |text, path| %>

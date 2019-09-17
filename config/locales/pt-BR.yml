@@ -1,5 +1,13 @@
 ---
 pt-BR:
+  "Pending": Pendente
+  "Ready for shipping": Pronto para envio
+  "On the way": A caminho
+  "Out for delivery": Saiu para entrega
+  "Delivered": Entregue
+  "Problematic": Com problemas
+  "Returned": Retornado
+  "Cancelled": Cancelado
   email: Email
   password: Senha
   document: Documento

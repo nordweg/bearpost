@@ -3,18 +3,16 @@
 <% end %>
 
 
-<% @results.each do |result_hash| %>
-
-
+<% @sync_results.each do |sync_result| %>
   <div class="kt-portlet">
     <div class="kt-portlet__head">
       <div class="kt-portlet__head-label">
         <h3 class="kt-portlet__head-title">
-          <%= result_hash[:carrier].name %>
+          <%= sync_result[:carrier].name %>
         </h3>
       </div>
       <div class="kt-portlet__head-toolbar">
-					<%= result_hash[:account].name %>
+					<%= sync_result[:account].name %>
 			</div>
     </div>
 
@@ -29,7 +27,7 @@
             </tr>
           </thead>
           <tbody>
-            <% result_hash[:sync_result].each do |result| %>
+            <% sync_result[:sync_result].each do |result| %>
             <tr>
               <td><%= link_to "#{result[:shipment].shipment_number} - #{result[:shipment].full_name}", shipment_path(result[:shipment]), class: "kt-link" %> </td>
               <td>
