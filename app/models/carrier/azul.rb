@@ -14,16 +14,6 @@ class Carrier::Azul < Carrier
     ['Standart']
   end
 
-  # MACRO STATUS
-  # Aberto - Pending
-  # Pronto para envio - Ready for shipment
-  # A caminho - On the way
-  # Saiu para entrega - Out for delivery
-  # Entregue - Delivered
-  # Com problema - Problematic
-  # Retornado - Returned
-  # Cancelado - Cancelled
-
   STATUS_CODES = {
     "1" => {azul_status: 'ENTREGA REALIZADA NORMALMENTE', bearpost_status: 'Delivered'},
     "2" => {azul_status: 'ENTREGA FORA DA DATA PROGRAMADA', bearpost_status: 'Delivered'},
@@ -223,7 +213,7 @@ class Carrier::Azul < Carrier
     end
   end
 
-  def send_to_carrier(shipments)
+  def sync_shipments(shipments)
     response = []
     shipments.each do |shipment|
       begin

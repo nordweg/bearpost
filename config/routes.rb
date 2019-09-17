@@ -18,16 +18,17 @@ Rails.application.routes.draw do
   resources :packages
   resources :companies
   resources :carriers do
+    collection do
+      get  'sync_ready_shipments',  to: "carriers#sync_ready_shipments"
+    end
     member do
-      post 'send_to_carrier'
       post "validate_credentials_ajax"
     end
   end
   resources :shipments do
     collection do
-      get  '/',                    to: "shipments#index"
-      post 'new_from_xml',         to: "shipments#new_from_xml"
-      get  'send_to_carriers',     to: "shipments#send_to_carriers"
+      get  '/',                     to: "shipments#index"
+      post 'new_from_xml',          to: "shipments#new_from_xml"
     end
     member do
       get  'save_tracking_number',  to: "shipments#save_tracking_number"

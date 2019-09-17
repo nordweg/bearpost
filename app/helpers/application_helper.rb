@@ -8,27 +8,28 @@ module ApplicationHelper
     end
   end
 
-  def status_selector
-    [
-      ['Todos', nil],
-      ['Pendente','pending'],
-      ['Pronto para envio','ready'],
-      ['Enviado','shipped'],
-      ['Cancelado','cancelled']
-    ]
+  def shipment_statuses_for_select
+    statuses = []
+    Shipment.statuses.each do |status|
+      statuses << [ I18n.t(status), status ]
+    end
+    statuses
   end
 
-  def carrier_selector
+  def carriers_for_select
     [['Todas',nil]] + Rails.configuration.carriers.map{|carrier| [carrier.name, carrier.to_s]}
   end
 
   def status_label(status)
     right_class = case status
-      when 'pending'    then "kt-badge--metal"
-      when 'ready'      then "kt-badge--brand"
-      when 'shipped'    then "kt-badge--success"
-      when 'canceled'   then "kt-badge--warning"
-      else "kt-badge--metal"
+    when "Pending"                then "kt-badge--metal"
+    when "Ready for shipping"     then "kt-badge--info"
+      when "On the way"             then "kt-badge--success"
+      when "Out for delivery"       then "kt-badge--success"
+      when "Delivered"              then "kt-badge--success"
+      when "Problematic"            then "kt-badge--danger"
+      when "Returned"               then "kt-badge--metal"
+      when "Cancelled"              then "kt-badge--metal"
     end
     "<span class='kt-badge #{right_class} kt-badge--inline kt-badge--pill'>#{ I18n.t(status) }</span>".html_safe
   end

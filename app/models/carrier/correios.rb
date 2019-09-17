@@ -200,7 +200,7 @@ class Carrier::Correios < Carrier
     client(account).call(:fecha_plp_varios_servicos, message:message)
   end
 
-  def get_plp_xml(account,plp_number)
+  def get_plp_xml(account, plp_number)
     message = {
       "idPlpMaster" => plp_number,
       "usuario" => settings[:sigep_user],
@@ -209,7 +209,7 @@ class Carrier::Correios < Carrier
     client(account).call(:solicita_xml_plp, message:message)
   end
 
-  def send_to_carrier(shipments)
+  def sync_shipments(shipments)
     response = []
     begin
       correios_response = create_plp(shipments)

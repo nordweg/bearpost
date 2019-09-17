@@ -16,6 +16,14 @@ class Shipment < ApplicationRecord
   after_update :save_status_change_to_history
   after_create :first_history
 
+  STATUSES = ["Pending", "Ready for shipping", "On the way", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
+
+  def self.statuses
+    STATUSES
+  end
+
+  validates :status, inclusion: {in: STATUSES}
+
   def carrier_settings
     CarrierSetting.get_settings_from_shipment(self)
   end
@@ -31,14 +39,12 @@ class Shipment < ApplicationRecord
 
   def save_status_change_to_history
     if saved_changes.include?("status")
-        before = I18n.t saved_changes["status"][0]
-        after  = I18n.t saved_changes["status"][1]
-        histories.create(
-          user: Current.user,
-          description: "Status alterado de #{before} para #{after}",
-          category:'status',
-          date: DateTime.now,
-        )
+      histories.create(
+        user: Current.user,
+        description: "Status alterado de #{I18n.t saved_changes["status"][0]} para #{I18n.t saved_changes["status"][1]}",
+        category:'status',
+        date: DateTime.now,
+      )
     end
   end
 
@@ -101,7 +107,7 @@ class Shipment < ApplicationRecord
     end
   end
 
-  def save_delivery_updates()
+  def save_delivery_updates
     delivery_updates = get_delivery_updates
     delivery_updates.each do |delivery_update|
       self.histories.create(
