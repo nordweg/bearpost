@@ -5,7 +5,7 @@ namespace :carriers do
       carrier.shipments.each do |shipment|
         puts "#{shipment.shipment_number} :"
         begin
-          carrier.get_delivery_updates(shipment)
+          carrier.save_delivery_updates(shipment)
           puts "OK"
         rescue Exception => e
           puts "ERRO (#{carrier.name})"

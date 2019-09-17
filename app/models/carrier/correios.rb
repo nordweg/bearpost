@@ -64,23 +64,19 @@ class Carrier::Correios < Carrier
   def get_tracking_number(shipment)
     account         = shipment.account
     shipping_method = shipment.shipping_method
-
     check_tracking_number_availability(account,shipping_method)
-
     current_range = settings['shipping_methods'][shipping_method]['ranges'].first
     prefix        = current_range['prefix']
     number        = current_range['next_number']
     sufix         = current_range['sufix']
     verification_digit = get_verification_digit(number)
     tracking_number    = "#{prefix}#{number}#{verification_digit}#{sufix}"
-
     if current_range['next_number'] + 1 > current_range['last_number']
       settings['shipping_methods'][shipping_method]['ranges'].delete(current_range)
     else
       current_range['next_number'] += 1
     end
     carrier_setting.save
-
     tracking_number
   end
 
@@ -109,7 +105,7 @@ class Carrier::Correios < Carrier
       delivery_updates << {
         date: "#{event[:data]} #{event[:hora]}",
         description: "#{event[:descricao]} em #{event[:cidade]}, #{event[:uf]}. #{event[:local]}",
-        bearpost_macro_status: 'Entregue'
+        bearpost_status: 'Entregue'
       }
     end
     delivery_updates
@@ -204,7 +200,7 @@ class Carrier::Correios < Carrier
     client(account).call(:fecha_plp_varios_servicos, message:message)
   end
 
-  def get_plp_xml(account,plp_number)
+  def get_plp_xml(account, plp_number)
     message = {
       "idPlpMaster" => plp_number,
       "usuario" => settings[:sigep_user],
@@ -213,7 +209,7 @@ class Carrier::Correios < Carrier
     client(account).call(:solicita_xml_plp, message:message)
   end
 
-  def send_to_carrier(shipments)
+  def sync_shipments(shipments)
     response = []
     begin
       correios_response = create_plp(shipments)
