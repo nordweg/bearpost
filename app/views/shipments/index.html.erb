@@ -45,7 +45,6 @@ Envios
       </div>
 
       <div class="kt-portlet__body">
-
         <%= form_with(url: shipments_path, method: "get", local: true) do  %>
         <div class="row">
           <div class="col-md-4">
@@ -116,8 +115,38 @@ Envios
         </div>
       </div>
 
-      <div class="kt-portlet__body kt-portlet__body kt-portlet__body--fit">
-        <div class="kt_datatable"></div>
+      <div class="kt-portlet__body">
+        <div class="kt-datatable kt-datatable--default">
+        <table class="table table-hover kt-table">
+          <thead>
+            <tr>
+              <th style="width:10px"><label class="kt-checkbox kt-checkbox--solid"><input type="checkbox" value=""><span></span></label></th>
+              <th>Envio</th>
+              <th>Pedido</th>
+              <th>Transportadora</th>
+              <th>Destinatário</th>
+              <th>Cidade</th>
+              <th>Criado em</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @shipments.each do |shipment| %>
+            <tr>
+              <td><label class="kt-checkbox kt-checkbox--solid"><input type="checkbox" value="<%= shipment.id %>"><span></span></label></td>
+              <td><%= link_to shipment.shipment_number, shipment_path(shipment), class: "kt-link" %></td>
+              <td><%= shipment.order_number %></td>
+              <td><%= shipment.carrier.name %></td>
+              <td><%= shipment.full_name %></td>
+              <td><%= shipment.city %></td>
+              <td><%= shipment.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+              <td><%= status_label(shipment.status) %></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <!-- <div class="kt_datatable"></div> -->
         <div class="kt-datatable kt-datatable--default">
           <div class="kt-datatable__pager kt-datatable--paging-loaded">
             <%= paginate @shipments %>
@@ -134,6 +163,7 @@ Envios
 </div>
 
 <script>
+
 $('.set-status-JS').click(function(){ setStatus($(this).data("status")); return false; });
 
 function setStatus(status) {
@@ -184,129 +214,33 @@ $(document).ready(function() {
 
 <script>
 $(document).ready(function() {
-    var dataJSONArray = <%= raw @shipments.to_json %>;
+  $('#kt_form_status').on('change', function() {
+    datatable.search($(this).val(), 'status');
+  });
 
-    var datatable = $('.kt_datatable').KTDatatable({
-      // datasource definition
-      data: {
-        type: 'local',
-        source: dataJSONArray,
-      },
+  $('#kt_form_carrier').on('change', function() {
+    datatable.search($(this).val(), 'carrier');
+  });
 
-      // column sorting
-      sortable: true,
+  $('#kt_form_synced_with_carrier').on('change', function() {
+    datatable.search( $(this).val(), 'synced_with_carrier');
+  });
 
-      pagination: false,
+  $('#kt_form_status,#kt_form_carrier,#kt_form_synced_with_carrier').selectpicker();
 
-      // columns definition
-      columns: [
-        {
-          field: 'id',
-          title: '#',
-          sortable: false,
-          width: 10,
-          type: 'number',
-          selector: {class: 'kt-checkbox--solid'},
-          textAlign: 'center',
-        }, {
-          field: 'shipment_number',
-          title: 'Envio',
-          template: function(row) {
-            return `<a href="/shipments/${row.id}" class="kt-link">${row.shipment_number}</a>`;
-          },
-        }, {
-          field: 'order_number',
-          title: 'Pedido',
-        }, {
-          field: 'carrier',
-          title: 'Transportadora',
-          class: 'text-capitalize'
-        }, {
-          field: 'last_name',
-          title: 'Nome',
-          template: function(row) {
-            return row.first_name + ' ' + row.last_name;
-          },
-        }, {
-          field: 'city',
-          title: 'Cidade',
-          template: function(row) {
-            return row.city + ' - ' + row.state;
-          },
-        }, {
-          field: 'created_at',
-          title: 'Criado em',
-          type:  'datetime',
-          format: 'YYYY-MM-DD HH:mm:ss',
-          template: function(row) {
-            var date = new Date(row.created_at);
-            var formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
-            return formattedDate;
-          },
-        }, {
-          field: 'status',  // REFACTOR > make regular table and use helper for color label
-          title: 'Status',
-          // callback function support for column rendering
-          template: function(row) {
-            var status = {
-              'pending': {'title': 'Pendente', 'class': 'kt-badge--metal'},
-              'shipped': {'title': 'Enviado', 'class': ' kt-badge--success'},
-              'ready':   {'title': 'Pronto', 'class': ' kt-badge--brand'},
-              'canceled': {'title': 'Canceled', 'class': ' kt-badge--warning'},
-            };
-            if (row.status != null && status[row.status] != undefined) {
-              return '<span class="kt-badge ' + status[row.status].class + ' kt-badge--inline kt-badge--pill">' + status[row.status].title + '</span>';
-            }
-            else {
-              return '';
-            }
-          },
-        }, {
-          field: 'Actions',
-          title: '',
-          sortable: false,
-          width: 110,
-          overflow: 'visible',
-          autoHide: false,
-          template: function(row) {
-            let buttons =
-            `<a href="/shipments/${row.id}/edit" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="Editar">
-            <i class="la la-edit"></i>
-            </a>
-            <a data-confirm="Apagar o envio?" class="btn btn-sm btn-clean btn-icon btn-icon-md" rel="nofollow" data-method="delete" href="/shipments/${row.id}" title="Apagar">
-            <i class="la la-trash"></i>
-            </a>`
-            return buttons;
-          },
-        }],
-      });
-
-      $('#kt_form_status').on('change', function() {
-        datatable.search($(this).val(), 'status');
-      });
-
-      $('#kt_form_carrier').on('change', function() {
-        datatable.search($(this).val(), 'carrier');
-      });
-
-      $('#kt_form_synced_with_carrier').on('change', function() {
-        datatable.search( $(this).val(), 'synced_with_carrier');
-      });
-
-      $('#kt_form_status,#kt_form_carrier,#kt_form_synced_with_carrier').selectpicker();
-
-      datatable.on(
-        'kt-datatable--on-check kt-datatable--on-uncheck kt-datatable--on-layout-updated',
-        function(e) {
-          var checkedNodes = datatable.rows('.kt-datatable__row--active').nodes();
-          var count = checkedNodes.length;
-          $('#kt_datatable_selected_number').html(count);
-          if (count > 0) {
-            $('#kt_datatable_group_action_form').collapse('show');
-          } else {
-            $('#kt_datatable_group_action_form').collapse('hide');
-          }
-        });
+  datatable.on(
+    'kt-datatable--on-check kt-datatable--on-uncheck kt-datatable--on-layout-updated',
+    function(e) {
+      var checkedNodes = datatable.rows('.kt-datatable__row--active').nodes();
+      var count = checkedNodes.length;
+      $('#kt_datatable_selected_number').html(count);
+      if (count > 0) {
+        $('#kt_datatable_group_action_form').collapse('show');
+      } else {
+        $('#kt_datatable_group_action_form').collapse('hide');
+      }
+    }
+  );
 });
 
 $(document).on('turbolinks:load', function () {

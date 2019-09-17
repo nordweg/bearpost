@@ -22,8 +22,8 @@ module ApplicationHelper
 
   def status_label(status)
     right_class = case status
-    when "Pending"                then "kt-badge--metal"
-    when "Ready for shipping"     then "kt-badge--info"
+      when "Pending"                then "kt-badge--metal"
+      when "Ready for shipping"     then "kt-badge--info"
       when "On the way"             then "kt-badge--success"
       when "Out for delivery"       then "kt-badge--success"
       when "Delivered"              then "kt-badge--success"
