@@ -5,6 +5,28 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+
+ .kt-table {
+   color: #646c9a !important;
+ }
+ .kt-table > tbody > tr > td {
+   padding: 15px;
+   vertical-align: middle;
+ }
+ .kt-table > thead > tr > th {
+   padding: 16px 15px;
+   vertical-align: middle;
+ }
+ .kt-table > tbody > tr > td:first-child, .kt-table > thead > tr > th:first-child {
+   padding-left: 25px;
+ }
+ .kt-table > tbody > tr > td:last-child, .kt-table > thead > tr > th:last-child {
+   padding-right: 25px
+ }
+ .kt-checkbox.kt-checkbox--solid > span {
+   background: #f0f3ff !important;
+ }
+
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
