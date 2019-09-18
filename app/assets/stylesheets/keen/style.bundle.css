@@ -20,6 +20,9 @@
  .kt-table > tbody > tr > td:first-child, .kt-table > thead > tr > th:first-child {
    padding-left: 25px;
  }
+ .kt-table > tbody > tr > td:last-child, .kt-table > thead > tr > th:last-child {
+   padding-right: 25px
+ }
  .kt-checkbox.kt-checkbox--solid > span {
    background: #f0f3ff !important;
  }
