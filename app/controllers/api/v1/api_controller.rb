@@ -24,6 +24,10 @@ module Api::V1
       @current_company
     end
 
+    def set_current_user
+      Current.connected = "API"
+    end
+
     def render_unauthorized
       render json: 'Credenciais inválidas'.to_json, status: :unauthorized
     end

@@ -2,14 +2,14 @@ module Api::V1
   class ShipmentsController < ApiController
 
     def index
-      render json: current_company.shipments
+      render json: Shipment.all
     end
 
     def create
       if request.format.xml?
-        shipment = current_company.shipments.new(shipment_info_from_xml)
+        shipment = Shipment.new(shipment_info_from_xml)
       else
-        shipment = current_company.shipments.new(shipment_params)
+        shipment = Shipment.new(shipment_params)
       end
       hande_save(shipment)
     end
@@ -43,7 +43,7 @@ module Api::V1
         template: 'api/v1/labels.html.erb',
         locals: {shipment:shipment, carrier:carrier}
       )
-      pdf      = WickedPdf.new.pdf_from_string(pdf_html)
+      pdf = WickedPdf.new.pdf_from_string(pdf_html)
       send_data pdf, filename: 'file.pdf'
     end
 
@@ -73,7 +73,7 @@ module Api::V1
     private
 
     def get_shipment
-      shipment = current_company.shipments.find_by(shipment_number:params[:id])
+      shipment = Shipment.find_by(shipment_number:params[:id])
       raise Exception.new('Shipment not found') if shipment.blank?
       shipment
     end
