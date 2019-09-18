@@ -44,6 +44,7 @@ class Shipment < ApplicationRecord
         description: "Status alterado de #{I18n.t saved_changes["status"][0]} para #{I18n.t saved_changes["status"][1]}",
         category:'status',
         date: DateTime.now,
+        changed_by: Current.connected
       )
     end
   end
