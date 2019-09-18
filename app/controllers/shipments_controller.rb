@@ -18,6 +18,7 @@ class ShipmentsController < ApplicationController
   def new_from_xml
     parsed_nf_xml = NotaFiscalParser.parse(params[:invoice_xml]["invoice_xml"].read)
     @shipment = Shipment.new(parsed_nf_xml)
+    render :new 
   end
 
   def edit
