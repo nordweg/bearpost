@@ -17,7 +17,7 @@ module ApplicationHelper
   end
 
   def carriers_for_select
-    [['Todas',nil]] + Rails.configuration.carriers.map{|carrier| [carrier.name, carrier.to_s]}
+    Carriers.all.map{|carrier| [carrier.name, carrier.to_s]}
   end
 
   def status_label(status)
