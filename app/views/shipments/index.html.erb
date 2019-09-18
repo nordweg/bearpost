@@ -115,49 +115,47 @@ Envios
         </div>
       </div>
 
-      <div class="kt-portlet__body">
+      <div class="kt-portlet__body kt-portlet__body--fit">
         <div class="kt-datatable kt-datatable--default">
-        <table class="table table-hover kt-table">
-          <thead>
-            <tr>
-              <th style="width:10px"><label class="kt-checkbox kt-checkbox--solid"><input type="checkbox" value=""><span></span></label></th>
-              <th>Envio</th>
-              <th>Pedido</th>
-              <th>Transportadora</th>
-              <th>Destinatário</th>
-              <th>Cidade</th>
-              <th>Criado em</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @shipments.each do |shipment| %>
-            <tr>
-              <td><label class="kt-checkbox kt-checkbox--solid"><input type="checkbox" value="<%= shipment.id %>"><span></span></label></td>
-              <td><%= link_to shipment.shipment_number, shipment_path(shipment), class: "kt-link" %></td>
-              <td><%= shipment.order_number %></td>
-              <td><%= shipment.carrier.name %></td>
-              <td><%= shipment.full_name %></td>
-              <td><%= shipment.city %></td>
-              <td><%= shipment.created_at.strftime("%d/%m/%Y %H:%M") %></td>
-              <td><%= status_label(shipment.status) %></td>
-            </tr>
-            <% end %>
-          </tbody>
-        </table>
-
-        <!-- <div class="kt_datatable"></div> -->
-        <div class="kt-datatable kt-datatable--default">
-          <div class="kt-datatable__pager kt-datatable--paging-loaded">
-            <%= paginate @shipments %>
-            <span class="float-right m-2">
-              <%= page_entries_info(@shipments, entry_name: 'envios')%>
-            </span>
-          </div>
+          <table class="table table-hover kt-table">
+            <thead>
+              <tr>
+                <th style="width:10px"><label class="kt-checkbox kt-checkbox--solid"><input type="checkbox" value=""><span></span></label></th>
+                <th>Envio</th>
+                <th>Pedido</th>
+                <th>Transportadora</th>
+                <th>Destinatário</th>
+                <th>Cidade</th>
+                <th>Criado em</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @shipments.each do |shipment| %>
+              <tr>
+                <td><label class="kt-checkbox kt-checkbox--solid"><input type="checkbox" value="<%= shipment.id %>"><span></span></label></td>
+                <td><%= link_to shipment.shipment_number, shipment_path(shipment), class: "kt-link" %></td>
+                <td><%= shipment.order_number %></td>
+                <td><%= shipment.carrier.name %></td>
+                <td><%= shipment.full_name %></td>
+                <td><%= shipment.city %></td>
+                <td><%= shipment.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+                <td><%= status_label(shipment.status) %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       </div>
 
-    </div>
+      <div class="kt-datatable kt-datatable--default">
+        <div class="kt-datatable__pager kt-datatable--paging-loaded">
+          <%= paginate @shipments %>
+          <span class="float-right m-2">
+            <%= page_entries_info(@shipments, entry_name: 'envios')%>
+          </span>
+        </div>
+      </div>
 
   </div>
 </div>
@@ -210,48 +208,12 @@ $(document).ready(function() {
     $('#kt_daterangepicker_2 .form-control').val( start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
   });
 });
-</script>
-
-<script>
-$(document).ready(function() {
-  $('#kt_form_status').on('change', function() {
-    datatable.search($(this).val(), 'status');
-  });
-
-  $('#kt_form_carrier').on('change', function() {
-    datatable.search($(this).val(), 'carrier');
-  });
-
-  $('#kt_form_synced_with_carrier').on('change', function() {
-    datatable.search( $(this).val(), 'synced_with_carrier');
-  });
-
-  $('#kt_form_status,#kt_form_carrier,#kt_form_synced_with_carrier').selectpicker();
-
-  datatable.on(
-    'kt-datatable--on-check kt-datatable--on-uncheck kt-datatable--on-layout-updated',
-    function(e) {
-      var checkedNodes = datatable.rows('.kt-datatable__row--active').nodes();
-      var count = checkedNodes.length;
-      $('#kt_datatable_selected_number').html(count);
-      if (count > 0) {
-        $('#kt_datatable_group_action_form').collapse('show');
-      } else {
-        $('#kt_datatable_group_action_form').collapse('hide');
-      }
-    }
-  );
-});
-
 $(document).on('turbolinks:load', function () {
-	$('.selectpicker').each(function (i, el) {
-		if (!$(el).parent().hasClass('bootstrap-select')) {
-			$(el).selectpicker('refresh');
-		}
-	});
+  $('.selectpicker').each(function (i, el) {
+    if (!$(el).parent().hasClass('bootstrap-select')) {
+      $(el).selectpicker('refresh');
+    }
+  });
 
 });
-
-
-
 </script>
