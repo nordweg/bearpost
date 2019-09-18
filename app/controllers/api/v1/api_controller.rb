@@ -6,6 +6,7 @@ module Api::V1
 
     skip_before_action :authenticate_user!
     before_action      :authenticate_company!
+    before_action      :set_current_attributes
 
     protected
 
@@ -24,7 +25,7 @@ module Api::V1
       @current_company
     end
 
-    def set_current_user
+    def set_current_attributes
       Current.connected = "API"
     end
 
