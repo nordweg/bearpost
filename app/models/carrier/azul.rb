@@ -152,7 +152,7 @@ class Carrier::Azul < Carrier
 
   def get_authentication_token
     credentials = {
-        "Email" => carrier_setting.settings["email"], # REFACTOR > settings.settings looks bad
+        "Email" => carrier_setting.settings["email"],
         "Senha" => carrier_setting.settings["password"],
         "CpfCnpj" => carrier_setting.settings["document"]
     }
@@ -201,7 +201,7 @@ class Carrier::Azul < Carrier
     xml = Nokogiri::XML(shipment.invoice_xml)
     str = xml.at_css('infNFe').attribute("Id").try(:content)
     nfe_key = str[3..-1]
-    token = settings['token']
+    token = carrier_setting.settings['token']
     response = connection.get("api/Ocorrencias/Consultar?token=#{token}&ChaveNFE=#{nfe_key}")
     check_response(response)
     response.body.dig("Value",0,"Awb")
