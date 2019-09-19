@@ -8,7 +8,7 @@ class Shipment < ApplicationRecord
   has_many    :packages
   has_many    :histories
   belongs_to  :account, optional: true
-  belongs_to  :company
+  belongs_to  :company, optional: true
   accepts_nested_attributes_for :packages
 
   after_create :create_package
