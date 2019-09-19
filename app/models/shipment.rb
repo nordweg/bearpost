@@ -50,15 +50,8 @@ class Shipment < ApplicationRecord
   end
 
   def get_tracking_number
-    begin
-      carrier = carrier.new(carrier_settings)
-      carrier.authenticate! # REFACTOR > WHY DO WE NEED TO AUTHENTICATE FROM HERE? WOULDN'T IT BE BETTER TO INITIALIZE THE CARRIER AND JUST ASK FOR THE TRACKING CODE?
-      tracking_number = carrier.get_tracking_number(@shipment)
-      flash[:success] = 'Rastreio atualizado'
-    rescue Exception => e
-      flash[:error] = e.message
-    end
-    redirect_to @shipment
+    carrier = self.carrier.new(carrier_settings)
+    tracking_number = carrier.get_tracking_number(self)
   end
 
   def sent_to_carrier! # REFACTOR > Not to easy to understand what this is doing
@@ -109,7 +102,7 @@ class Shipment < ApplicationRecord
   end
 
   def save_delivery_updates
-    delivery_updates = get_delivery_updates
+    delivery_updates = get_delivery_updates.sort_by {|delivery_update| delivery_update[:date]}
     delivery_updates.each do |delivery_update|
       self.histories.create(
         description: delivery_update[:description],
@@ -118,7 +111,7 @@ class Shipment < ApplicationRecord
         category: 'carrier',
       )
     end
-    current_status = self.histories.recent_first.first[:"bearpost_status"]
+    current_status = delivery_updates.last[:bearpost_status]
     self.update(status: current_status)
   end
 

@@ -72,7 +72,7 @@
               <p>
                 Sincroniza todos os pedidos com o status <i><u>pronto para envio</i></u> com a transportadora <%= @carrier.name %>.
               </p>
-              <%= link_to "Sincronizar", sync_shipments_carrier_path(account:account), class: "btn btn-secondary", method:'post' %>
+              <%= link_to "Sincronizar", sync_ready_shipments_carriers_path(account:account), class: "btn btn-secondary", method:'post' %>
             </div>
           </div>
         </div>
