@@ -1,4 +1,5 @@
 # Bearpost
+[![Build Status](https://semaphoreci.com/api/v1/lucaskuhn/bearpost-2/branches/master/badge.svg)](https://semaphoreci.com/lucaskuhn/bearpost-2)
 
 Bearpost is an open source hub made to integrate and unify the communication of e-commerce websites with different shipping carriers.
 
