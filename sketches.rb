@@ -294,3 +294,89 @@ message = {
 }
 
 @carrier.connection.post("api/Cotacao/Enviar", message)
+
+
+
+
+# PRODUCTION TESTS
+client = Savon.client(
+  wsdl: "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl",
+  headers: { 'SOAPAction' => '' }
+)
+
+user = "igor@nordweg.com"
+password = "n5wa9q"
+
+message = {
+  "idContrato" => "9912292007",
+  "idCartaoPostagem" => "0063292882",
+  "usuario" => user,
+  "senha" => password,
+}
+
+client.call(:busca_cliente, message:message)
+
+contrato: "9912292007"
+cartao: "0063292882"
+usuario: "9912292007"
+senha: "n5wa9q"
+ERRO: "A autenticacao de 9912292007 falhou"
+
+contrato: "9912292007"
+cartao: "0063292882"
+usuario: "9912292007"
+senha: "N@XQB<PVBM"
+ERRO: "A autenticacao de 9912292007 falhou"
+
+contrato: "9912292007"
+cartao: "0063292882"
+usuario: "igor@nordweg.com"
+senha: "n5wa9q"
+ERRO: "CNPJ/Cartão de Postagem utilizado não pertence ao Cliente"
+
+message = {
+"codAdministrativo"=>"12066753",
+"numeroServico"=>"04162",
+"cepOrigem"=>"05311900",
+"cepDestino"=>"05311900",
+"usuario"=>"igor@nordweg.com",
+"senha"=>"n5wa9q"
+}
+
+client.call(:verifica_disponibilidade_servico, message: message)
+
+client.call(:consulta_cep, message:{cep:"70002900"})
+
+message = {
+"numeroCartaoPostagem" => "0063292882",
+"usuario"=>"igor@nordweg.com",
+"senha"=>"n5wa9q"
+}
+
+client.call(:get_status_cartao_postagem, message: message)
+
+message = {
+  "tipoDestinatario" =>  "C",
+  "identificador" => "13536856000128",
+  "idServico" => "41068",
+  "qtdEtiquetas" => "5",
+  "usuario" => "igor@nordweg.com",
+  "senha" => "n5wa9q",
+}
+client.call(:solicita_etiquetas, message: message)
+
+
+### -------- DEVELOPMENT TESTS
+client = Savon.client(
+  wsdl: "https://apphom.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl",
+  headers: { 'SOAPAction' => '' }
+)
+message = {
+"codAdministrativo"=>"17000190",
+"numeroServico"=>"04162",
+"cepOrigem"=>"05311900",
+"cepDestino"=>"05311900",
+"usuario"=>"sigep",
+"senha"=>"n5f9t8"
+}
+client.call(:verifica_disponibilidade_servico, message:message)
