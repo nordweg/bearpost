@@ -405,9 +405,7 @@ class Carrier::Correios < Carrier
     number.to_s.chars.map(&:to_i).each_with_index do |number,index|
       total += number * multipliers[index]
     end
-
     remainder = total % 11
-
     if remainder == 0
       verification_digit = 5;
     elsif remainder == 1
@@ -415,7 +413,6 @@ class Carrier::Correios < Carrier
     else
       verification_digit = 11 - remainder
     end
-
     verification_digit
   end
 end

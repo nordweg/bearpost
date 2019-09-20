@@ -50,9 +50,7 @@ class ShipmentsController < ApplicationController
 
   def save_tracking_number
     begin
-      tracking_number = @shipment.get_tracking_number
-      @shipment.update(tracking_number: tracking_number)
-      flash[:success] = "Rastreio atualizado"
+      flash[:success] = "Rastreio atualizado" if @shipment.save_tracking_number
     rescue Exception => e
       flash[:error] = e.message
     end

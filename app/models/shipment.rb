@@ -2,8 +2,9 @@ class Shipment < ApplicationRecord
   validates_uniqueness_of :shipment_number
   validates_presence_of :carrier_class
 
-  scope :ready_to_ship, -> { where(status: 'ready', sent_to_carrier:false) }
-  scope :shipped,       -> { where(status: 'shipped') }
+  scope :ready_to_ship, -> { where(status: 'Ready for shipping', sent_to_carrier: false) }
+  scope :shipped,       -> { where(status: 'On the way') }
+  scope :shipped_but_not_delivered, -> { where(status: ["On the way", "Out for delivery", "Problematic"]) }
 
   has_many    :packages
   has_many    :histories
@@ -50,8 +51,19 @@ class Shipment < ApplicationRecord
   end
 
   def get_tracking_number
+    return tracking_number if tracking_number.present?
     carrier = self.carrier.new(carrier_settings)
     tracking_number = carrier.get_tracking_number(self)
+  end
+
+  def save_tracking_number
+    self.tracking_number = get_tracking_number
+    if self.tracking_number_changed?
+      self.update(tracking_number: tracking_number)
+      true
+    else
+      false
+    end
   end
 
   def sent_to_carrier! # REFACTOR > Not to easy to understand what this is doing
@@ -102,7 +114,7 @@ class Shipment < ApplicationRecord
   end
 
   def save_delivery_updates
-    delivery_updates = get_delivery_updates.sort_by {|delivery_update| delivery_update[:date]}
+    delivery_updates = get_delivery_updates
     delivery_updates.each do |delivery_update|
       self.histories.create(
         description: delivery_update[:description],
@@ -116,7 +128,7 @@ class Shipment < ApplicationRecord
   end
 
   def get_delivery_updates
-    carrier.new(carrier_settings).get_delivery_updates(self)
+    carrier.new(carrier_settings).get_delivery_updates(self).sort_by {|delivery_update| delivery_update[:date]}
   end
 
   def self.filter(params)
@@ -141,6 +153,5 @@ class Shipment < ApplicationRecord
     end
     shipments
   end
-
 
 end
