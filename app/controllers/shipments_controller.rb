@@ -1,6 +1,6 @@
 class ShipmentsController < ApplicationController
 
-  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :get_tracking_number, :get_labels, :ship, :sync_with_carrier, :set_as_shipped, :get_delivery_updates, :save_delivery_updates]
+  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :save_tracking_number, :get_labels, :ship, :sync_with_carrier, :set_as_shipped, :get_delivery_updates, :save_delivery_updates]
   before_action :set_carrier, only: [:show, :get_delivery_updates, :save_delivery_updates]
 
   def index
@@ -18,7 +18,7 @@ class ShipmentsController < ApplicationController
   def new_from_xml
     parsed_nf_xml = NotaFiscalParser.parse(params[:invoice_xml]["invoice_xml"].read)
     @shipment = Shipment.new(parsed_nf_xml)
-    render :new 
+    render :new
   end
 
   def edit
@@ -49,8 +49,11 @@ class ShipmentsController < ApplicationController
   end
 
   def save_tracking_number
-    tracking_number = @shipment.get_tracking_number
-    @shipment.update(tracking_number: tracking_number)
+    begin
+      flash[:success] = "Rastreio atualizado" if @shipment.save_tracking_number
+    rescue Exception => e
+      flash[:error] = e.message
+    end
     redirect_to @shipment
   end
 
@@ -65,17 +68,27 @@ class ShipmentsController < ApplicationController
   end
 
   def save_delivery_updates
-    if @shipment.save_delivery_updates
-      flash[:success] = 'Histórico atualizado com sucesso'
-    else
-      flash[:error] = @shipment.errors.full_messages
-    end
+    # begin
+      @shipment.save_delivery_updates if @shipment.save_delivery_updates
+    # rescue Exception => e
+    #   flash[:error] = e.message
+    # end
     redirect_to @shipment
   end
 
   def sync_all_ready_shipments_with_carriers
     shipments = Shipment.all.ready_to_ship
     CarrierSyncronizer.sync(shipments)
+  end
+
+  def update_all_shipments_delivery_status
+    begin
+      CarrierSyncronizer.update_all_shipments_delivery_status
+      flash[:success] = "Rastreios atualizados com sucesso"
+    rescue Exception => e
+      flash[:error] = e.message
+    end
+    redirect_to :shipments
   end
 
   def sync_shipment_with_carrier

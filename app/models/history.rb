@@ -6,4 +6,5 @@ class History < ApplicationRecord
 
   validates_uniqueness_of :description, scope: [:shipment_id, :date]
 
+
 end

@@ -25,10 +25,12 @@ Rails.application.routes.draw do
       post "validate_credentials_ajax"
     end
   end
+
   resources :shipments do
     collection do
       get  '/',                     to: "shipments#index"
       post 'new_from_xml',          to: "shipments#new_from_xml"
+      get  'update_all_shipments_delivery_status', to: "shipments#update_all_shipments_delivery_status"
     end
     member do
       get  'save_tracking_number',  to: "shipments#save_tracking_number"

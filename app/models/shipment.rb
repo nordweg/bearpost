@@ -2,8 +2,9 @@ class Shipment < ApplicationRecord
   validates_uniqueness_of :shipment_number
   validates_presence_of :carrier_class
 
-  scope :ready_to_ship, -> { where(status: 'ready', sent_to_carrier:false) }
-  scope :shipped,       -> { where(status: 'shipped') }
+  scope :ready_to_ship, -> { where(status: 'Ready for shipping', sent_to_carrier: false) }
+  scope :shipped,       -> { where(status: 'On the way') }
+  scope :shipped_but_not_delivered, -> { where(status: ["On the way", "Out for delivery", "Problematic", "Waiting for pickup"]) }
 
   has_many    :packages
   has_many    :histories
@@ -16,7 +17,7 @@ class Shipment < ApplicationRecord
   after_update :save_status_change_to_history
   after_create :first_history
 
-  STATUSES = ["Pending", "Ready for shipping", "On the way", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
+  STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
 
   def self.statuses
     STATUSES
@@ -50,19 +51,20 @@ class Shipment < ApplicationRecord
   end
 
   def get_tracking_number
-    begin
-      carrier = carrier.new(carrier_settings)
-      carrier.authenticate! # REFACTOR > WHY DO WE NEED TO AUTHENTICATE FROM HERE? WOULDN'T IT BE BETTER TO INITIALIZE THE CARRIER AND JUST ASK FOR THE TRACKING CODE?
-      tracking_number = carrier.get_tracking_number(@shipment)
-      flash[:success] = 'Rastreio atualizado'
-    rescue Exception => e
-      flash[:error] = e.message
+    return tracking_number if tracking_number.present?
+    carrier = self.carrier.new(carrier_settings)
+    tracking_number = carrier.get_tracking_number(self)
+  end
+
+  def save_tracking_number # REFACTOR > Change name to Update or join with get_tracking_number
+    self.tracking_number = get_tracking_number
+    if self.tracking_number_changed?
+      self.update(tracking_number: tracking_number)
     end
-    redirect_to @shipment
   end
 
   def sent_to_carrier! # REFACTOR > Not to easy to understand what this is doing
-    update(sent_to_carrier:true)
+    update(sent_to_carrier: true)
     histories.create(
       user: Current.user,
       description: "Pedido enviado para a transportadora #{carrier.name}",
@@ -108,22 +110,31 @@ class Shipment < ApplicationRecord
     end
   end
 
-  def save_delivery_updates
+  def get_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
+    delivery_updates = carrier.new(carrier_settings).get_delivery_updates(self)
+    delivery_updates.sort_by {|delivery_update| delivery_update[:date]}
+  end
+
+  def save_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
     delivery_updates = get_delivery_updates
     delivery_updates.each do |delivery_update|
-      self.histories.create(
+      History.create(
+        shipment: self,
         description: delivery_update[:description],
         date: delivery_update[:date],
         changed_by: carrier.name,
         category: 'carrier',
       )
     end
-    current_status = self.histories.recent_first.first[:"bearpost_status"]
+    # self.histories.create(
+    #   description: "Sincronizou status de entrega com #{self.carrier.name}",
+    #   date: Time.now,
+    #   changed_by: "Bearpost",
+    #   category: 'carrier',
+    # )
+    current_status = delivery_updates.last[:bearpost_status]
     self.update(status: current_status)
-  end
-
-  def get_delivery_updates
-    carrier.new(carrier_settings).get_delivery_updates(self)
+    # byebug
   end
 
   def self.filter(params)
@@ -148,6 +159,5 @@ class Shipment < ApplicationRecord
     end
     shipments
   end
-
 
 end
