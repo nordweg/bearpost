@@ -5,7 +5,11 @@ Envios
 <% content_for :subheader_toolbar do %>
 
 <%= link_to sync_ready_shipments_carriers_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
-<i class="la la-truck"></i> Sincronizar
+<i class="la la-truck"></i> Sincronizar pedidos
+<% end %>
+
+<%= link_to update_all_shipments_delivery_status_shipments_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
+Atualizar status
 <% end %>
 
 <div class="btn-group">

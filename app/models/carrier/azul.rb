@@ -1,18 +1,14 @@
 class Carrier::Azul < Carrier
   cattr_reader :name
+
+  # GENERAL DEFINITIONS
+  # Define Carrier related constants here
+
   @@name = "Azul Cargo"
 
   LIVE_URL = "http://ediapi.onlineapp.com.br"
   TEST_URL = "http://hmg.onlineapp.com.br/WebAPI_EdiAzulCargo"
   SERVICES = ['Standart']
-
-  def self.settings
-    ['email','password','document'] # REFACTOR > Is document = CNPJ? Maybe rename?
-  end
-
-  def self.shipping_methods
-    ['Standart']
-  end
 
   STATUS_CODES = {
     "1" => {azul_status: 'ENTREGA REALIZADA NORMALMENTE', bearpost_status: 'Delivered'},
@@ -107,12 +103,31 @@ class Carrier::Azul < Carrier
     "517" => {azul_status: 'PASSAGEM PELA FISCALIZACAO', bearpost_status: 'On the way'}
   }
 
+  # DEFAULT METHODS
+  # Define here the mandatory default methods that are going to be called by the core Bearpost application.
+  # Use carrier.rb as a guideline to know which methods should be overwritten here.
+
+  def self.settings
+    ['email','password','document'] # REFACTOR > Is document = CNPJ? Maybe rename?
+  end
+
+  def self.shipping_methods
+    ['Standart']
+  end
+
   def self.tracking_url
     "http://www.azulcargo.com.br/Rastreio.aspx?n={tracking}&tipoAwb=Nacional"
   end
 
+  def authenticate!
+    token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
+    if token_expire_date.blank? || token_expire_date < DateTime.now
+      get_authentication_token
+    end
+  end
+
   def valid_credentials?
-    authenticate_user(
+    authenticate_user( # REFACTOR > I don't think authenticate_user is available anymore
       carrier_setting.settings["email"],
       carrier_setting.settings["password"],
       carrier_setting.settings["document"]
@@ -130,19 +145,41 @@ class Carrier::Azul < Carrier
     events.each do |event|
       delivery_updates << {
         date: event["DataHora"],
-        description: "#{event['Descricao']} - #{event['UnidadeMunicipio']}, #{event['UnidadeUF']}",
+        description: "#{event['Descricao']} #{event['Comentario']} - #{event['UnidadeMunicipio']}, #{event['UnidadeUF']}",
         bearpost_status: STATUS_CODES.try(:[], event["Codigo"]).try(:[], :"bearpost_status")
       }
     end
     delivery_updates
   end
 
-  def authenticate!
-    token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
-    if token_expire_date.blank? || token_expire_date < DateTime.now
-      get_authentication_token
+  def sync_shipments(shipments)
+    response = []
+    shipments.each do |shipment|
+      begin
+        check_invoice_xml(shipment)
+        encoded_xml = Base64.strict_encode64(shipment.invoice_xml)
+        faraday_response = send_to_azul(encoded_xml)
+        message = faraday_response.body["HasErrors"] ? faraday_response.body["ErrorText"] : faraday_response.body["Value"]
+        shipment.update(sent_to_carrier:true) unless faraday_response.body["HasErrors"]
+        response << {
+          shipment: shipment,
+          success: shipment.sent_to_carrier,
+          message: message
+        }
+      rescue  Exception => e
+        response << {
+          shipment: shipment,
+          success: shipment.sent_to_carrier,
+          message: e.message
+        }
+      end
     end
+    response
   end
+
+
+  # CARRIER ESPECIFIC METHODS
+  # Define here internal carrier methods that are used by the default methods above.
 
   def save_authentication_token(token)
     carrier_setting.settings['token'] = token
@@ -193,10 +230,6 @@ class Carrier::Azul < Carrier
     get_awb(shipment)
   end
 
-  def check_invoice_xml(shipment)
-    raise Exception.new("Azul - É necessário o XML da nota fiscal") if shipment.invoice_xml.blank?
-  end
-
   def get_awb(shipment)
     xml = Nokogiri::XML(shipment.invoice_xml)
     str = xml.at_css('infNFe').attribute("Id").try(:content)
@@ -213,29 +246,8 @@ class Carrier::Azul < Carrier
     end
   end
 
-  def sync_shipments(shipments)
-    response = []
-    shipments.each do |shipment|
-      begin
-        check_invoice_xml(shipment)
-        encoded_xml = Base64.strict_encode64(shipment.invoice_xml)
-        faraday_response = send_to_azul(encoded_xml)
-        message = faraday_response.body["HasErrors"] ? faraday_response.body["ErrorText"] : faraday_response.body["Value"]
-        shipment.update(sent_to_carrier:true) unless faraday_response.body["HasErrors"]
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: message
-        }
-      rescue  Exception => e
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: e.message
-        }
-      end
-    end
-    response
+  def check_invoice_xml(shipment)
+    raise Exception.new("Azul - É necessário o XML da nota fiscal") if shipment.invoice_xml.blank?
   end
 
   def send_to_azul(encoded_xml)
