@@ -83,8 +83,8 @@ class ShipmentsController < ApplicationController
 
   def update_all_shipments_delivery_status
     begin
-      shipments = Shipment.all.shipped_but_not_delivered
-      flash[:success] = "Rastreios atualizados com sucesso" if CarrierSyncronizer.update_shipments_delivery_status(shipments)
+      CarrierSyncronizer.update_all_shipments_delivery_status
+      flash[:success] = "Rastreios atualizados com sucesso"
     rescue Exception => e
       flash[:error] = e.message
     end
