@@ -1,5 +1,9 @@
 class Carrier::Correios < Carrier
   cattr_reader :name
+
+  # GENERAL DEFINITIONS
+  # Define Carrier related constants here
+
   @@name = "Correios"
 
   TEST_URL = "https://apphom.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
@@ -18,7 +22,8 @@ class Carrier::Correios < Carrier
     '40568' => "SEDEX com contrato",
     '40606' => "SEDEX com contrato",
     '41106' => "PAC sem contrato",
-    '41211 / 41068' => "PAC com contrato",
+    '41068' => "PAC com contrato",
+    '41211' => "PAC com contrato",
     '81019' => "e-SEDEX, com contrato",
     '81027' => "e-SEDEX Prioritário, com contrato",
     '81035' => "e-SEDEX Express, com contrato",
@@ -27,6 +32,13 @@ class Carrier::Correios < Carrier
     '81850' => "(Grupo 3 ) e-SEDEX, com contrato",
   }
 
+  STATUS_CODES = {
+
+  }
+
+  # DEFAULT METHODS
+  # Define here the mandatory default methods that are going to be called by the core Bearpost application.
+  # Use carrier.rb as a guideline to know which methods should be overwritten here.
 
   def self.shipping_methods
     ['PAC','SEDEX']
@@ -89,16 +101,16 @@ class Carrier::Correios < Carrier
 
   def get_delivery_updates(shipment)
     message = {
-      "usuario" => settings[:tracking_user],
-      "senha" => settings[:tracking_password],
+      "usuario" => carrier_setting.settings["tracking_user"],
+      "senha" => carrier_setting.settings["tracking_password"],
       "tipo" => "L",
       "resultado" => "T",
       "lingua" => "101",
       "objetos" => shipment.tracking_number
     }
-    response = tracking_connection.call(:busca_eventos, message:message)
-    events = response.body.dig(:busca_eventos_response,:return,:objeto,:evento)
-    error = response.body.dig(:busca_eventos_response,:return,:objeto,:erro)
+    response = tracking_connection.call(:busca_eventos, message: message)
+    events = response.body.dig(:busca_eventos_response, :return, :objeto,:evento)
+    error = response.body.dig(:busca_eventos_response, :return, :objeto, :erro)
     raise Exception.new("Correios: #{error}") if error
     delivery_updates = []
     events.each do |event|
@@ -111,15 +123,36 @@ class Carrier::Correios < Carrier
     delivery_updates
   end
 
-  # private
 
-  def check_tracking_number_availability(account,shipping_method)
-    settings        = self.settings['shipping_methods'][shipping_method]
-    ranges          = settings['ranges'] || []
+  # CARRIER ESPECIFIC METHODS
+  # Define here internal carrier methods that are used by the default methods above.
 
-    if count_available_labels(shipping_method) < settings['label_minimum_quantity'].to_i
-      save_new_range(account,shipping_method)
+  def sync_shipments(shipments)
+    response = []
+    begin
+      correios_response = create_plp(shipments)
+      plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
+      message = "Enviado na PLP #{plp_number}"
+      shipments.each do |shipment|
+        settings = shipment.settings
+        settings['plp'] = plp_number
+        shipment.update(settings:settings, sent_to_carrier:true)
+        response << {
+          shipment: shipment,
+          success: shipment.sent_to_carrier,
+          message: message
+        }
+      end
+    rescue Exception => e
+      shipments.each do |shipment|
+        response << {
+          shipment: shipment,
+          success: shipment.sent_to_carrier,
+          message: e.message
+        }
+      end
     end
+    response
   end
 
   def save_new_range(shipping_method)
@@ -135,14 +168,14 @@ class Carrier::Correios < Carrier
       "last_number": last_number.to_i,
       "sufix":       sufix,
     }
-    ranges = settings['shipping_methods'][shipping_method]['ranges'] || []
+    ranges = carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] || []
     ranges << range_hash
-    settings['shipping_methods'][shipping_method]['ranges'] = ranges
+    carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] = ranges
     carrier_setting.save
   end
 
   def count_available_labels(shipping_method)
-    settings = self.settings['shipping_methods'][shipping_method]
+    settings = carrier_setting.settings['shipping_methods'][shipping_method]
     return 0 if settings['ranges'].blank?
     total = 0
     settings['ranges'].each do |range|
@@ -153,26 +186,25 @@ class Carrier::Correios < Carrier
 
   def check_posting_card(account)
     message = {
-      "usuario" => settings[:sigep_user],
-      "senha" => settings[:sigep_password],
-      "numeroCartaoPostagem" =>  settings[:posting_card],
+      "usuario" => carrier_setting.settings["sigep_user"],
+      "senha" => carrier_setting.settings["sigep_password"],
+      "numeroCartaoPostagem" => carrier_setting.settings["posting_card"],
     }
-    response = client(account).call(:get_status_cartao_postagem, message:message)
+    response = client(account).call(:get_status_cartao_postagem, message: message)
 
     response.body.dig(:get_status_cartao_postagem_response,:return)
   end
 
   def get_ranges_from_correios(shipping_method)
-    reorder_quantity = settings.dig('shipping_methods',shipping_method,'label_reorder_quantity')
+    reorder_quantity = carrier_setting.settings.dig('shipping_methods',shipping_method,'label_reorder_quantity')
     reorder_quantity = '10' if reorder_quantity.blank?
-
     message = {
       "tipoDestinatario" =>  "C",
-      "identificador" => settings[:cnpj],
+      "identificador" => carrier_setting.settings["cnpj"],
       "idServico" => "124884",
       "qtdEtiquetas" => reorder_quantity,
-      "usuario" => settings[:sigep_user],
-      "senha" => settings[:sigep_password],
+      "usuario" => carrier_setting.settings["sigep_user"],
+      "senha" => carrier_setting.settings["sigep_password"],
     }
     response = connection.call(:solicita_etiquetas, message:message)
     ranges   = response.body.dig(:solicita_etiquetas_response,:return)
@@ -181,9 +213,9 @@ class Carrier::Correios < Carrier
 
   def create_plp(shipments)
     account  = shipments.first.account
-    user     = settings[:sigep_user]
-    password = settings[:sigep_password]
-    posting_card = settings[:posting_card]
+    user     = carrier_setting.settings["sigep_user"]
+    password = carrier_setting.settings["sigep_password"]
+    posting_card = carrier_setting.settings["posting_card"]
     xml = build_xml(shipments)
     labels = []
     shipments.each do |shipment|
@@ -203,45 +235,17 @@ class Carrier::Correios < Carrier
   def get_plp_xml(account, plp_number)
     message = {
       "idPlpMaster" => plp_number,
-      "usuario" => settings[:sigep_user],
-      "senha" => settings[:sigep_password],
+      "usuario" => carrier_setting.settings["sigep_user"],
+      "senha" => carrier_setting.settings["sigep_password"],
     }
     client(account).call(:solicita_xml_plp, message:message)
   end
 
-  def sync_shipments(shipments)
-    response = []
-    begin
-      correios_response = create_plp(shipments)
-      plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
-      message = "Enviado na PLP #{plp_number}"
-      shipments.each do |shipment|
-        settings = shipment.settings
-        settings['plp'] = plp_number
-        shipment.update(settings:settings,sent_to_carrier:true)
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: message
-        }
-      end
-    rescue Exception => e
-      shipments.each do |shipment|
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: e.message
-        }
-      end
-    end
-    response
-  end
-
   def build_xml(shipments)
     account  = shipments.first.account
-    posting_card = settings[:posting_card]
-    contract = settings[:contract]
-    administrative_code = settings[:administrative_code]
+    posting_card = carrier_setting.settings["posting_card"]
+    contract = carrier_setting.settings["contract"]
+    administrative_code = carrier_setting.settings["administrative_code"]
 
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.correioslog {
@@ -314,7 +318,7 @@ class Carrier::Correios < Carrier
   end
 
   def get_numero_diretoria(state)
-    hash = {
+    hash = { # REFACTOR > Move to class constant on top
       'ACRE'=> '03',
       'ALAGOAS'=> '04',
       'AMAZONAS'=> '06',
@@ -366,6 +370,14 @@ class Carrier::Correios < Carrier
 
   def consulta_cep(account)
     connection.call(:consulta_cep, message:{'cep'=>'70002900'})
+  end
+
+  def check_tracking_number_availability(account,shipping_method)
+    settings        = self.settings['shipping_methods'][shipping_method]
+    ranges          = settings['ranges'] || []
+    if count_available_labels(shipping_method) < settings['label_minimum_quantity'].to_i
+      save_new_range(account,shipping_method)
+    end
   end
 
   def verify_service_availability

@@ -9,7 +9,6 @@ class Carrier
 
   def initialize(carrier_setting, test_mode = false)
     @carrier_setting = carrier_setting
-    # @settings = carrier_setting.settings.with_indifferent_access
     @test_mode = test_mode
   end
 
@@ -20,13 +19,12 @@ class Carrier
   end
 
   # Validate credentials with a call to the API.
-  #
   # By default this just does a `find_rates` call with the origin and destination both as
   # the carrier's default_location. Override to provide alternate functionality, such as
   # checking for `test_mode` to use test servers, etc.
-  #
   # @return [Boolean] Should return `true` if the provided credentials proved to work,
   #   `false` otherswise.
+
   def valid_credentials?
     location = self.class.default_location
     find_rates(location, location, Package.new(100, [5, 15, 30]), :test => test_mode)
@@ -83,15 +81,10 @@ class Carrier
     []
   end
 
-
   # Sets which view should be used in carrier settings. Will use views/carriers/_general_settings as default or
   # overwrite if you want to use a personalized view instead.
   def self.settings_view # REFACTOR > RENAME TO
     'general_settings'
   end
-
-  # def settings(account_id) # REFACTOR > DON'T LIKE THE CARRIER KNOWING WHICH ACCOUNT IT'S FROM. IT SHOULD ONLY GET THE OPTIONS/CREDENTIAL AND THATS IT. IT DOESN'T NEED TO KNOW THERE ARE MORE THEN ONE ACCOUNTS ARE THERE
-  #   CarrierSetting.find_by(account_id: account_id, carrier_class: self.class)
-  # end
 
 end

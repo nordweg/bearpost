@@ -56,18 +56,15 @@ class Shipment < ApplicationRecord
     tracking_number = carrier.get_tracking_number(self)
   end
 
-  def save_tracking_number
+  def save_tracking_number # REFACTOR > Change name to Update or join with get_tracking_number
     self.tracking_number = get_tracking_number
     if self.tracking_number_changed?
       self.update(tracking_number: tracking_number)
-      true
-    else
-      false
     end
   end
 
   def sent_to_carrier! # REFACTOR > Not to easy to understand what this is doing
-    update(sent_to_carrier:true)
+    update(sent_to_carrier: true)
     histories.create(
       user: Current.user,
       description: "Pedido enviado para a transportadora #{carrier.name}",
@@ -113,7 +110,12 @@ class Shipment < ApplicationRecord
     end
   end
 
-  def save_delivery_updates
+  def get_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
+    delivery_updates = carrier.new(carrier_settings).get_delivery_updates(self)
+    delivery_updates.sort_by {|delivery_update| delivery_update[:date]}
+  end
+
+  def save_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
     delivery_updates = get_delivery_updates
     delivery_updates.each do |delivery_update|
       self.histories.create(
@@ -123,12 +125,14 @@ class Shipment < ApplicationRecord
         category: 'carrier',
       )
     end
+    # self.histories.create(
+    #   description: "Sincronizou status de entrega com #{self.carrier.name}",
+    #   date: Time.now,
+    #   changed_by: "Bearpost",
+    #   category: 'carrier',
+    # )
     current_status = delivery_updates.last[:bearpost_status]
     self.update(status: current_status)
-  end
-
-  def get_delivery_updates
-    carrier.new(carrier_settings).get_delivery_updates(self).sort_by {|delivery_update| delivery_update[:date]}
   end
 
   def self.filter(params)

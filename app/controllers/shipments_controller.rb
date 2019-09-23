@@ -68,17 +68,27 @@ class ShipmentsController < ApplicationController
   end
 
   def save_delivery_updates
-    if @shipment.save_delivery_updates
-      flash[:success] = 'Histórico atualizado com sucesso'
-    else
-      flash[:error] = @shipment.errors.full_messages
-    end
+    # begin
+      @shipment.save_delivery_updates if @shipment.save_delivery_updates
+    # rescue Exception => e
+    #   flash[:error] = e.message
+    # end
     redirect_to @shipment
   end
 
   def sync_all_ready_shipments_with_carriers
     shipments = Shipment.all.ready_to_ship
     CarrierSyncronizer.sync(shipments)
+  end
+
+  def update_all_shipments_delivery_status
+    begin
+      shipments = Shipment.all.shipped_but_not_delivered.where(carrier_class: "Carrier::Azul")
+      flash[:success] = "Rastreios atualizados com sucesso" if CarrierSyncronizer.update_shipments_delivery_status(shipments)
+    rescue Exception => e
+      flash[:error] = e.message
+    end
+    redirect_to :shipments
   end
 
   def sync_shipment_with_carrier
