@@ -28,6 +28,11 @@ class CarrierSyncronizer
     grouped_shipments
   end
 
+  def self.update_all_shipments_delivery_status
+    shipments = Shipment.all.shipped_but_not_delivered
+    CarrierSyncronizer.update_shipments_delivery_status(shipments)
+  end
+
   def self.update_shipments_delivery_status(shipments)
     results = []
     shipments.each do |shipment|
