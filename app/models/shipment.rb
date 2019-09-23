@@ -4,7 +4,7 @@ class Shipment < ApplicationRecord
 
   scope :ready_to_ship, -> { where(status: 'Ready for shipping', sent_to_carrier: false) }
   scope :shipped,       -> { where(status: 'On the way') }
-  scope :shipped_but_not_delivered, -> { where(status: ["On the way", "Out for delivery", "Problematic"]) }
+  scope :shipped_but_not_delivered, -> { where(status: ["On the way", "Out for delivery", "Problematic", "Waiting for pickup"]) }
 
   has_many    :packages
   has_many    :histories
@@ -17,7 +17,7 @@ class Shipment < ApplicationRecord
   after_update :save_status_change_to_history
   after_create :first_history
 
-  STATUSES = ["Pending", "Ready for shipping", "On the way", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
+  STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
 
   def self.statuses
     STATUSES
@@ -118,7 +118,8 @@ class Shipment < ApplicationRecord
   def save_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
     delivery_updates = get_delivery_updates
     delivery_updates.each do |delivery_update|
-      self.histories.create(
+      History.create(
+        shipment: self,
         description: delivery_update[:description],
         date: delivery_update[:date],
         changed_by: carrier.name,
@@ -133,6 +134,7 @@ class Shipment < ApplicationRecord
     # )
     current_status = delivery_updates.last[:bearpost_status]
     self.update(status: current_status)
+    # byebug
   end
 
   def self.filter(params)
