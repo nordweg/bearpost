@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_21_111623) do
+ActiveRecord::Schema.define(version: 2019_09_24_182351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -110,6 +110,8 @@ ActiveRecord::Schema.define(version: 2019_09_21_111623) do
     t.integer "company_id"
     t.boolean "sent_to_carrier", default: false
     t.datetime "last_synched_at"
+    t.datetime "ready_for_shipping_at"
+    t.datetime "delivered_at"
   end
 
   create_table "users", force: :cascade do |t|

@@ -14,7 +14,8 @@ class Shipment < ApplicationRecord
 
   after_create :create_package
   before_save  :update_invoice_number
-  after_update :save_status_change_to_history
+  after_update :save_status_change_to_history, if: :saved_change_to_status?
+  after_update :update_dates, if: :saved_change_to_status?
   after_create :first_history
 
   STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
@@ -39,14 +40,20 @@ class Shipment < ApplicationRecord
   end
 
   def save_status_change_to_history
-    if saved_changes.include?("status")
-      histories.create(
-        user: Current.user,
-        description: "Status alterado de #{I18n.t saved_changes["status"][0]} para #{I18n.t saved_changes["status"][1]}",
-        category:'status',
-        date: DateTime.now,
-        changed_by: Current.connected
-      )
+    histories.create(
+      user: Current.user,
+      description: "Status alterado de #{I18n.t saved_changes["status"][0]} para #{I18n.t saved_changes["status"][1]}",
+      category:'status',
+      date: DateTime.now,
+      changed_by: Current.connected
+    )
+  end
+
+  def update_dates
+    case status
+    when "Ready for shipping"  then touch(:ready_for_shipping_at)
+    when "On the way"          then touch(:shipped_at)
+    when "Delivered"           then touch(:delivered_at)
     end
   end
 
@@ -126,15 +133,8 @@ class Shipment < ApplicationRecord
         category: 'carrier',
       )
     end
-    # self.histories.create(
-    #   description: "Sincronizou status de entrega com #{self.carrier.name}",
-    #   date: Time.now,
-    #   changed_by: "Bearpost",
-    #   category: 'carrier',
-    # )
     current_status = delivery_updates.last[:bearpost_status]
     self.update(status: current_status)
-    # byebug
   end
 
   def self.filter(params)
@@ -155,7 +155,7 @@ class Shipment < ApplicationRecord
     if params[:date_range].present?
       start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
       end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day
-      shipments = shipments.where("created_at > ? AND created_at < ?", start_date, end_date)
+      shipments = shipments.where("shipped_at > ? AND shipped_at < ?", start_date, end_date)
     end
     shipments
   end
