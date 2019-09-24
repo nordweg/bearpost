@@ -5,6 +5,11 @@ module Api::V1
       render json: Shipment.all
     end
 
+    def show
+      shipment = get_shipment
+      render json: shipment
+    end
+
     def create
       if request.format.xml?
         shipment = Shipment.new(shipment_info_from_xml)
