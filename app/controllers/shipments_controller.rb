@@ -5,7 +5,7 @@ class ShipmentsController < ApplicationController
 
   def index
     @shipments = Shipment.filter(params)
-    @shipments = @shipments.order(created_at: :desc).page(params[:page])
+    @shipments = @shipments.order(shipped_at: :desc).page(params[:page])
   end
 
   def show
