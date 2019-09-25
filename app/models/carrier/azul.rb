@@ -269,7 +269,6 @@ class Carrier::Azul < Carrier
     sorted_delivery_updates.each do |update|
       update[:date] = latest_update + 0.1 if update[:bearpost_status] == "Delivered"
     end
-    byebug
     sorted_delivery_updates
   end
 

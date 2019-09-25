@@ -125,13 +125,14 @@ class Shipment < ApplicationRecord
   def save_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
     delivery_updates = get_delivery_updates
     delivery_updates.each do |delivery_update|
-      History.create(
+      history = History.new(
         shipment: self,
         description: delivery_update[:description],
         date: delivery_update[:date],
         changed_by: carrier.name,
         category: 'carrier',
       )
+      history.save if history.valid?
     end
     current_status = delivery_updates.last[:bearpost_status]
     self.update(status: current_status)
