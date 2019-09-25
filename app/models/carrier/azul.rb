@@ -84,7 +84,7 @@ class Carrier::Azul < Carrier
     "91" => {azul_status: 'ENTREGA PROGRAMADA.', bearpost_status: 'On the way'},
     "92" => {azul_status: 'PROBLEMAS FISCAIS', bearpost_status: 'Problematic'},
     "100" => {azul_status: 'EMISSAO DO CONHECIMENTO DE TRANSPORTE.', bearpost_status: 'On the way'},
-    "104" => {azul_status: 'EMISSAO DE MANIFESTO DE SAIDA.', bearpost_status: 'Out for delivery'},
+    "104" => {azul_status: 'EMISSAO DE MANIFESTO DE SAIDA.', bearpost_status: 'On the way'},
     "106" => {azul_status: 'EMISSAO DA LISTAGEM DE ENTREGAS.', bearpost_status: 'On the way'},
     "107" => {azul_status: 'CANCELAMENTO DO CONHECIMENTO.', bearpost_status: 'On the way'},
     "108" => {azul_status: 'REIMPRESSAO DE CONHECIMENTO.', bearpost_status: 'On the way'},
@@ -145,11 +145,13 @@ class Carrier::Azul < Carrier
     events.each do |event|
       delivery_updates << {
         date: event["DataHora"],
+        status_code: event["Codigo"],
         description: "#{event['Descricao']} #{event['Comentario']} - #{event['UnidadeMunicipio']}, #{event['UnidadeUF']}",
         bearpost_status: STATUS_CODES.try(:[], event["Codigo"]).try(:[], :"bearpost_status")
       }
     end
-    delivery_updates
+    delivered_at = response.body.dig("Value", 0, "DataHoraEntrega")
+    delivered_at ? fix_delivery_date(delivery_updates) : delivery_updates
   end
 
   def sync_shipments(shipments)
@@ -257,4 +259,18 @@ class Carrier::Azul < Carrier
     }
     response = connection.post("api/NFe/Enviar?token=#{token}",body)
   end
+
+  # Sometimes Azul puts the wrong delivery time. This goes through all updates and sets
+  # the delivery for 1 hour after the last delivery update
+
+  def fix_delivery_date(delivery_updates)
+    sorted_delivery_updates = delivery_updates.sort_by {|delivery_update| delivery_update[:date].to_datetime}
+    latest_update = sorted_delivery_updates[-1][:date].to_datetime
+    sorted_delivery_updates.each do |update|
+      update[:date] = latest_update + 0.1 if update[:bearpost_status] == "Delivered"
+    end
+    byebug
+    sorted_delivery_updates
+  end
+
 end
