@@ -34,18 +34,22 @@ class CarrierSyncronizer
   end
 
   def self.update_shipments_delivery_status(shipments)
-    results = []
+    errors = []
+    shipments_updated = 0
     shipments.each do |shipment|
       begin
         shipment.save_tracking_number
         shipment.save_delivery_updates
+        shipments_updated += 1
       rescue Exception => e
-        results << "Shipment #{shipment.id} - #{shipment.carrier}: #{e.message}"
+        errors << "Shipment #{shipment.id} - #{shipment.carrier}: #{e.message}"
         next
       end
     end
     puts "STATUS UPDATE RESULTS #{Time.now}"
-    puts results
+    puts "#{shipments_updated} SHIPMENTS UPDATED"
+    puts "#{errors.size} ERRORS"
+    puts errors
   end
 
 end

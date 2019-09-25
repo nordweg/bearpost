@@ -205,6 +205,8 @@ $("#select-all-JS").change(function() {
 
 $(document).ready(function() {
   $('#kt_daterangepicker_2').daterangepicker({
+    startDate: moment().subtract(29, 'days'),
+    endDate: moment(),
     ranges: {
       'Hoje': [moment(), moment()],
       'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
