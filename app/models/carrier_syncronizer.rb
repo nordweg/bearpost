@@ -29,7 +29,7 @@ class CarrierSyncronizer
   end
 
   def self.update_all_shipments_delivery_status
-    shipments = Shipment.all.shipped_but_not_delivered
+    shipments = Shipment.all.shipped_but_not_delivered.where(carrier_class: "Carrier::Azul")
     CarrierSyncronizer.update_shipments_delivery_status(shipments)
   end
 
