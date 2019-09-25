@@ -30,8 +30,9 @@ module ApplicationHelper
       when "Problematic"            then "kt-badge--danger"
       when "Returned"               then "kt-badge--metal"
       when "Cancelled"              then "kt-badge--metal"
+      when "Waiting for pickup"     then "kt-badge--info"
     end
-    "<span class='kt-badge #{right_class} kt-badge--inline kt-badge--pill'>#{ I18n.t(status) }</span>".html_safe
+    "<span class='kt-badge #{right_class} kt-badge--inline kt-badge--pill'><nobr>#{ I18n.t(status) }</nobr></span>".html_safe
   end
 
 
