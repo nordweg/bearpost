@@ -101,12 +101,8 @@ class ShipmentsController < ApplicationController
   private
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_shipment # REFACTOR > It's also setting carrier, which needs authentication just to view shipment. Make single responsability. No need to autenticate with carrier just to view shipment
+  def set_shipment
     @shipment = Shipment.find(params[:id])
-    # @carrier = @shipment.carrier.new(@shipment.carrier_settings)
-    # if @carrier.valid_credentials? == false # REFACTOR > This was making viewing a shipment slow. What's the need to authenticate with carrier at this state?
-    #   @carrier.authenticate!
-    # end
   end
 
   def set_carrier
@@ -115,7 +111,7 @@ class ShipmentsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def shipment_params
-    if params[:invoice_xml] # REFACTOR > Should be in a model, maybe before_save?
+    if params[:invoice_xml] # REFACTOR > Should be in a model, maybe before_save? It doesn't feel right here
       params[:shipment][:invoice_xml] = params[:invoice_xml].read.strip
     end
     params.require(:shipment).permit!
