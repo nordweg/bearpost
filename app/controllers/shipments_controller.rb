@@ -1,7 +1,7 @@
 class ShipmentsController < ApplicationController
 
   before_action :set_shipment, only: [:show, :edit, :update, :destroy, :save_tracking_number, :get_labels, :ship, :sync_with_carrier, :set_as_shipped, :get_delivery_updates, :save_delivery_updates]
-  before_action :set_carrier, only: [:show, :get_delivery_updates, :save_delivery_updates]
+  before_action :set_carrier, only: [:show, :get_delivery_updates, :save_delivery_updates, :get_labels]
 
   def index
     @shipments = Shipment.filter(params)

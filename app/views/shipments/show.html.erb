@@ -3,6 +3,15 @@
   font-size: 13px;
   color: #646c9a;
 }
+.edit-status .alter-status {
+  display: none;
+}
+.edit-status:hover .alter-status{
+  display: inline-flex;
+}
+.edit-status:hover .current-status{
+  display: none;
+}
 </style>
 
 <% content_for :subheader_title do %>
@@ -22,7 +31,6 @@
       Opções
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-      <%= link_to "Marcar como a caminho", shipment_path(@shipment, shipment: {status: "On the way"}), class: "dropdown-item", method:'patch' %>
       <%= link_to "Informações adicionais", "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
       <div class="dropdown-divider"></div>
       <% @carrier.shipment_menu_links.each do |text, path| %>
@@ -75,6 +83,28 @@
   </div>
 </div>
 
+<!-- Modal de edição de status -->
+<div class="modal fade" id="statusesModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Selecione o novo status</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <% Shipment.statuses.each do |status| %>
+        <%= link_to shipment_path(@shipment, shipment: {status: status}), method:'patch' do %>
+        <div class="my-3"><%= status_label(status) %></div>
+        <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="row">
   <div class="col-md-8">
 
@@ -84,8 +114,10 @@
           <h3 class="kt-portlet__head-title">
             Geral
           </h3>
-          <span class="ml-3"><%= status_label(@shipment.status) %></span>
-
+          <%= link_to "#", "data-toggle" => "modal", 'data-target' => '#statusesModal', class: "ml-3 edit-status" do %>
+            <span class="current-status"><%= status_label(@shipment.status) %></span>
+            <span class='kt-badge kt-badge--metal kt-badge--inline kt-badge--pill alter-status'><nobr>Alterar status</nobr></span>
+          <% end %>
         </div>
       </div>
       <div class="kt-portlet__body">
