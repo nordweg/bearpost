@@ -12,7 +12,7 @@ class SettingsController < ApplicationController
     end
   end
 
-  def generate_api_key
+  def generate_api_key # REFACTOR > Move to API model
     api_key = SecureRandom.hex
   end
 
@@ -20,6 +20,7 @@ class SettingsController < ApplicationController
     api_key = generate_api_key
     Setting.where(key: "api_key").delete_all
     Setting.create(key: "api_key", value: api_key)
+    flash[:success] = "Nova chave de API criada com sucesso"
     redirect_to :settings
   end
 

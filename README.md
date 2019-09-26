@@ -128,7 +128,6 @@ The response should look like:
   "shipping_method": "Standart",
   "tracking_number": null,
   "settings": {},
-  "company_id": 1,
   "sent_to_carrier": false,
   "synced_with_carrier": "false"
 }
