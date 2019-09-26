@@ -24,5 +24,4 @@ class SettingsController < ApplicationController
     redirect_to :settings
   end
 
-
 end
