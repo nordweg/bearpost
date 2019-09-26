@@ -11,7 +11,7 @@
           </div>
           <div class="kt-profile__main-info">
             <div class="kt-profile__main-info-name"><%= @user.full_name %></div>
-            <div class="kt-profile__main-info-position"><%= @user.company.name %></div>
+            <div class="kt-profile__main-info-position"></div>
           </div>
         </div>
       </div>
@@ -30,12 +30,6 @@
     <ul class="nav nav-tabs nav-tabs-line" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1" role="tab" aria-selected="true">Conta</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#kt_tabs_2" role="tab" aria-selected="false">Integrações</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#kt_tabs_3" role="tab" aria-selected="false">Empresa</a>
       </li>
     </ul>
   </div>
@@ -87,54 +81,6 @@
               <p><%= @user.email %></p>
               <h4>Cadastrado em</h4>
               <p><%= @user.created_at.to_date %></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="tab-pane fade" id="kt_tabs_2" role="tabpanel">
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="kt-portlet">
-          <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-              <h3 class="kt-portlet__head-title">
-                API
-              </h3>
-            </div>
-          </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <h4>Token</h4>
-              <%= @user.company.token %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="tab-pane fade" id="kt_tabs_3" role="tabpanel">
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="kt-portlet">
-          <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-              <h3 class="kt-portlet__head-title">
-                Informações gerais
-              </h3>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-              <%= link_to "Editar", edit_company_path(@user.company), class: "float-right" %>
-            </div>
-          </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <h4>Nome</h4>
-              <%= @user.company.name %>
             </div>
           </div>
         </div>

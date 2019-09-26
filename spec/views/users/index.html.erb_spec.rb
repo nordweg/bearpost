@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "users/index", type: :view do
   before(:each) do
-    company = Company.create!()
-    user = User.create!(email: 'test@test.com', password: "password", password_confirmation: "password", company:company)
+    user = User.create!(email: 'test@test.com', password: "password", password_confirmation: "password")
     assign(:users, [
       user, user
     ])
