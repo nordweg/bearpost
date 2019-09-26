@@ -13,7 +13,7 @@
         </div>
         <div class="kt-portlet__head-toolbar">
           <div class="kt-portlet__head-wrapper">
-            <%= link_to new_account_path, class: "btn btn-brand btn-bold btn-upper btn-font-sm" do %>
+            <%= link_to new_account_path, class: "btn btn-default btn-bold btn-upper btn-font-sm" do %>
             <i class="la la-plus"></i>
             Nova conta
             <% end %>
@@ -43,7 +43,47 @@
       </div>
     </div>
   </div>
+</div>
 
-
-
+<div class="row">
+  <div class="col-md-6">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Usuários
+          </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+          <div class="kt-portlet__head-wrapper">
+            <%= link_to new_account_path, class: "btn btn-default btn-bold btn-upper btn-font-sm" do %>
+            <i class="la la-plus"></i>
+            Novo usuário
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+            <tbody>
+              <% User.all.each do |user| %>
+              <tr>
+                <td><%= user.full_name %></td>
+                <td class="text-right">
+                  <%# link_to edit_account_path(account), class:"btn btn-sm btn-clean btn-icon btn-icon-sm" do %>
+                    <i class="la la-edit"></i>
+                  <%# end %>
+                  <%# link_to account, method: :delete, data: { confirm: 'Tem certeza?' }, class:"btn btn-sm btn-clean btn-icon btn-icon-sm" do %>
+                    <i class="la la-trash"></i>
+                  <%# end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
