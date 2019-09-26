@@ -1,5 +1,9 @@
 ---
 pt-BR:
+  devise:
+    sessions:
+      user:
+        signed_in: Login efetuado com sucesso!
   "Pending": Pendente
   "Ready for shipping": Pronto para envio
   "On the way": A caminho
