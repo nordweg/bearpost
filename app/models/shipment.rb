@@ -53,21 +53,20 @@ class Shipment < ApplicationRecord
     case status
     when "Ready for shipping"  then touch(:ready_for_shipping_at)
     when "On the way"          then touch(:shipped_at)
-    when "Delivered"           then touch(:delivered_at)
+    when "Delivered"           then update(delivered_at:find_delivery_time)
     end
+  end
+
+  def find_delivery_time
+    histories.where(bearpost_status:"Delivered").date
   end
 
   def get_tracking_number
     return tracking_number if tracking_number.present?
     carrier = self.carrier.new(carrier_settings)
     tracking_number = carrier.get_tracking_number(self)
-  end
-
-  def save_tracking_number # REFACTOR > Change name to Update or join with get_tracking_number
-    self.tracking_number = get_tracking_number
-    if self.tracking_number_changed?
-      self.update(tracking_number: tracking_number)
-    end
+    self.update(tracking_number: tracking_number)
+    self.tracking_number
   end
 
   def sent_to_carrier! # REFACTOR > Not to easy to understand what this is doing
@@ -115,27 +114,6 @@ class Shipment < ApplicationRecord
       hash["synced_with_carrier"] = sent_to_carrier ? 'true' : 'false'
       hash["carrier"] = carrier.name
     end
-  end
-
-  def get_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
-    delivery_updates = carrier.new(carrier_settings).get_delivery_updates(self)
-    delivery_updates.sort_by {|delivery_update| delivery_update[:date]}
-  end
-
-  def save_delivery_updates # REFACTOR > Passar pro CarrierSyncronizer?
-    delivery_updates = get_delivery_updates
-    delivery_updates.each do |delivery_update|
-      history = History.new(
-        shipment: self,
-        description: delivery_update[:description],
-        date: delivery_update[:date],
-        changed_by: carrier.name,
-        category: 'carrier',
-      )
-      history.save if history.valid?
-    end
-    current_status = delivery_updates.last[:bearpost_status]
-    self.update(status: current_status)
   end
 
   def self.filter(params)

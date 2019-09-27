@@ -150,8 +150,7 @@ class Carrier::Azul < Carrier
         bearpost_status: STATUS_CODES.try(:[], event["Codigo"]).try(:[], :"bearpost_status")
       }
     end
-    delivered_at = response.body.dig("Value", 0, "DataHoraEntrega")
-    delivered_at ? fix_delivery_date(delivery_updates) : delivery_updates
+    delivery_updates
   end
 
   def sync_shipments(shipments)
@@ -258,18 +257,6 @@ class Carrier::Azul < Carrier
       "xml": encoded_xml,
     }
     response = connection.post("api/NFe/Enviar?token=#{token}",body)
-  end
-
-  # Sometimes Azul puts the wrong delivery time. This goes through all updates and sets
-  # the delivery for 1 hour after the last delivery update
-
-  def fix_delivery_date(delivery_updates)
-    sorted_delivery_updates = delivery_updates.sort_by {|delivery_update| delivery_update[:date].to_datetime}
-    latest_update = sorted_delivery_updates[-1][:date].to_datetime
-    sorted_delivery_updates.each do |update|
-      update[:date] = latest_update + 0.1 if update[:bearpost_status] == "Delivered"
-    end
-    sorted_delivery_updates
   end
 
 end
