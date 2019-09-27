@@ -4,6 +4,8 @@ pt-BR:
     sessions:
       user:
         signed_in: Login efetuado com sucesso!
+    failure:
+      already_authenticated: Você já está autenticado!
   "Pending": Pendente
   "Ready for shipping": Pronto para envio
   "On the way": A caminho
