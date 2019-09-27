@@ -5,13 +5,6 @@ class SettingsController < ApplicationController
     @api_key = Setting.find_by(key: "api_key").try(:value)
   end
 
-  def update_settings
-    settings = params
-    settings.each do |setting|
-
-    end
-  end
-
   def generate_api_key # REFACTOR > Move to API model
     api_key = SecureRandom.hex
   end
