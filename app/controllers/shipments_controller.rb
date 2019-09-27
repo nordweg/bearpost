@@ -26,7 +26,6 @@ class ShipmentsController < ApplicationController
 
   def create
     @shipment = Shipment.new(shipment_params)
-    @shipment.company = current_user.company
     if @shipment.save
       redirect_to @shipment, notice: 'O envio foi criado com sucesso!'
     else

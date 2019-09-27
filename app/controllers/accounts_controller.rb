@@ -30,7 +30,6 @@ class AccountsController < ApplicationController
 
   def create
     @account = Account.create(account_params)
-    @account.company = current_company
     if @account.save
       redirect_to settings_path, notice: 'Conta criada com sucesso'
     end

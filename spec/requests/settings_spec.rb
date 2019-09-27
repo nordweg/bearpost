@@ -5,7 +5,7 @@ RSpec.describe "Settings", type: :request do
     user = User.create(email: 'test@test.com', password: "password", password_confirmation: "password")
     sign_in user
   end
-  describe "GET /setting" do
+  describe "GET /settings" do
     it "works! (now write some real specs)" do
       get settings_path
       expect(response).to have_http_status(:success)

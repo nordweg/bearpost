@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_24_182351) do
+ActiveRecord::Schema.define(version: 2019_09_26_192319) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,12 +41,6 @@ ActiveRecord::Schema.define(version: 2019_09_24_182351) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "companies", force: :cascade do |t|
-    t.string "token"
-    t.string "name"
-    t.index ["token"], name: "index_companies_on_token"
-  end
-
   create_table "histories", force: :cascade do |t|
     t.integer "shipment_id"
     t.integer "user_id"
@@ -74,6 +68,13 @@ ActiveRecord::Schema.define(version: 2019_09_24_182351) do
   create_table "reverse_shipments", force: :cascade do |t|
     t.string "authorization_code"
     t.string "authorization_code_expiration_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.string "key"
+    t.string "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -125,6 +126,11 @@ ActiveRecord::Schema.define(version: 2019_09_24_182351) do
     t.integer "company_id"
     t.string "first_name"
     t.string "last_name"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet "current_sign_in_ip"
+    t.inet "last_sign_in_ip"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
