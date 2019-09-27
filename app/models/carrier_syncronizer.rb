@@ -45,9 +45,7 @@ class CarrierSyncronizer
         next
       end
     end
-    puts "STATUS UPDATE RESULTS #{Time.now}"
-    puts "#{shipments_updated} SHIPMENTS UPDATED"
-    puts "#{errors.size} ERRORS"
+    puts "STATUS UPDATE RESULTS: #{shipments_updated} shipments updated, #{errors.size} errors"
     puts errors
   end
 

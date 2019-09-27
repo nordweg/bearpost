@@ -3,7 +3,6 @@ class Account < ApplicationRecord
 
   has_many :shipments
   has_many :carrier_settings
-  belongs_to  :company, optional: true
 
   def selected_shipping_methods(carrier)
     # selected_shipping_methods = []

@@ -2,12 +2,13 @@ Rails.application.routes.draw do
   root 'shipments#index'
 
   get  'settings',                                   to: "settings#index"
+  post 'settings/update_api_key',                    to: "settings#update_api_key"
   get  'accounts/:id/:carrier_class/edit',           to: "accounts#edit_carrier"
   post 'accounts/:id/update_carrier_settings',       to: "accounts#update_carrier_settings"
 
   get  'track/:shipment_number',                     to: "tracking#show"
 
-  # CORREIOS ROUTES - DELETE ONCE SETTINGS ARE NOT SPECIFIC
+  # CORREIOS ROUTES - DELETE ONCE SETTINGS ARE NOT SPECIFIC # REFACTOR
   post "/correios/:shipment_id/get_plp",                        to: "correios#get_plp"
   post "/correios/:account_id/:shipping_method/send_plp",       to: "correios#send_plp"
   post "/correios/:account_id/:shipping_method/",               to: "correios#save_new_range"

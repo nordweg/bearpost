@@ -1,31 +1,25 @@
 module Api::V1
   class ApiController < ApplicationController
-    # Generic API stuff here
-
     protect_from_forgery unless: -> { request.format.json? || request.format.xml? || request.format.pdf? }
 
     skip_before_action :authenticate_user!
-    before_action      :authenticate_company!
+    before_action      :authenticate_connection!
     before_action      :set_current_attributes
 
     protected
 
     # Authenticate the user with token based authentication
-    def authenticate_company!
+    def authenticate_connection!
       authenticate_token || render_unauthorized
     end
 
-    def authenticate_token
+    def authenticate_token # REFACTOR > Create Autheticator class?
       authenticate_with_http_token do |token, options|
-        @current_company = Company.find_by(token: token)
+        Setting.find_by(key: "api_key", value: token)
       end
     end
 
-    def current_company
-      @current_company
-    end
-
-    def set_current_attributes
+    def set_current_attributes # REFACTOR >> What does this do? Set whoever is conecting? Would like to understand
       Current.connected = "API"
     end
 
