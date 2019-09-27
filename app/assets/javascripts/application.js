@@ -18,6 +18,7 @@
 //= require vendor/jquery-ui.js
 //= require vendor/sticky.min.js
 //= require vendor/moment.min.js
+//= require vendor/tooltip.min.js
 //= require vendor/daterangepicker.js
 //= require vendor/perfect-scrollbar.min.js
 //= require vendor/jquery.blockUI.js

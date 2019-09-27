@@ -22,6 +22,11 @@ end
   </div>
   <span class="kt-timeline__item-text">
     <%= history.description %>
+    <a href="#" data-html="true" class="btn btn-sm btn-icon btn-clean btn-icon-md" rel="tooltip" title="
+    <%= history.carrier_status_code %>: <%= t history.bearpost_status %>
+    ">
+      <i class="la la-question-circle"></i>
+    </a>
   </span>
   <div class="kt-timeline__item-info"><i class="la la-user"></i>
     Atualizado por
@@ -32,3 +37,9 @@ end
     <% end %>
   </div>
 </div>
+
+<script>
+$(function () {
+  $("[rel=tooltip]").tooltip({html:true});
+})
+</script>
