@@ -2,7 +2,7 @@ class SettingsController < ApplicationController
 
   def index
     @accounts = Account.all
-    @api_key = Setting.find_by(key: "api_key").value
+    @api_key = Setting.find_by(key: "api_key").try(:value)
   end
 
   def update_settings
