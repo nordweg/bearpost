@@ -134,8 +134,8 @@ Atualizar status
                 <th>Transportadora</th>
                 <th>Destinatário</th>
                 <th>Cidade</th>
-                <th>Data de criação</th>
-                <th>Data de envio</th>
+                <th>Envio</th>
+                <th>Entrega</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -145,11 +145,11 @@ Atualizar status
                 <td><label class="kt-checkbox kt-checkbox--solid p-0 m-0"><input type="checkbox" value="<%= shipment.id %>">&nbsp;<span></span></label></td>
                 <td><%= link_to shipment.shipment_number, shipment_path(shipment), class: "kt-link" %></td>
                 <td><%= shipment.order_number %></td>
-                <td><%= shipment.carrier.name %></td>
+                <td><%= shipment.carrier.name %> <%= shipment.shipping_method %></td>
                 <td><%= shipment.full_name %></td>
-                <td><%= shipment.city %></td>
-                <td><%= shipment.created_at.try(:strftime,"%d/%m/%Y %H:%M") %></td>
-                <td><%= shipment.shipped_at.try(:strftime,"%d/%m/%Y %H:%M") %></td>
+                <td><%= shipment.city %>, <%= shipment.state %></td>
+                <td><%= shipment.created_at.try(:strftime,"%d/%m/%Y") %></td>
+                <td><%= shipment.shipped_at.try(:strftime,"%d/%m/%Y") %></td>
                 <td><%= status_label(shipment.status) %></td>
               </tr>
               <% end %>
