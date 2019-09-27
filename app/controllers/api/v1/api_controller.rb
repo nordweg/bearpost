@@ -3,7 +3,7 @@ module Api::V1
     protect_from_forgery unless: -> { request.format.json? || request.format.xml? || request.format.pdf? }
 
     skip_before_action :authenticate_user!
-    # before_action      :authenticate_connection!
+    before_action      :authenticate_connection!
     before_action      :set_current_attributes
 
     protected
@@ -15,8 +15,7 @@ module Api::V1
 
     def authenticate_token # REFACTOR > Create Autheticator class?
       authenticate_with_http_token do |token, options|
-        api_key = Setting.find_by(key: "api_key")
-        token == api_key
+        Setting.find_by(key: "api_key", value: token)
       end
     end
 
