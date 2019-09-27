@@ -38,8 +38,7 @@ class CarrierSyncronizer
     shipments_updated = 0
     shipments.each do |shipment|
       begin
-        shipment.save_tracking_number
-        shipment.save_delivery_updates
+        update_shipment_delivery_status(shipment)
         shipments_updated += 1
       rescue Exception => e
         errors << "Shipment #{shipment.id} - #{shipment.carrier}: #{e.message}"
@@ -50,6 +49,46 @@ class CarrierSyncronizer
     puts "#{shipments_updated} SHIPMENTS UPDATED"
     puts "#{errors.size} ERRORS"
     puts errors
+  end
+
+  def self.update_shipment_delivery_status(shipment)
+    delivery_updates = get_delivery_updates(shipment)
+    create_histories(shipment,delivery_updates)
+    update_current_status(shipment,delivery_updates)
+  end
+
+  def self.get_delivery_updates(shipment)
+    shipment.get_tracking_number
+    delivery_updates = shipment.carrier.new(shipment.carrier_settings).get_delivery_updates(shipment)
+    unknown_delivery_updates = delivery_updates.select { |delivery_update| delivery_update[:bearpost_status] == nil }
+    unknown_delivery_updates.each do |delivery_update|
+      puts "FOLLOW UP: Shipment #{shipment.id} - The carrier #{shipment.carrier.name} has an unknown status: #{delivery_update[:status_code]}"
+    end
+    delivery_updates
+  end
+
+  def self.create_histories(shipment,delivery_updates)
+    delivery_updates.each do |delivery_update|
+      history = History.new(
+        shipment: shipment,
+        description: delivery_update[:description],
+        date: delivery_update[:date],
+        changed_by: shipment.carrier.name,
+        bearpost_status: delivery_update[:bearpost_status],
+        carrier_status_code: delivery_update[:status_code],
+        category: 'carrier',
+      )
+      history.save if history.valid?
+    end
+  end
+
+  def self.update_current_status(shipment,delivery_updates)
+    delivery_updates.sort_by! { |delivery_update| delivery_update[:date] }
+    current_status = delivery_updates.last[:bearpost_status]
+    delivery_updates.each do |delivery_update|
+      current_status = "Delivered" if delivery_update[:bearpost_status] == "Delivered"
+    end
+    shipment.update(status: current_status)
   end
 
 end

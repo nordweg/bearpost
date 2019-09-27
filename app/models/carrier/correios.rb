@@ -345,6 +345,7 @@ class Carrier::Correios < Carrier
       delivery_updates << {
         date: "#{event[:data]} #{event[:hora]}",
         description: "#{event[:descricao]} em #{event[:cidade]}, #{event[:uf]}. #{event[:local]}",
+        status_code: "#{event[:tipo]} - #{event[:status]}",
         bearpost_status: STATUS_CODES[key].try(:[], 0)
       }
     end
