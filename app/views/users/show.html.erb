@@ -11,31 +11,50 @@
           </div>
           <div class="kt-profile__main-info">
             <div class="kt-profile__main-info-name"><%= @user.full_name %></div>
-            <div class="kt-profile__main-info-position"><%= @user.company.name %></div>
+            <div class="kt-profile__main-info-position">Lead Designer</div>
           </div>
         </div>
       </div>
-      <div class="col-md-12 col-lg-7 col-xl-4">
+      <div class="col-md-12 col-lg-4 col-xl-4">
         <div class="kt-profile__contact">
+          <a href="#" class="kt-profile__contact-item">
+            <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-whatsup"><i class="flaticon-whatsapp"></i></span>
+            <span class="kt-profile__contact-item-text">44 8475 804342</span>
+          </a>
           <a href="#" class="kt-profile__contact-item">
             <span class="kt-profile__contact-item-icon"><i class="flaticon-email-black-circular-button kt-font-danger"></i></span>
             <span class="kt-profile__contact-item-text"><%= @user.email %></span>
           </a>
+          <a href="#" class="kt-profile__contact-item">
+            <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-twitter"><i class="flaticon-twitter-logo-button"></i></span>
+            <span class="kt-profile__contact-item-text">@brianjohnson</span>
+          </a>
         </div>
       </div>
-
+      <div class="col-md-12 col-lg-3 col-xl-4">
+        <div class="kt-profile__stats">
+          <div class="kt-profile__stats-item">
+            <div class="kt-profile__stats-item-label">Último login</div>
+            <div class="kt-profile__stats-item-chart">
+              <span><%= l(@user.last_sign_in_at, format: :long) if @user.last_sign_in_at %></span>
+              <canvas id="kt_profile_mini_chart_1" width="200" height="80" style="display: block; height: 40px; width: 100px;"></canvas>
+            </div>
+          </div>
+          <div class="kt-profile__stats-item">
+            <div class="kt-profile__stats-item-label">Usuário desde</div>
+            <div class="kt-profile__stats-item-chart">
+              <span><%= l(@user.created_at, format: :long) %></span>
+              <canvas id="kt_profile_mini_chart_2" width="200" height="80" style="display: block; height: 40px; width: 100px;"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="kt-profile__nav">
     <ul class="nav nav-tabs nav-tabs-line" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1" role="tab" aria-selected="true">Conta</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#kt_tabs_2" role="tab" aria-selected="false">Integrações</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#kt_tabs_3" role="tab" aria-selected="false">Empresa</a>
+        <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1_2" role="tab" aria-selected="true">Conta & Perfil</a>
       </li>
     </ul>
   </div>
@@ -44,111 +63,248 @@
 <!-- TABS -->
 
 <div class="tab-content">
-
   <div class="tab-pane fade" id="kt_tabs_1" role="tabpanel">
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-4 col-xl-3">
         <div class="kt-portlet">
-          <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-              <h3 class="kt-portlet__head-title">
-                Dados pessoais
-              </h3>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-              <%= link_to "Editar", edit_user_path, class: "float-right" %>
-            </div>
-          </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <h4>Nome</h4>
-              <p><%= @user.first_name %></p>
-              <h4>Sobrenome</h4>
-              <p><%= @user.last_name %></p>
-            </div>
+          <div class="kt-portlet__body kt-portlet__body--fit">
+            <ul class="kt-nav kt-nav--bold kt-nav--md-space kt-nav--v3 kt-margin-t-20 kt-margin-b-20 nav nav-tabs" role="tablist">
+              <li class="kt-nav__item">
+                <a class="kt-nav__link active" data-toggle="tab" href="#kt_profile_tab_personal_information" role="tab" aria-selected="true">
+                  <span class="kt-nav__link-icon"><i class="flaticon2-user-outline-symbol"></i></span>
+                  <span class="kt-nav__link-text">Informações pessoais</span>
+                </a>
+              </li>
+              <li class="kt-nav__item">
+                <a class="kt-nav__link" data-toggle="tab" href="#kt_profile_change_password" role="tab">
+                  <span class="kt-nav__link-icon"><i class="flaticon2-lock"></i></span>
+                  <span class="kt-nav__link-text">Alteração de senha</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-      <div class="col-lg-6">
-        <div class="kt-portlet">
-          <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-              <h3 class="kt-portlet__head-title">
-                Dados da conta
-              </h3>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-              <%= link_to "Editar", edit_user_registration_path, class: "float-right" %>
+      <div class="col-lg-8 col-xl-9">
+        <div class="tab-content">
+
+          <!--begin: Personal Information-->
+          <div class="tab-pane fade active show" id="kt_profile_tab_personal_information" role="tabpanel">
+            <div class="kt-portlet">
+              <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                  <h3 class="kt-portlet__head-title">Informações pessoais</h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">
+                  <div class="kt-portlet__head-wrapper">
+                    <div class="dropdown dropdown-inline">
+                      <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="flaticon2-gear"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                        <ul class="kt-nav">
+                          <li class="kt-nav__section kt-nav__section--first">
+                            <span class="kt-nav__section-text">Export Tools</span>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon la la-print"></i>
+                              <span class="kt-nav__link-text">Print</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon la la-copy"></i>
+                              <span class="kt-nav__link-text">Copy</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                              <span class="kt-nav__link-text">Excel</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon la la-file-text-o"></i>
+                              <span class="kt-nav__link-text">CSV</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                              <span class="kt-nav__link-text">PDF</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <%= form_for @user do |form| %>
+              <form class="kt-form kt-form--label-right">
+                <div class="kt-portlet__body">
+                  <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                      <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Nome</label>
+                        <div class="col-lg-9 col-xl-6">
+                          <%= form.text_field :first_name, class: "form-control", placeholder: "Nome" %>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Sobrenome</label>
+                        <div class="col-lg-9 col-xl-6">
+                          <%= form.text_field :last_name, class: "form-control", placeholder: "Sobrenome" %>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Telefone</label>
+                        <div class="col-lg-9 col-xl-6">
+                          <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text"><i class="la la-phone"></i></span></div>
+                            <input type="text" class="form-control" value="+45678967456" placeholder="Phone" aria-describedby="basic-addon1">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Email</label>
+                        <div class="col-lg-9 col-xl-6">
+                          <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text"><i class="la la-at"></i></span></div>
+                            <%= form.text_field :email, class: "form-control", placeholder: "Email" %>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row kt-margin-t-10 kt-margin-b-10">
+                        <label class="col-xl-3 col-lg-3 col-form-label"></label>
+                        <div class="col-lg-9 col-xl-6">
+                          <button type="button" class="btn btn-outline-danger btn-sm kt-margin-t-5 kt-margin-b-5">Desativar conta?</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kt-portlet__foot">
+                  <div class="kt-form__actions">
+                    <div class="row">
+                      <div class="col-lg-3 col-xl-3">
+                      </div>
+                      <div class="col-lg-9 col-xl-9">
+                        <%= form.submit "Salvar", class:"btn btn-success" %>
+                        <%= link_to 'Cancelar', :settings, class:"btn btn-secondary" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <% end %>
             </div>
           </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <h4>Email</h4>
-              <p><%= @user.email %></p>
-              <h4>Cadastrado em</h4>
-              <p><%= @user.created_at.to_date %></p>
+
+          <!--end: Personal Information-->
+
+          <!--begin: Change Password -->
+          <div class="tab-pane fade" id="kt_profile_change_password" role="tabpanel">
+            <div class="kt-portlet">
+              <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                  <h3 class="kt-portlet__head-title">Alteração de senha</h3>
+                </div>
+                <div class="kt-portlet__head-toolbar">
+                  <div class="kt-portlet__head-toolbar">
+                    <div class="dropdown dropdown-inline">
+                      <button type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="la la-sellsy"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right">
+                        <ul class="kt-nav">
+                          <li class="kt-nav__section kt-nav__section--first">
+                            <span class="kt-nav__section-text">Quick Actions</span>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon flaticon2-graph-1"></i>
+                              <span class="kt-nav__link-text">Statistics</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon flaticon2-calendar-4"></i>
+                              <span class="kt-nav__link-text">Events</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon flaticon2-layers-1"></i>
+                              <span class="kt-nav__link-text">Reports</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon flaticon2-bell-1o"></i>
+                              <span class="kt-nav__link-text">Notifications</span>
+                            </a>
+                          </li>
+                          <li class="kt-nav__item">
+                            <a href="#" class="kt-nav__link">
+                              <i class="kt-nav__link-icon flaticon2-file-1"></i>
+                              <span class="kt-nav__link-text">Files</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <form class="kt-form kt-form--label-right">
+                <div class="kt-portlet__body">
+                  <div class="kt-section kt-section--first">
+                    <div class="kt-section__body">
+                      <div class="form-group row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Nova senha</label>
+                        <div class="col-lg-9 col-xl-6">
+                          <input type="password" class="form-control" value="" placeholder="Nova senha">
+                        </div>
+                      </div>
+                      <div class="form-group form-group-last row">
+                        <label class="col-xl-3 col-lg-3 col-form-label">Confirmação de senha</label>
+                        <div class="col-lg-9 col-xl-6">
+                          <input type="password" class="form-control" value="" placeholder="Confirmação de senha">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kt-portlet__foot">
+                  <div class="kt-form__actions">
+                    <div class="row">
+                      <div class="col-lg-3 col-xl-3">
+                      </div>
+                      <div class="col-lg-9 col-xl-9">
+                        <button type="reset" class="btn btn-danger">Change Password</button>&nbsp;
+                        <button type="reset" class="btn btn-secondary">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
+
+          <!--end: Change Password -->
         </div>
       </div>
     </div>
   </div>
-
-  <div class="tab-pane fade" id="kt_tabs_2" role="tabpanel">
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="kt-portlet">
-          <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-              <h3 class="kt-portlet__head-title">
-                API
-              </h3>
-            </div>
-          </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <h4>Token</h4>
-              <%= @user.company.token %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="tab-pane fade" id="kt_tabs_3" role="tabpanel">
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="kt-portlet">
-          <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-              <h3 class="kt-portlet__head-title">
-                Informações gerais
-              </h3>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-              <%= link_to "Editar", edit_company_path(@user.company), class: "float-right" %>
-            </div>
-          </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <h4>Nome</h4>
-              <%= @user.company.name %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
 </div>
 
 
 <script>
-$(document).ready(function() {
-$('.nav-link').first().addClass('active');
-$('.tab-pane').first().addClass('active show');
-})
+  $(document).ready(function() {
+    $('.nav-link').first().addClass('active');
+    $('.tab-pane').first().addClass('active show');
+  })
 </script>
