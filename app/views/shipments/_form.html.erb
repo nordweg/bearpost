@@ -6,6 +6,163 @@
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
+            Envio
+          </h3>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-section">
+          <div class="kt-section__body">
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Número do envio</label>
+                  <%= form.text_field :shipment_number, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Número do pedido</label>
+                  <%= form.text_field :order_number, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Status</label>
+                  <%= form.select(:status, shipment_statuses_for_select, {}, class: 'form-control') %>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <%= form.label 'Conta' %>
+                  <%= form.select(:account_id, Account.all.pluck(:name, :id), {}, class: 'form-control') %> <!-- REFACTOR >> create helper options_for_account? -->
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Série da nota fiscal</label>
+                  <%= form.number_field :invoice_series, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label>Número da nota fiscal</label>
+                  <%= form.number_field :invoice_number, class: "form-control" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Valor</label>
+                  <%= form.number_field :cost, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Xml da nota fiscal</label>
+                  <% if @shipment.invoice_xml %>
+                  <%= form.hidden_field :invoice_xml  if @shipment.invoice_xml %>
+                  <p class="form-control" id="invoice-selected">
+                    Nota <%= "#{@shipment.invoice_series}_#{@shipment.invoice_number}" %>
+                    <%= link_to "Alterar", "javascript:;", class: "kt-link float-right", id:'toggle-file-field' %>
+                  </p>
+                  <% end %>
+                  <%= file_field_tag :invoice_xml, class: "form-control", style: "#{'display: none' if @shipment.invoice_xml.present?}" %>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Transportadora
+          </h3>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-section">
+          <div class="kt-section__body">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <%= form.label 'Transportadora' %>
+                  <%= form.select(:carrier_class, carriers_for_select, {}, class: 'form-control', required:true) %>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <%= form.label 'Método de envio' %>
+                  <%= form.select(:shipping_method, [], {}, class: 'form-control') %>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Rastreio</label>
+                  <%= form.text_field :tracking_number, class: "form-control" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Datas & prazos
+          </h3>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-section">
+          <div class="kt-section__body">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Aprovado em</label>
+                  <%= form.datetime_field :approved_at, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <label>Dias de handling</label>
+                  <%= form.number_field :handling_days_planned, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <label>Dias de transporte</label>
+                  <%= form.number_field :carrier_delivery_days_planned, class: "form-control" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col-md-6">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
             Destinatário
           </h3>
         </div>
@@ -116,112 +273,6 @@
       </div>
     </div>
   </div>
-
-  <div class="col-md-6">
-    <div class="kt-portlet">
-      <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">
-            Envio
-          </h3>
-        </div>
-      </div>
-      <div class="kt-portlet__body">
-        <div class="kt-section">
-          <div class="kt-section__body">
-            <div class="row">
-              <div class="col-lg-4">
-                <div class="form-group">
-                  <label>Número do envio</label>
-                  <%= form.text_field :shipment_number, class: "form-control" %>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="form-group">
-                  <label>Número do pedido</label>
-                  <%= form.text_field :order_number, class: "form-control" %>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="form-group">
-                  <label>Status</label>
-                  <%= form.select(:status, shipment_statuses_for_select, {}, class: 'form-control') %>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <%= form.label 'Conta' %>
-                  <%= form.select(:account_id, Account.all.pluck(:name, :id), {}, class: 'form-control') %> <!-- REFACTOR >> create helper options_for_account? -->
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <%= form.label 'Transportadora' %>
-                  <%= form.select(:carrier_class, carriers_for_select, {}, class: 'form-control', required:true) %>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <%= form.label 'Método de envio' %>
-                  <%= form.select(:shipping_method, [], {}, class: 'form-control') %>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Rastreio</label>
-                  <%= form.text_field :tracking_number, class: "form-control" %>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Série da nota fiscal</label>
-                  <%= form.number_field :invoice_series, class: "form-control" %>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Número da nota fiscal</label>
-                  <%= form.number_field :invoice_number, class: "form-control" %>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Valor</label>
-                  <%= form.number_field :cost, class: "form-control" %>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="form-group">
-                  <label>Xml da nota fiscal</label>
-                  <% if @shipment.invoice_xml %>
-                    <%= form.hidden_field :invoice_xml  if @shipment.invoice_xml %>
-                    <p class="form-control" id="invoice-selected">
-                      Nota <%= "#{@shipment.invoice_series}_#{@shipment.invoice_number}" %>
-                      <%= link_to "Alterar", "javascript:;", class: "kt-link float-right", id:'toggle-file-field' %>
-                    </p>
-                  <% end %>
-                  <%= file_field_tag :invoice_xml, class: "form-control", style: "#{'display: none' if @shipment.invoice_xml.present?}" %>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <div class="row">
@@ -239,12 +290,9 @@
     $("#invoice-selected").toggle();
     $("#invoice_xml").toggle();
   })
-
   update_shipping_method_field();
-
   $('#shipment_account_id').on('change', function() { update_shipping_method_field() });
   $('#shipment_carrier_class').on('change', function() { update_shipping_method_field() });
-
   function update_shipping_method_field() {
     selected_account = $('#shipment_account_id option:selected').text();
     selected_carrier = $('#shipment_carrier_class option:selected').text();

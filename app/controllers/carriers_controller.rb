@@ -4,11 +4,11 @@ class CarriersController < ApplicationController
 
   def index
     @carriers = Rails.configuration.carriers.sort_by(&:name)
-    @accounts = Accounts.all
+    @accounts = Account.all
   end
 
   def edit
-    @accounts = Accounts.all
+    @accounts = Account.all
   end
 
   def validate_credentials_ajax

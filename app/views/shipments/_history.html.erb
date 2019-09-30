@@ -17,11 +17,11 @@ end
       </div>
     </div>
     <span class="kt-timeline__item-datetime mr-3">
-      <%= history.date.strftime("%d/%m/%Y %H:%M") if history.date %>
+      <%= l(history.date, format: :week_day_with_time) if history.date %>
     </span>
   </div>
   <span class="kt-timeline__item-text">
-    <%= history.description %>
+    <%= history.description.humanize %>
     <a href="#" data-html="true" class="btn btn-sm btn-icon btn-clean btn-icon-md" rel="tooltip" title="<%= history.carrier_status_code %>: <%= history.bearpost_status %>">
       <i class="la la-question-circle"></i>
     </a>
