@@ -15,7 +15,7 @@
 </style>
 
 <% content_for :subheader_title do %>
-  Envio #<%= @shipment.shipment_number %>
+Envio #<%= @shipment.shipment_number %>
 <% end %>
 
 <%= content_for :subheader_toolbar do %>
@@ -39,7 +39,248 @@
     </div>
   </div>
 
-<% end %>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <div class="kt-portlet">
+        <div class="kt-portlet__head">
+          <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+              Geral
+            </h3>
+            <%= link_to "#", "data-toggle" => "modal", 'data-target' => '#statusesModal', class: "ml-3 edit-status" do %>
+            <span class="current-status"><%= status_label(@shipment.status) %></span>
+            <span class='kt-badge badge-light kt-badge--inline kt-badge--pill alter-status'><nobr>Alterar status</nobr></span>
+            <% end %>
+          </div>
+        </div>
+        <div class="kt-portlet__body">
+          <div class="kt-portlet__content">
+            <div class="float-left" style="width: 45%;">
+              <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+                <tbody>
+                  <tr>
+                    <th>Número do pedido</th>
+                    <td><%= @shipment.order_number %></td>
+                  </tr>
+                  <tr>
+                    <th>Conta</th>
+                    <td><%= @shipment.account.name if @shipment.account %></td>
+                  </tr>
+                  <tr>
+                    <th>Nota fiscal / série</th>
+                    <td><%= link_to "#{@shipment.invoice_number} / #{@shipment.invoice_series}", "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal', class: "kt-link" %></td>
+                  </tr>
+                  <tr>
+                    <th>Aprovação do pedido</th>
+                    <td><%= l(@shipment.approved_at, format: :week_day_with_time) if @shipment.approved_at %></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="float-left" style="width: 45%;">
+              <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
+                <tbody>
+                  <tr>
+                    <th>Transportadora</th>
+                    <td><%= link_to @carrier.name, edit_carrier_path(@carrier.name), class: "kt-link" if @carrier %></td>
+                  </tr>
+                  <tr>
+                    <th>Método de envio</th>
+                    <td><%= @shipment.shipping_method %></td>
+                  </tr>
+                  <tr>
+                    <th>Rastreamento</th>
+                    <td>
+                      <% if @shipment.tracking_number.present? %>
+                      <%= link_to @shipment.tracking_number, @shipment.tracking_url, class: "kt-link", id:"tracking-url", target: "_blank" %>
+                      <% else %>
+                      <%= link_to "Obter rastreio", save_tracking_number_shipment_path, class: "kt-link" %>
+                      <% end %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Sincronizado</th>
+                    <td>
+                      <% if @shipment.sent_to_carrier %>
+                      Sim <i class="la la-check-circle"></i>
+                      <% else %>
+                      <%= link_to "Não", send_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
+                      <% end %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <!-- Start of datas e prazos -->
+        <div class="col-md-6">
+          <div class="kt-portlet kt-portlet--height-fluid">
+            <div class="kt-portlet__head">
+              <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+                  Datas & Prazos
+                </h3>
+              </div>
+            </div>
+            <div class="kt-portlet__body">
+              <div class="kt-portlet__content">
+                <strong>Envio</strong></p>
+                <div class="row">
+                  <div class="col-md-5">
+                    Previsto <br>
+                    <%= expected_shipping_info(@shipment) %>
+                  </div>
+                  <div class="col-md-6">
+                    Realizado <br>
+                    <%= realized_shipping_info(@shipment) %>
+                  </div>
+                  <div class="col-md-1">
+                    <%= delivery_icon(@shipment.handling_days_delayed) %>
+                  </div>
+                </div>
+                <hr>
+
+                <p><strong>Transportadora</strong></p>
+                <div class="row">
+                  <div class="col-md-5">
+                    Previsto <br>
+                    <%= expected_carrier_delivery_info(@shipment) %>
+                  </div>
+                  <div class="col-md-6">
+                    Realizado <br>
+                    <%= realized_carrier_delivery_info(@shipment) %>
+                  </div>
+                  <div class="col-md-1">
+                    <%= delivery_icon(@shipment.carrier_delivery_days_delayed) %>
+                  </div>
+                </div>
+                <hr>
+
+                <p><strong>Cliente</strong></p>
+                <div class="row">
+                  <div class="col-md-5">
+                    Previsto <br>
+                    <%= expected_client_delivery_info(@shipment) %>
+                  </div>
+                  <div class="col-md-6">
+                    Realizado <br>
+                    <%= realized_client_delivery_info(@shipment) %>
+                  </div>
+                  <div class="col-md-1">
+                    <%= delivery_icon(@shipment.client_delivery_days_delayed) %>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of datas e prazos -->
+
+        <!-- Start of Destinatário -->
+        <div class="col-md-6">
+          <div class="kt-portlet">
+            <div class="kt-portlet__head">
+              <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+                  Destinatário
+                </h3>
+              </div>
+            </div>
+            <div class="kt-portlet__body">
+              <div class="kt-portlet__content">
+                <div style="line-height: 1.7;">
+                  <p>
+                    <strong><%= @shipment.full_name.titleize %></strong><br>
+                  </p>
+                  <p>
+                    CPF <%= @shipment.cpf %><br>
+                    <%= @shipment.email %><br>
+                    <%= @shipment.phone %><br>
+                  </p>
+                  <p>
+                    <%= @shipment.street %>, <%= @shipment.number %><br>
+                    <%= @shipment.complement %><br>
+                    <%= @shipment.city %>, <%= @shipment.state %> <%= @shipment.zip %><br>
+                    <%= @shipment.country %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of Destinatário -->
+
+      </div>
+
+      <% total_shipments = @shipment.packages.size %>
+      <div class="row">
+        <% @shipment.packages.each do |package| %>
+        <div class="col-md-6">
+          <div class="kt-portlet">
+            <div class="kt-portlet__head">
+              <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+                </i> Pacote <%= @shipment.packages.index(package) + 1 %>
+              </h3>
+            </div>
+            <div class="kt-portlet__head-toolbar">
+              <%= link_to "Editar", edit_package_path(package), class: "float-right kt-link" %>
+            </div>
+          </div>
+          <div class="kt-portlet__body">
+            <div class="kt-portlet__content">
+              <%= render 'packages/table', package: package %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <% end %>
+    </div>
+
+
+    <%= link_to new_package_path(shipment_id:@shipment.id), class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
+    <i class="flaticon2-plus"></i> Novo pacote
+    <% end %>
+  </div><!-- End of first column -->
+
+  <div class="col-md-4">
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Histórico
+          </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+          <%= link_to save_delivery_updates_shipment_path, class: "btn btn-sm btn-outline-brand btn-elevate btn-circle btn-icon", method:'post' do %>
+          <i class="la la-refresh"></i>
+          <% end %>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <!--Begin::Timeline -->
+        <div class="kt-timeline">
+          <% @shipment.histories.recent_first.each do |history| %>
+          <%= render 'history', history: history %>
+          <% end %>
+        </div>
+        <!--End::Timeline -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <!-- Modal de Informações Adicionais-->
 <div class="modal fade" id="extraInfoModal" tabindex="-1" role="dialog">
@@ -99,217 +340,6 @@
         <div class="my-3"><%= status_label(status) %></div>
         <% end %>
         <% end %>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="row">
-  <div class="col-md-8">
-
-    <div class="kt-portlet">
-      <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">
-            Geral
-          </h3>
-          <%= link_to "#", "data-toggle" => "modal", 'data-target' => '#statusesModal', class: "ml-3 edit-status" do %>
-            <span class="current-status"><%= status_label(@shipment.status) %></span>
-            <span class='kt-badge badge-light kt-badge--inline kt-badge--pill alter-status'><nobr>Alterar status</nobr></span>
-          <% end %>
-        </div>
-      </div>
-      <div class="kt-portlet__body">
-        <div class="kt-portlet__content">
-          <div class="col-md-5 float-left">
-            <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-              <tbody>
-                <tr>
-                  <th>Número do pedido</th>
-                  <td><%= @shipment.order_number %></td>
-                </tr>
-                <tr>
-                  <th>Conta</th>
-                  <td><%= @shipment.account.name if @shipment.account %></td>
-                </tr>
-                <tr>
-                  <th>Transportadora</th>
-                  <td><%= link_to @carrier.name, edit_carrier_path(@carrier.name), class: "kt-link" if @carrier %></td>
-                </tr>
-                <tr>
-                  <th>Método de envio</th>
-                  <td><%= @shipment.shipping_method %></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="col-md-5 float-left">
-            <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-              <tbody>
-                <tr>
-                  <th>Nota fiscal / série</th>
-                  <td><%= link_to "#{@shipment.invoice_number} / #{@shipment.invoice_series}", "#", "data-toggle" => "modal", 'data-target' => '#invoiceXmlModal', class: "kt-link" %></td>
-                </tr>
-                <tr>
-                  <th>Rastreamento</th>
-                  <td>
-                    <% if @shipment.tracking_number.present? %>
-                      <%= link_to @shipment.tracking_number, @shipment.tracking_url, class: "kt-link", id:"tracking-url", target: "_blank" %>
-                    <% else %>
-                      <%= link_to "Obter rastreio", save_tracking_number_shipment_path, class: "kt-link" %>
-                    <% end %>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Sincronizado</th>
-                  <td>
-                  <% if @shipment.sent_to_carrier %>
-                    Sim <i class="la la-check-circle"></i>
-                  <% else %>
-                    <%= link_to "Não", send_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
-                  <% end %>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="kt-portlet">
-      <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">
-            Destinatário
-          </h3>
-        </div>
-      </div>
-
-      <div class="kt-portlet__body">
-        <div class="kt-portlet__content">
-          <div class="row">
-            <div class="col-xl-6">
-
-              <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-                <tbody>
-                  <tr>
-                    <th style="width:150px">Nome</th>
-                    <td><%= @shipment.full_name %></td>
-                  </tr>
-                  <tr>
-                    <th>Email</th>
-                    <td><%= @shipment.email %></td>
-                  </tr>
-                  <tr>
-                    <th>Telefone</th>
-                    <td><%= @shipment.phone %></td>
-                  </tr>
-                  <tr>
-                    <th>CPF</th>
-                    <td><%= @shipment.cpf %></td>
-                  </tr>
-                  <tr>
-                    <th>Rua</th>
-                    <td><%= @shipment.street %></td>
-                  </tr>
-                  <tr>
-                    <th>Número</th>
-                    <td><%= @shipment.number %></td>
-                  </tr>
-                </tbody>
-              </table>
-
-
-            </div>
-            <div class="col-xl-6">
-              <table class="table table-borderless table-sm table-hover" style="color: #646c9a;">
-                <tbody>
-
-                  <tr>
-                    <th style="width:150px">Complemento</th>
-                    <td><%= @shipment.complement %></td>
-                  </tr>
-                  <tr>
-                    <th>Bairro</th>
-                    <td><%= @shipment.neighborhood %></td>
-                  </tr>
-                  <tr>
-                    <th>Cep</th>
-                    <td><%= @shipment.zip %></td>
-                  </tr>
-                  <tr>
-                    <th>Cidade</th>
-                    <td><%= @shipment.city %></td>
-                  </tr>
-                  <tr>
-                    <th>Estado</th>
-                    <td><%= @shipment.state %></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <% total_shipments = @shipment.packages.size %>
-    <div class="row">
-
-      <% @shipment.packages.each do |package| %>
-      <div class="col-md-6">
-        <div class="kt-portlet">
-          <div class="kt-portlet__head">
-            <div class="kt-portlet__head-label">
-              <h3 class="kt-portlet__head-title">
-                </i> Pacote <%= @shipment.packages.index(package) + 1 %>
-              </h3>
-            </div>
-            <div class="kt-portlet__head-toolbar">
-              <%= link_to "Editar", edit_package_path(package), class: "float-right kt-link" %>
-            </div>
-          </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <%= render 'packages/table', package: package %>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <% end %>
-    </div>
-
-
-    <%= link_to new_package_path(shipment_id:@shipment.id), class: "p-5 btn btn-light btn-elevate-hover btn-square fill-div" do %>
-    <i class="flaticon2-plus"></i> Novo pacote
-    <% end %>
-  </div><!-- End of first column -->
-
-  <div class="col-md-4">
-    <div class="kt-portlet">
-      <div class="kt-portlet__head">
-        <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">
-            Histórico
-          </h3>
-        </div>
-        <div class="kt-portlet__head-toolbar">
-          <%= link_to save_delivery_updates_shipment_path, class: "btn btn-sm btn-outline-brand btn-elevate btn-circle btn-icon", method:'post' do %>
-            <i class="la la-refresh"></i>
-          <% end %>
-        </div>
-      </div>
-      <div class="kt-portlet__body">
-        <!--Begin::Timeline -->
-        <div class="kt-timeline">
-          <% @shipment.histories.recent_first.each do |history| %>
-            <%= render 'history', history: history %>
-          <% end %>
-        </div>
-        <!--End::Timeline -->
       </div>
     </div>
   </div>

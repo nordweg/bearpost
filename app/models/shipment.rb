@@ -24,9 +24,45 @@ class Shipment < ApplicationRecord
   end
 
   validates :status, inclusion: {in: STATUSES}
+  validates_presence_of :shipment_number
 
   def carrier_settings
     CarrierSetting.get_settings_from_shipment(self)
+  end
+
+  def update_planning_dates
+    self.approved_at = 1.business_days.before(self.shipped_at) # REFACTOR >> Receive this from API
+    self.handling_days_planned = 2 # REFACTOR >> Receive this from API
+    self.carrier_delivery_days_planned = 4 # REFACTOR >> Receive this from API
+    self.client_delivery_days_planned = self.handling_days_planned + self.carrier_delivery_days_planned
+    self.shipping_due_at = self.handling_days_planned.business_days.after(self.approved_at)
+
+    if self.approved_at && self.shipped_at
+      self.handling_days_used = self.approved_at.to_date.business_days_until(self.shipped_at.to_date) if self.approved_at && self.shipped_at
+      self.handling_days_delayed = self.handling_days_used - self.handling_days_planned
+    end
+
+    if self.shipped_at
+      self.carrier_delivery_due_at = self.carrier_delivery_days_planned.business_days.after(self.shipped_at)
+    end
+
+    if self.delivered_at
+      self.carrier_delivery_days_used = self.shipped_at.to_date.business_days_until(self.delivered_at.to_date) if self.shipped_at && self.delivered_at
+      self.carrier_delivery_days_delayed = self.carrier_delivery_days_used - self.carrier_delivery_days_planned
+    end
+
+    self.client_delivery_due_at = self.client_delivery_days_planned.business_days.after(self.approved_at)
+
+    if self.delivered_at
+      self.client_delivery_days_used = self.approved_at.to_date.business_days_until(self.delivered_at.to_date) if self.approved_at && self.delivered_at
+      self.client_delivery_days_delayed = self.client_delivery_days_used - self.client_delivery_days_planned
+    end
+
+    self.save
+  end
+
+  def validate_data_for_shipping
+    # Shipment must have approved_at, handling_days_planned, carrier_delivery_days_planned, account # Refactor
   end
 
   def first_history # REFACTOR > Rename this

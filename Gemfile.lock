@@ -58,6 +58,9 @@ GEM
     bcrypt (3.1.13)
     bindex (0.8.1)
     builder (3.2.3)
+    business_time (0.9.3)
+      activesupport (>= 3.2.0)
+      tzinfo
     byebug (11.0.1)
     capybara (3.28.0)
       addressable
@@ -273,6 +276,7 @@ DEPENDENCIES
   active_model_serializers
   awesome_print
   barby
+  business_time
   byebug
   capybara
   chunky_png

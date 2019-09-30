@@ -148,8 +148,8 @@ Atualizar status
                 <td><%= shipment.carrier.name %> <%= shipment.shipping_method %></td>
                 <td><%= shipment.full_name %></td>
                 <td><%= shipment.city %>, <%= shipment.state %></td>
-                <td><%= shipment.created_at.try(:strftime,"%d/%m/%Y") %></td>
                 <td><%= shipment.shipped_at.try(:strftime,"%d/%m/%Y") %></td>
+                <td><%= shipment.delivered_at.try(:strftime,"%d/%m/%Y") %></td>
                 <td><%= status_label(shipment.status) %></td>
               </tr>
               <% end %>

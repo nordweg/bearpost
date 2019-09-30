@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_27_141825) do
+ActiveRecord::Schema.define(version: 2019_09_29_122204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,19 @@ ActiveRecord::Schema.define(version: 2019_09_27_141825) do
     t.datetime "last_synched_at"
     t.datetime "ready_for_shipping_at"
     t.datetime "delivered_at"
+    t.datetime "approved_at"
+    t.integer "handling_days_planned"
+    t.integer "handling_days_used"
+    t.integer "handling_days_delayed"
+    t.datetime "shipping_due_at"
+    t.integer "carrier_delivery_days_planned"
+    t.integer "carrier_delivery_days_used"
+    t.integer "carrier_delivery_days_delayed"
+    t.datetime "carrier_delivery_due_at"
+    t.integer "client_delivery_days_planned"
+    t.integer "client_delivery_days_used"
+    t.integer "client_delivery_days_delayed"
+    t.datetime "client_delivery_due_at"
   end
 
   create_table "users", force: :cascade do |t|
