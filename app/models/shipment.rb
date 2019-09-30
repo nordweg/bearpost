@@ -93,7 +93,7 @@ class Shipment < ApplicationRecord
   end
 
   def find_delivery_time
-    histories.where(bearpost_status:"Delivered").date
+    histories.find_by(bearpost_status:"Delivered").date
   end
 
   def get_tracking_number
