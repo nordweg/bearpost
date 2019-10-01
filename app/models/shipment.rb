@@ -16,7 +16,7 @@ class Shipment < ApplicationRecord
   after_create :log_shipment_creation_on_histories
   after_create :create_package
   before_save  :get_invoice_number, if: :will_save_change_to_invoice_xml?
-  before_save  :get_delivery_dates, if: :will_save_change_to_status?
+  before_save  :get_delivery_dates
   before_save  :get_status_dates, if: :will_save_change_to_status?
   after_update :save_status_change_to_history, if: :saved_change_to_status?
 
@@ -61,19 +61,21 @@ class Shipment < ApplicationRecord
     self.shipping_due_at = handling_days_planned.business_days.after(approved_at)
     self.client_delivery_due_at = client_delivery_days_planned.business_days.after(approved_at)
 
+    self.handling_late = (shipped_at.to_date || Date.today).to_date > shipping_due_at.to_date
+    self.client_delivery_late = (delivered_at || Date.today).to_date > client_delivery_due_at.to_date
+
     return unless shipped_at.present?
     self.handling_days_used = approved_at.to_date.business_days_until(shipped_at.to_date)
     self.handling_days_delayed = handling_days_used - handling_days_planned
     self.carrier_delivery_due_at = carrier_delivery_days_planned.business_days.after(shipped_at)
-    self.handling_late = (shipped_at.to_date || Date.today).to_date > shipping_due_at.to_date
+
+    self.carrier_delivery_late = (delivered_at || Date.today).to_date > carrier_delivery_due_at.to_date
 
     return unless delivered_at.present?
     self.carrier_delivery_days_used = shipped_at.to_date.business_days_until(delivered_at.to_date)
     self.carrier_delivery_days_delayed = carrier_delivery_days_used - carrier_delivery_days_planned
     self.client_delivery_days_used = approved_at.to_date.business_days_until(delivered_at.to_date)
     self.client_delivery_days_delayed = client_delivery_days_used - client_delivery_days_planned
-    self.carrier_delivery_late = (delivered_at || Date.today).to_date > carrier_delivery_due_at.to_date
-    self.client_delivery_late = (delivered_at || Date.today).to_date > client_delivery_due_at.to_date
   end
 
   def update_delivery_dates
