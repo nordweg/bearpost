@@ -15,7 +15,7 @@
 </style>
 
 <% content_for :subheader_title do %>
-Envio #<%= @shipment.shipment_number %>
+  Envio #<%= @shipment.shipment_number %>
 <% end %>
 
 <%= content_for :subheader_toolbar do %>
@@ -143,7 +143,7 @@ Envio #<%= @shipment.shipment_number %>
                     <%= realized_shipping_info(@shipment) %>
                   </div>
                   <div class="col-md-1">
-                    <%= delivery_icon(@shipment.handling_days_delayed) %>
+                    <%= delivery_icon(@shipment, "handling") %>
                   </div>
                 </div>
                 <hr>
@@ -159,7 +159,7 @@ Envio #<%= @shipment.shipment_number %>
                     <%= realized_carrier_delivery_info(@shipment) %>
                   </div>
                   <div class="col-md-1">
-                    <%= delivery_icon(@shipment.carrier_delivery_days_delayed) %>
+                    <%= delivery_icon(@shipment, "carrier_delivery") %>
                   </div>
                 </div>
                 <hr>
@@ -175,7 +175,7 @@ Envio #<%= @shipment.shipment_number %>
                     <%= realized_client_delivery_info(@shipment) %>
                   </div>
                   <div class="col-md-1">
-                    <%= delivery_icon(@shipment.client_delivery_days_delayed) %>
+                    <%= delivery_icon(@shipment, "client_delivery") %>
                   </div>
                 </div>
 

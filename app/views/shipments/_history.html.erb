@@ -11,7 +11,7 @@ end
 
 <div class="<%= event_type %>">
   <div class="kt-timeline__item-section">
-    <div class="kt-timeline__item-section-border">
+    <div class="kt-timeline__item-section-border" rel="tooltip" title="<%= tooltip_title(history) %>">
       <div class="kt-timeline__item-section-icon">
         <i class="<%= icon_class %>"></i>
       </div>
@@ -22,9 +22,6 @@ end
   </div>
   <span class="kt-timeline__item-text">
     <%= history.description.humanize %>
-    <a href="#" data-html="true" class="btn btn-sm btn-icon btn-clean btn-icon-md" rel="tooltip" title="<%= history.carrier_status_code %>: <%= history.bearpost_status %>">
-      <i class="la la-question-circle"></i>
-    </a>
   </span>
   <div class="kt-timeline__item-info"><i class="la la-user"></i>
     Atualizado por

@@ -16,6 +16,14 @@ module ApplicationHelper
     statuses
   end
 
+  def late_statuses_for_select
+    [
+      ["Envio", "handling_late"],
+      ["Transportadora", "carrier_delivery_late"],
+      ["Cliente", "client_delivery_late"]
+    ]
+  end
+
   def carriers_for_select
     Carriers.all.map{|carrier| [carrier.name, carrier.to_s]}
   end

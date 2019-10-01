@@ -3,19 +3,22 @@ class Shipment < ApplicationRecord
   validates_presence_of :carrier_class
 
   scope :ready_to_ship, -> { where(status: 'Ready for shipping', sent_to_carrier: false) }
-  scope :shipped,       -> { where(status: 'On the way') }
-  scope :shipped_but_not_delivered, -> { where(status: ["On the way", "Out for delivery", "Problematic", "Waiting for pickup"]) }
+  scope :shipped,       -> { where(status: ["On the way", "Out for delivery", "Problematic", "Waiting for pickup", "Delivered"]) }
+  scope :delivered,     -> { where(status: 'Delivered') }
+  scope :not_delivered, -> { where.not(status: "Delivered") }
+  scope :in_transit,    -> { shipped.not_delivered }
 
   has_many    :packages
   has_many    :histories
   belongs_to  :account, optional: true
   accepts_nested_attributes_for :packages
 
+  after_create :log_shipment_creation_on_histories
   after_create :create_package
-  before_save  :update_invoice_number
+  before_save  :get_invoice_number, if: :will_save_change_to_invoice_xml?
+  before_save  :get_delivery_dates, if: :will_save_change_to_status?
+  before_save  :get_status_dates, if: :will_save_change_to_status?
   after_update :save_status_change_to_history, if: :saved_change_to_status?
-  after_update :update_dates, if: :saved_change_to_status?
-  after_create :first_history
 
   STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
 
@@ -30,48 +33,52 @@ class Shipment < ApplicationRecord
     CarrierSetting.get_settings_from_shipment(self)
   end
 
-  def update_planning_dates
-    self.approved_at = 1.business_days.before(self.shipped_at) # REFACTOR >> Receive this from API
-    self.handling_days_planned = 2 # REFACTOR >> Receive this from API
-    self.carrier_delivery_days_planned = 4 # REFACTOR >> Receive this from API
-    self.client_delivery_days_planned = self.handling_days_planned + self.carrier_delivery_days_planned
-    self.shipping_due_at = self.handling_days_planned.business_days.after(self.approved_at)
-
-    if self.approved_at && self.shipped_at
-      self.handling_days_used = self.approved_at.to_date.business_days_until(self.shipped_at.to_date) if self.approved_at && self.shipped_at
-      self.handling_days_delayed = self.handling_days_used - self.handling_days_planned
-    end
-
-    if self.shipped_at
-      self.carrier_delivery_due_at = self.carrier_delivery_days_planned.business_days.after(self.shipped_at)
-    end
-
-    if self.delivered_at
-      self.carrier_delivery_days_used = self.shipped_at.to_date.business_days_until(self.delivered_at.to_date) if self.shipped_at && self.delivered_at
-      self.carrier_delivery_days_delayed = self.carrier_delivery_days_used - self.carrier_delivery_days_planned
-    end
-
-    self.client_delivery_due_at = self.client_delivery_days_planned.business_days.after(self.approved_at)
-
-    if self.delivered_at
-      self.client_delivery_days_used = self.approved_at.to_date.business_days_until(self.delivered_at.to_date) if self.approved_at && self.delivered_at
-      self.client_delivery_days_delayed = self.client_delivery_days_used - self.client_delivery_days_planned
-    end
-
-    self.save
-  end
-
-  def validate_data_for_shipping
-    # Shipment must have approved_at, handling_days_planned, carrier_delivery_days_planned, account # Refactor
-  end
-
-  def first_history # REFACTOR > Rename this
+  def log_shipment_creation_on_histories
     histories.create(
       user: Current.user,
       description: "Pedido criado",
       category:'status',
       date: DateTime.now,
     )
+  end
+
+  def get_status_dates
+    case status
+    when "Ready for shipping"
+      self.ready_for_shipping_at = DateTime.now unless ready_for_shipping_at
+    when "On the way"
+      self.shipped_at = DateTime.now unless shipped_at
+    when "Delivered"
+      self.delivered_at = DateTime.now unless delivered_at
+    end
+  end
+
+  def get_delivery_dates
+    return unless handling_days_planned.present? && carrier_delivery_days_planned.present?
+    self.client_delivery_days_planned = handling_days_planned + carrier_delivery_days_planned
+
+    return unless approved_at.present?
+    self.shipping_due_at = handling_days_planned.business_days.after(approved_at)
+    self.client_delivery_due_at = client_delivery_days_planned.business_days.after(approved_at)
+
+    return unless shipped_at.present?
+    self.handling_days_used = approved_at.to_date.business_days_until(shipped_at.to_date)
+    self.handling_days_delayed = handling_days_used - handling_days_planned
+    self.carrier_delivery_due_at = carrier_delivery_days_planned.business_days.after(shipped_at)
+    self.handling_late = (shipped_at.to_date || Date.today).to_date > shipping_due_at.to_date
+
+    return unless delivered_at.present?
+    self.carrier_delivery_days_used = shipped_at.to_date.business_days_until(delivered_at.to_date)
+    self.carrier_delivery_days_delayed = carrier_delivery_days_used - carrier_delivery_days_planned
+    self.client_delivery_days_used = approved_at.to_date.business_days_until(delivered_at.to_date)
+    self.client_delivery_days_delayed = client_delivery_days_used - client_delivery_days_planned
+    self.carrier_delivery_late = (delivered_at || Date.today).to_date > carrier_delivery_due_at.to_date
+    self.client_delivery_late = (delivered_at || Date.today).to_date > client_delivery_due_at.to_date
+  end
+
+  def update_delivery_dates
+    self.get_delivery_dates
+    self.save
   end
 
   def save_status_change_to_history
@@ -84,18 +91,6 @@ class Shipment < ApplicationRecord
     )
   end
 
-  def update_dates
-    case status
-    when "Ready for shipping"  then touch(:ready_for_shipping_at)
-    when "On the way"          then touch(:shipped_at)
-    when "Delivered"           then update(delivered_at:find_delivery_time) if delivered_at == nil
-    end
-  end
-
-  def find_delivery_time
-    histories.find_by(bearpost_status:"Delivered").date
-  end
-
   def get_tracking_number
     return tracking_number if tracking_number.present?
     carrier = self.carrier.new(carrier_settings)
@@ -104,22 +99,10 @@ class Shipment < ApplicationRecord
     self.tracking_number
   end
 
-  def sent_to_carrier! # REFACTOR > Not to easy to understand what this is doing
-    update(sent_to_carrier: true)
-    histories.create(
-      user: Current.user,
-      description: "Pedido enviado para a transportadora #{carrier.name}",
-      category:'status',
-      date: DateTime.now,
-    )
-  end
-
-  def update_invoice_number
-    if changes.include?("invoice_xml")
-      doc = Nokogiri::XML(invoice_xml)
-      self.invoice_number = doc.at_css('nNF').content
-      self.invoice_series = doc.at_css('serie').content
-    end
+  def get_invoice_number
+    doc = Nokogiri::XML(invoice_xml)
+    self.invoice_number = doc.at_css('nNF').content
+    self.invoice_series = doc.at_css('serie').content
   end
 
   def create_package
@@ -132,7 +115,7 @@ class Shipment < ApplicationRecord
     shipped_at.present?
   end
 
-  def full_name # REFACTOR > Receipient full name?
+  def full_name
     "#{first_name} #{last_name}"
   end
 
@@ -165,7 +148,8 @@ class Shipment < ApplicationRecord
       shipments = self.all
     end
     shipments = shipments.where(status:params[:status]) if params[:status].present?
-    shipments = shipments.where(carrier_class:params[:carrier]) if params[:carrier].present?
+    shipments = shipments.where(carrier_class: params[:carrier]) if params[:carrier].present?
+    shipments = shipments.where(params[:late] => true) if params[:late].present?
     if params[:date_range].present?
       start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
       end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day

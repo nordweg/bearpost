@@ -29,7 +29,7 @@ class CarrierSyncronizer
   end
 
   def self.update_all_shipments_delivery_status
-    shipments = Shipment.all.shipped_but_not_delivered
+    shipments = Shipment.shipped.not_delivered
     CarrierSyncronizer.update_shipments_delivery_status(shipments)
   end
 
@@ -80,13 +80,17 @@ class CarrierSyncronizer
     end
   end
 
-  def self.update_current_status(shipment,delivery_updates)
+  def self.update_current_status(shipment, delivery_updates)
     delivery_updates.sort_by! { |delivery_update| delivery_update[:date] }
     current_status = delivery_updates.last[:bearpost_status]
+    delivery_date  = nil
     delivery_updates.each do |delivery_update|
-      current_status = "Delivered" if delivery_update[:bearpost_status] == "Delivered"
+      if delivery_update[:bearpost_status] == "Delivered"
+        current_status = "Delivered"
+        delivery_date  = delivery_update[:date]
+      end
     end
-    shipment.update(status: current_status)
+    shipment.update(status: current_status, delivered_at: delivery_date)
   end
 
 end
