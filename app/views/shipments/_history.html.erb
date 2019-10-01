@@ -11,7 +11,7 @@ end
 
 <div class="<%= event_type %>">
   <div class="kt-timeline__item-section">
-    <div class="kt-timeline__item-section-border" rel="tooltip" title="<% if history.carrier_status_code %>ID da transportadora: <%= history.carrier_status_code %> = <%= history.bearpost_status || "Não mapeado" %> <% end %>"> <!-- REFACTOR > Too much logit in view, move into a helper -->
+    <div class="kt-timeline__item-section-border" rel="tooltip" title="<%= tooltip_title(history) %>">
       <div class="kt-timeline__item-section-icon">
         <i class="<%= icon_class %>"></i>
       </div>

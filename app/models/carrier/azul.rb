@@ -178,7 +178,12 @@ class Carrier::Azul < Carrier
     response
   end
 
-
+  def get_tracking_number(shipment)
+    authenticate!
+    check_invoice_xml(shipment)
+    get_awb(shipment)
+  end
+  
   # CARRIER ESPECIFIC METHODS
   # Define here internal carrier methods that are used by the default methods above.
 
@@ -223,12 +228,6 @@ class Carrier::Azul < Carrier
       conn.response :json, :content_type => /\bjson$/
       conn.adapter Faraday.default_adapter
     end
-  end
-
-  def get_tracking_number(shipment)
-    authenticate!
-    check_invoice_xml(shipment)
-    get_awb(shipment)
   end
 
   def get_awb(shipment)
