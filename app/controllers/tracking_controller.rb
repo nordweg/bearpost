@@ -1,4 +1,6 @@
 class TrackingController < ApplicationController
+  skip_before_action :authenticate_user!
+
   def show
     @shipment = Shipment.find_by(shipment_number:params[:shipment_number])
     if @shipment && @shipment.tracking_number
