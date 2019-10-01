@@ -16,7 +16,7 @@ class Shipment < ApplicationRecord
   after_update :save_status_change_to_history, if: :saved_change_to_status?
   after_update :update_dates, if: :saved_change_to_status?
   after_create :first_history
-  before_save :update_planning_dates
+  before_save :calculate_planning_dates
 
   STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
 
@@ -31,10 +31,8 @@ class Shipment < ApplicationRecord
     CarrierSetting.get_settings_from_shipment(self)
   end
 
-  def update_planning_dates # REFACTOR > better name and clean method code
-    # self.approved_at = 1.business_days.before(self.shipped_at) # REFACTOR >> Receive this from API
-    # self.handling_days_planned = 2 # REFACTOR >> Receive this from API
-    # self.carrier_delivery_days_planned = 4 # REFACTOR >> Receive this from API
+
+  def calculate_planning_dates # REFACTOR > better name and clean method code
     self.client_delivery_days_planned = self.handling_days_planned + self.carrier_delivery_days_planned
     self.shipping_due_at = self.handling_days_planned.business_days.after(self.approved_at)
 
@@ -62,6 +60,8 @@ class Shipment < ApplicationRecord
     if self.shipping_due_at
       if (self.shipped_at.to_date || Date.today).to_date > self.shipping_due_at.to_date
         self.handling_late = true
+      else
+        self.handling_late = false
       end
     else
       self.handling_late = false
@@ -80,10 +80,17 @@ class Shipment < ApplicationRecord
     if self.client_delivery_due_at
       if (self.delivered_at || Date.today).to_date > self.client_delivery_due_at.to_date
         self.client_delivery_late = true
+      else
+        self.client_delivery_late = false
       end
     else
       self.client_delivery_late = false
     end
+  end
+
+  def update_planning_dates
+    self.calculate_planning_dates
+    self.save
   end
 
   def first_history # REFACTOR > Rename this

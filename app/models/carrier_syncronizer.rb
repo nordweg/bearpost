@@ -80,7 +80,7 @@ class CarrierSyncronizer
     end
   end
 
-  def self.update_current_status(shipment,delivery_updates)
+  def self.update_current_status(shipment, delivery_updates)
     delivery_updates.sort_by! { |delivery_update| delivery_update[:date] }
     current_status = delivery_updates.last[:bearpost_status]
     delivery_updates.each do |delivery_update|
