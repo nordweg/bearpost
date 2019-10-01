@@ -88,7 +88,7 @@ class Shipment < ApplicationRecord
     case status
     when "Ready for shipping"  then touch(:ready_for_shipping_at)
     when "On the way"          then touch(:shipped_at)
-    when "Delivered"           then update(delivered_at:find_delivery_time)
+    when "Delivered"           then update(delivered_at:find_delivery_time) if delivered_at == nil
     end
   end
 

@@ -34,3 +34,26 @@ status_types = {
     status: 2, macro_status: :delivered # Objeto entregue ao destinatário
   }
 }
+
+
+Shipment.where(status:"Delivered",delivered_at:nil).each do |shipment|
+  shipment.histories.where(category:"carrier").delete_all
+  shipment.update(status:"On the way")
+end
+CarrierSyncronizer.update_all_shipments_delivery_status
+
+
+errors = []
+Spree::Shipment.shipped.where("created_at > ?", Date.parse("01/09/2019").beginning_of_day).each do |shipment|
+  params = {
+    shipment: {
+      shipped_at: shipment.shipped_at
+    }
+  }
+  begin
+    Bearpost::Shipment.update(shipment,params)
+    p "Envio #{shipment.number} OK"
+  rescue Exception => e
+    errors << [shipment.order.number, e.message]
+  end
+end

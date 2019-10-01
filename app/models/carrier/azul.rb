@@ -184,7 +184,7 @@ class Carrier::Azul < Carrier
 
   def save_authentication_token(token)
     carrier_setting.settings['token'] = token
-    carrier_setting.settings['token_expire_date'] = DateTime.now + 7.hours
+    carrier_setting.settings['token_expire_date'] = DateTime.now + 5.hours
     carrier_setting.save
   end
 
