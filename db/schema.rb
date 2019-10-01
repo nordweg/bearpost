@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_29_122204) do
+ActiveRecord::Schema.define(version: 2019_10_01_115810) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,9 @@ ActiveRecord::Schema.define(version: 2019_09_29_122204) do
     t.integer "client_delivery_days_used"
     t.integer "client_delivery_days_delayed"
     t.datetime "client_delivery_due_at"
+    t.boolean "handling_late"
+    t.boolean "carrier_delivery_late"
+    t.boolean "client_delivery_late"
   end
 
   create_table "users", force: :cascade do |t|
