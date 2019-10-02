@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'shipments#index'
+  root 'dashboard#index'
 
   get  'settings',                                   to: "settings#index"
   post 'settings/update_api_key',                    to: "settings#update_api_key"
@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post 'accounts/:id/update_carrier_settings',       to: "accounts#update_carrier_settings"
 
   get  'track/:shipment_number',                     to: "tracking#show"
+  get  'dashboard',                                  to: "dashboard#index"
 
   # CORREIOS ROUTES - DELETE ONCE SETTINGS ARE NOT SPECIFIC # REFACTOR
   post "/correios/:shipment_id/get_plp",                        to: "correios#get_plp"
