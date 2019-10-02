@@ -60,15 +60,13 @@ class Shipment < ApplicationRecord
     return unless approved_at.present?
     self.shipping_due_at = handling_days_planned.business_days.after(approved_at)
     self.client_delivery_due_at = client_delivery_days_planned.business_days.after(approved_at)
-
-    self.handling_late = (shipped_at.to_date || Date.today).to_date > shipping_due_at.to_date
+    self.handling_late = (shipped_at || Date.today).to_date > shipping_due_at.to_date
     self.client_delivery_late = (delivered_at || Date.today).to_date > client_delivery_due_at.to_date
 
     return unless shipped_at.present?
     self.handling_days_used = approved_at.to_date.business_days_until(shipped_at.to_date)
     self.handling_days_delayed = handling_days_used - handling_days_planned
     self.carrier_delivery_due_at = carrier_delivery_days_planned.business_days.after(shipped_at)
-
     self.carrier_delivery_late = (delivered_at || Date.today).to_date > carrier_delivery_due_at.to_date
 
     return unless delivered_at.present?
