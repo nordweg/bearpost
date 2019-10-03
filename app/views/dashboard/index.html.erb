@@ -6,6 +6,61 @@ Visão geral
 <% end %>
 
 <div class="row">
+  <div class="col-lg-12">
+    <div class="kt-portlet">
+
+      <div class="kt-portlet__body">
+        <%= form_with(url: dashboard_path, method: "get", local: true) do  %>
+        <div class="row">
+          <div class="col-md-3">
+            <label>Busca rápida:</label>
+            <div class="kt-input-icon kt-input-icon--left">
+              <%= text_field_tag :search,params[:search],class:"form-control" %>
+              <span class="kt-input-icon__icon kt-input-icon__icon--left">
+                <span><i class="la la-search"></i></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <label>Transportadora</label>
+            <%= select_tag(:carrier, options_for_select(carriers_for_select.prepend(['Todas',nil]), selected: params[:carrier]), class:"form-control selectpicker") %>
+          </div>
+
+          <div class="col-md-2">
+            <label>Status</label>
+            <%= select_tag(:status, options_for_select(shipment_statuses_for_select.prepend(['Todos',nil]), selected: params[:status]), class:"form-control selectpicker") %>
+          </div>
+
+          <div class="col-md-2">
+            <label>Atraso</label>
+            <%= select_tag(:late, options_for_select(late_statuses_for_select.prepend(['Nenhum',nil]), selected: params[:late]), class:"form-control selectpicker") %>
+          </div>
+
+          <div class="col-md-2">
+            <label>Período de envio</label>
+            <div class="input-group" id="kt_daterangepicker_2">
+              <%= text_field_tag :date_range, params[:date_range], class:"form-control" %>
+              <div class="input-group-append">
+                <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-1">
+            <label>&nbsp;</label>
+            <%= submit_tag 'Filtrar', name:nil, class:'form-control btn btn-default' %>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="row">
 
   <div class="col-md-8">
     <div class="kt-portlet kt-portlet--tabs kt-portlet--height-fluid">
@@ -126,17 +181,17 @@ Visão geral
                 </tr>
               </thead>
               <tbody>
-              <% @late_shipments.each do |shipment| %>
+                <% @late_shipments.each do |shipment| %>
                 <tr>
                   <td><%= link_to shipment.full_name, shipment %></td>
                   <td><%= shipment.carrier.name %></td>
                   <td><%= status_label(shipment.status) %></td>
                 </tr>
-              <% end %>
+                <% end %>
               </tbody>
             </table>
             <% else %>
-              Não existem envios atrasados ou com problemas
+            Não existem envios atrasados ou com problemas
             <% end %>
           </div>
         </div>
@@ -149,64 +204,73 @@ Visão geral
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-  google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawCarriersPieChart);
-  google.charts.setOnLoadCallback(drawShippingMethodsPieChart);
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawCarriersPieChart);
+google.charts.setOnLoadCallback(drawShippingMethodsPieChart);
 
-  function drawCarriersPieChart() {
-    var element = document.getElementById('carriersPieChart')
-    var data_arr = JSON.parse(element.dataset.chart)
-    var data = google.visualization.arrayToDataTable(data_arr);
-    var options = {
-      legend: 'none',
-      pieSliceText: 'label',
-      chartArea: {width: '80%', height: '80%'},
-      colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
-    };
-    var chart = new google.visualization.PieChart(element);
-    chart.draw(data, options);
-  }
+function drawCarriersPieChart() {
+  var element = document.getElementById('carriersPieChart')
+  var data_arr = JSON.parse(element.dataset.chart)
+  var data = google.visualization.arrayToDataTable(data_arr);
+  var options = {
+    legend: 'none',
+    pieSliceText: 'label',
+    chartArea: {width: '80%', height: '80%'},
+    colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
+  };
+  var chart = new google.visualization.PieChart(element);
+  chart.draw(data, options);
+}
 
-  function drawShippingMethodsPieChart() {
-    var element = document.getElementById('shippingMethodsPieChart')
-    var data_arr = JSON.parse(element.dataset.chart)
-    var data = google.visualization.arrayToDataTable(data_arr);
-    var options = {
-      legend: 'none',
-      pieSliceText: 'label',
-      chartArea: {width: '80%', height: '80%'},
-      colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
-    };
-    var chart = new google.visualization.PieChart(element);
-    chart.draw(data, options);
-  }
+function drawShippingMethodsPieChart() {
+  var element = document.getElementById('shippingMethodsPieChart')
+  var data_arr = JSON.parse(element.dataset.chart)
+  var data = google.visualization.arrayToDataTable(data_arr);
+  var options = {
+    legend: 'none',
+    pieSliceText: 'label',
+    chartArea: {width: '80%', height: '80%'},
+    colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
+  };
+  var chart = new google.visualization.PieChart(element);
+  chart.draw(data, options);
+}
 
 </script>
 
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {
-        'packages':['geochart'],
-        // Note: you will need to get a mapsApiKey for your project.
-        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
-      });
-      google.charts.setOnLoadCallback(drawRegionsMap);
+<script type="text/javascript">
+google.charts.load('current', {
+  'packages':['geochart'],
+  // Note: you will need to get a mapsApiKey for your project.
+  // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+  'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+});
+google.charts.setOnLoadCallback(drawRegionsMap);
 
-      function drawRegionsMap() {
-        var element = document.getElementById('regions_div')
-        var data_arr = JSON.parse(element.dataset.chart)
-        var data = google.visualization.arrayToDataTable(data_arr);
-        var options = {
-          region: 'BR',
-          displayMode: 'regions',
-          resolution: 'provinces',
-          colorAxis: {minValue: 0,  colors: ['#e8ecfa', '#646c9a']}
-        };
+function drawRegionsMap() {
+  var element = document.getElementById('regions_div')
+  var data_arr = JSON.parse(element.dataset.chart)
+  var data = google.visualization.arrayToDataTable(data_arr);
+  var options = {
+    region: 'BR',
+    displayMode: 'regions',
+    resolution: 'provinces',
+    colorAxis: {minValue: 0,  colors: ['#e8ecfa', '#646c9a']}
+  };
 
-        var chart = new google.visualization.GeoChart(element);
+  var chart = new google.visualization.GeoChart(element);
 
-        chart.draw(data, options);
-      }
-    </script>
+  chart.draw(data, options);
+}
+
+$(document).on('turbolinks:load', function () {
+  $('.selectpicker').each(function (i, el) {
+    if (!$(el).parent().hasClass('bootstrap-select')) {
+      $(el).selectpicker('refresh');
+    }
+  });
+});
+
+</script>

@@ -1,10 +1,7 @@
 class DashboardController < ApplicationController
 
   def index
-    @shipments = Shipment.all
-    # @shipments = Carrier::Azul.shipments
-    # @shipments = Shipment.where(carrier_delivery_late: true)
-
+    @shipments = Shipment.filter(params)
     @late_shipments = @shipments.attention_required
     @carriers_pie_chart_data = get_shipments_per_carrier_pie_chart_data(@shipments)
     @shipping_method_pie_chart_data = get_shipping_method_pie_chart_data(@shipments)
