@@ -57,3 +57,5 @@ Spree::Shipment.shipped.where("created_at > ?", Date.parse("01/09/2019").beginni
     errors << [shipment.order.number, e.message]
   end
 end
+
+user.notifications.create(description:"Olha esse envio!",path:"/shipments/858",category:"shipment")
