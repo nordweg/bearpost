@@ -1,0 +1,46 @@
+<div class="kt-portlet kt-portlet--height-fluid">
+  <div class="kt-portlet__head">
+    <div class="kt-portlet__head-label">
+      <h3 class="kt-portlet__head-title">
+        Envios por estado
+      </h3>
+    </div>
+  </div>
+  <div class="kt-portlet__body">
+    <div class="tab-content">
+      <div class="tab-pane fade active show" id="kt_portlet_tabs_1111_1_content" role="tabpanel">
+        <div class="kt-widget-11">
+          <div id="regions_div" style="width: 100%; height: 500px;" data-chart = "<%= @shipments_by_state %>"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    google.charts.load('current', {
+      'packages':['geochart'],
+      // Note: you will need to get a mapsApiKey for your project.
+      // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+      'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+    });
+    google.charts.setOnLoadCallback(drawRegionsMap);
+
+    function drawRegionsMap() {
+      var element = document.getElementById('regions_div')
+      var data_arr = JSON.parse(element.dataset.chart)
+      var data = google.visualization.arrayToDataTable(data_arr);
+      var options = {
+        region: 'BR',
+        displayMode: 'regions',
+        resolution: 'provinces',
+        colorAxis: {minValue: 0,  colors: ['#e8ecfa', '#646c9a']}
+      };
+      var chart = new google.visualization.GeoChart(element);
+      chart.draw(data, options);
+    }
+  });
+
+</script>
