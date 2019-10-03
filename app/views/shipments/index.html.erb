@@ -82,9 +82,9 @@ Marcar como a caminho
 
           <div class="col-md-2">
             <label>Período de envio</label>
-            <div class="input-group" id="kt_daterangepicker_2">
-              <%= text_field_tag :date_range, params[:date_range], class:"form-control" %>
-              <div class="input-group-append">
+            <div class="input-group">
+              <%= text_field_tag :date_range, params[:date_range], class:"form-control", id:"kt_daterangepicker_2" %>
+              <div class="input-group-append datepicer-icon">
                 <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
               </div>
             </div>
@@ -209,23 +209,43 @@ Marcar como a caminho
     });
 
     $(document).ready(function() {
-      $('#kt_daterangepicker_2').daterangepicker({
-        startDate: moment().subtract(29, 'days'),
-        endDate: moment(),
+      picker = $('#kt_daterangepicker_2').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+          format: 'DD/MM/YYYY',
+          customRangeLabel: 'Personalizado'
+        },
         ranges: {
           'Hoje': [moment(), moment()],
           'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Ultimos 30 Days': [moment().subtract(29, 'days'), moment()],
+          'Ultimos 30 dias': [moment().subtract(30, 'days'), moment()]
         },
-        locale: { customRangeLabel: 'Personalizado' },
         opens: 'left',
         buttonClasses: 'btn btn-sm',
         applyClass: 'btn-primary',
         cancelClass: 'btn-secondary'
-      }, function(start, end, label) {
-        $('#kt_daterangepicker_2 .form-control').val( start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
       });
+
+      $('.datepicer-icon').on('click', function(e) {
+        $('#kt_daterangepicker_2').click();
+      });
+      picker.on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+      });
+      picker.on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+      });
+
+      // $('#kt_daterangepicker_2').on('apply.daterangepicker', function(ev, picker) {
+      //     $(this).find('.form-control').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+      // });
+
+      // picker = $('#kt_daterangepicker_2');
+      // $('#kt_daterangepicker_2 .form-control').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+
+
     });
+
 
     $(document).on('turbolinks:load', function () {
       $('.selectpicker').each(function (i, el) {

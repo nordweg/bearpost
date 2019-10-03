@@ -43,6 +43,7 @@ class Shipment < ApplicationRecord
   def log_shipment_creation_on_histories
     histories.create(
       user: Current.user,
+      changed_by: Current.connected,
       description: "Pedido criado",
       category:'status',
       date: DateTime.now,
@@ -149,6 +150,7 @@ class Shipment < ApplicationRecord
         OR regexp_replace(cpf, '\\D', '', 'g') ILIKE regexp_replace(:search, '\\D', '', 'g')
         OR order_number ILIKE :search
         OR shipment_number ILIKE :search
+        OR state ILIKE :search
         OR city ILIKE :search",
         search: "%#{params[:search]}%"
       )

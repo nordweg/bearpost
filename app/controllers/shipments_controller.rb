@@ -4,6 +4,7 @@ class ShipmentsController < ApplicationController
   before_action :set_carrier, only: [:show, :save_delivery_updates, :get_labels]
 
   def index
+    params[:date_range] ||= params[:date_range].try(:empty) ? params[:date_range] : "#{30.days.ago.strftime("%d/%m/%Y")} - #{Date.today.strftime("%d/%m/%Y")}"
     @shipments = Shipment.filter(params)
     @shipments = @shipments.order(shipped_at: :desc).page(params[:page])
   end
