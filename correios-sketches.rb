@@ -59,3 +59,36 @@ Spree::Shipment.shipped.where("created_at > ?", Date.parse("01/09/2019").beginni
 end
 
 user.notifications.create(description:"Olha esse envio!",path:"/shipments/858",category:"shipment")
+
+errors = []
+History.where(category:'status').each do |history|
+  description = history.description
+  category = case
+  when description.include?("para Enviado")
+    "On the way"
+  when description.include?("para Pendente")
+    "Pending"
+  when description.include?("para Pronto para envio")
+    "Ready for shipping"
+  when description.include?("para A caminho")
+    "On the way"
+  when description.include?("para Saiu para entrega")
+    "Out for delivery"
+  when description.include?("para Entregue")
+    "Delivered"
+  when description.include?("para Com problemas")
+    "Problematic"
+  when description.include?("para Retornado")
+    "Returned"
+  when description.include?("para Cancelado")
+    "Cancelled"
+  when description.include?("para Aguardando retirada")
+    "Waiting for pickup"
+  when description.include?("Pedido criado")
+    "New"
+  else
+    errors << history
+    nil
+  end
+  history.update(category:category) if category
+end
