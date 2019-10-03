@@ -13,7 +13,7 @@ Atualizar status
 <% end %>
 
 <%= link_to "javascript:;", class: "btn btn-sm btn-secondary btn-label-brand", id:"update-selected-JS" do %>
-  Marcar como a caminho
+Marcar como a caminho
 <% end %>
 
 <div class="btn-group">
@@ -96,7 +96,7 @@ Atualizar status
           </div>
         </div>
         <% end %>
-
+        
         <div class="kt-form kt-fork--label-align-right kt-margin-t-20 collapse" id="kt_datatable_group_action_form">
           <div class="row align-items-center">
             <div class="col-xl-12">
@@ -172,66 +172,66 @@ Atualizar status
         </div>
       </div>
 
+    </div>
   </div>
-</div>
 
-<script>
-$('#filebutton').click(function(e){
-  e.preventDefault();
-  $('#fileinput').click();
-});
-
-$('#fileinput').change(function(){
-  $(this).parent('form').submit();
-});
-
-$('#update-selected-JS').click(function(){
-  $.each($(".kt-checkbox input:checked").not("#select-all-JS"), function(){
-    $.ajax({
-      type: "PATCH",
-      url:  "/shipments/" + $(this).val(),
-      data: { shipment: {status: 'On the way'} },
-      dataType: 'json'
+  <script>
+    $('#filebutton').click(function(e){
+      e.preventDefault();
+      $('#fileinput').click();
     });
-  });
-  $(document).ajaxStop(function () {
-    location.reload();
-  });
-})
+
+    $('#fileinput').change(function(){
+      $(this).parent('form').submit();
+    });
+
+    $('#update-selected-JS').click(function(){
+      $.each($(".kt-checkbox input:checked").not("#select-all-JS"), function(){
+        $.ajax({
+          type: "PATCH",
+          url:  "/shipments/" + $(this).val(),
+          data: { shipment: {status: 'On the way'} },
+          dataType: 'json'
+        });
+      });
+      $(document).ajaxStop(function () {
+        location.reload();
+      });
+    })
 
 
-$("#select-all-JS").change(function() {
-    if(this.checked) {
-      $('input:checkbox').prop('checked', true);
-    } else {
-      $('input:checkbox').prop('checked', false);
-    }
-});
+    $("#select-all-JS").change(function() {
+      if(this.checked) {
+        $('input:checkbox').prop('checked', true);
+      } else {
+        $('input:checkbox').prop('checked', false);
+      }
+    });
 
-$(document).ready(function() {
-  $('#kt_daterangepicker_2').daterangepicker({
-    startDate: moment().subtract(29, 'days'),
-    endDate: moment(),
-    ranges: {
-      'Hoje': [moment(), moment()],
-      'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-      'Ultimos 30 Days': [moment().subtract(29, 'days'), moment()],
-    },
-    locale: { customRangeLabel: 'Personalizado' },
-    opens: 'left',
-    buttonClasses: 'btn btn-sm',
-    applyClass: 'btn-primary',
-    cancelClass: 'btn-secondary'
-  }, function(start, end, label) {
-    $('#kt_daterangepicker_2 .form-control').val( start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-  });
-});
+    $(document).ready(function() {
+      $('#kt_daterangepicker_2').daterangepicker({
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment(),
+        ranges: {
+          'Hoje': [moment(), moment()],
+          'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Ultimos 30 Days': [moment().subtract(29, 'days'), moment()],
+        },
+        locale: { customRangeLabel: 'Personalizado' },
+        opens: 'left',
+        buttonClasses: 'btn btn-sm',
+        applyClass: 'btn-primary',
+        cancelClass: 'btn-secondary'
+      }, function(start, end, label) {
+        $('#kt_daterangepicker_2 .form-control').val( start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+      });
+    });
 
-$(document).on('turbolinks:load', function () {
-  $('.selectpicker').each(function (i, el) {
-    if (!$(el).parent().hasClass('bootstrap-select')) {
-      $(el).selectpicker('refresh');
-    }
-  });
-});
-</script>
+    $(document).on('turbolinks:load', function () {
+      $('.selectpicker').each(function (i, el) {
+        if (!$(el).parent().hasClass('bootstrap-select')) {
+          $(el).selectpicker('refresh');
+        }
+      });
+    });
+  </script>
