@@ -37,6 +37,16 @@
         colorAxis: {minValue: 0,  colors: ['#e8ecfa', '#646c9a']}
       };
       var chart = new google.visualization.GeoChart(element);
+      function selectHandler() {
+        var selected_state = chart.getSelection()[0];
+        if (selected_state) {
+          searchParams = new URLSearchParams(window.location.search);
+          state_name = data.getValue(selected_state.row, 0);
+          searchParams.set("search", state_name);
+          window.location.href = "/shipments?" + searchParams.toString();
+        }
+      }
+      google.visualization.events.addListener(chart, 'select', selectHandler);
       chart.draw(data, options);
     }
   });
