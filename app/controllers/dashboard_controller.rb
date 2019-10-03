@@ -18,21 +18,17 @@ class DashboardController < ApplicationController
   end
 
   def get_shipments_per_carrier_pie_chart_data(shipments)
-    data = []
-    shipments.group(:carrier_class).count.each do |k, v|
-      data << [k.constantize.name, v, k]
-    end
-    data.sort! {|a, b| b[1] <=> a[1]}
-    data.unshift(["Transportadora", "Envios", "Carrier"])
+    data = [["Transportadora", "Envios", "Carrier"]]
+    grouped_shipments = shipments.group(:carrier_class).order('carrier_class asc').count
+    grouped_shipments.each { |k, v| data << [k.constantize.name, v, k] }
+    data
   end
 
   def get_shipping_method_pie_chart_data(shipments)
-    data = []
-    shipments.group(:shipping_method).count.each do |k, v|
-      data << [k, v]
-    end
-    data.sort! {|a, b| b[1] <=> a[1]}
-    data.unshift(["Método de envio", "Envios"])
+    data = [["Método de envio", "Envios"]]
+    grouped_shipments = shipments.group(:shipping_method).order('shipping_method desc').count
+    grouped_shipments.each { |k, v| data << [k, v] }
+    data
   end
 
   def get_shipments_per_status(shipments)
@@ -59,21 +55,18 @@ class DashboardController < ApplicationController
 
   def get_shipments_per_state(shipments)
     data = [["Estado", "Envios"]]
-    total_shipments = shipments.count
-    shipments.group(:state).count.each do |state, number|
-      data << [state, number]
-    end
+    grouped_shipments = shipments.group(:state).count
+    grouped_shipments.each { |state, number| data << [state, number]}
     data
   end
 
   def get_days_until_delivery(shipments)
-    data = []
-    shipments.group(:carrier_delivery_days_used).count.each do |days, number|
-      data << [days, number] unless days == nil
+    data = [["Dias", "Envios"]]
+    grouped_shipments = shipments.group(:carrier_delivery_days_used).order('carrier_delivery_days_used asc').count
+    grouped_shipments.each do |days, number|
+      data << ["#{days} dias", number] unless days == nil
     end
-    data.sort! {|a, b| a[0] <=> b[0]}
-    data.unshift(["Dias", "Envios"])
-    data.map {|i| [i[0].to_s + " dias", i[1]]}
+    data
   end
 
 end
