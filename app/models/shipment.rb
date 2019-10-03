@@ -6,14 +6,14 @@ class Shipment < ApplicationRecord
   scope :shipped,                     -> { where(status: ["On the way", "Out for delivery", "Problematic", "Waiting for pickup", "Delivered"]) }
   scope :delivered,                   -> { where(status: 'Delivered') }
   scope :not_delivered,               -> { where.not(status: "Delivered") }
-  scope :in_transit,                  -> { shipped.not_delivered }
+  scope :not_canceled,                -> { where.not(status: "Canceled") }
+  scope :in_transit,                  -> { shipped.not_delivered } # see if not.delivered exists
   scope :handling_late,               -> { where(handling_late: true) }
   scope :carrier_delivery_late,       -> { where(carrier_delivery_late: true) }
   scope :client_delivery_late,        -> { where(client_delivery_late: true) }
   scope :late,                        -> { handling_late.or(carrier_delivery_late).or(client_delivery_late) }
   scope :problematic,                 -> { where(status: "Problematic") }
-  scope :attention_required,          -> { late.or(problematic).not_delivered }
-
+  scope :attention_required,          -> { in_transit.late.or(problematic) }
 
   has_many    :packages
   has_many    :histories

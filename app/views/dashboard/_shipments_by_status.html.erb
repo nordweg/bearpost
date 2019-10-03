@@ -1,0 +1,51 @@
+<div class="kt-portlet kt-portlet--height-fluid">
+  <div class="kt-portlet__head">
+    <div class="kt-portlet__head-label">
+      <h3 class="kt-portlet__head-title">
+        Envios por status
+      </h3>
+    </div>
+  </div>
+  <div class="kt-portlet__body">
+    <div class="tab-content">
+      <div class="tab-pane fade active show" id="kt_portlet_tabs_1111_1_content" role="tabpanel">
+        <div class="kt-widget-11">
+          <% @shipments_per_status.each do |line| %>
+          <div class="kt-widget-11__item">
+            <a href="<%= shipments_path(params_builder(params, {status: line[0]})) %>">
+              <div class="kt-widget-11__wrapper">
+                <div class="kt-widget-11__title">
+                  <%= t(line[0]) %>
+                </div>
+                <div class="kt-widget-11__value">
+                  <%= line[1] %>
+                </div>
+              </div>
+            </a>
+            <div class="kt-widget-11__progress">
+              <div class="progress">
+                <!-- Doc: A bootstrap progress bar can be used to show a user how far along it's in a process, see https://getbootstrap.com/docs/4.1/components/progress/ -->
+                <div class="progress-bar bg-primary" role="progressbar" style="width: <%= line[2] %>%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+          <% end %>
+          <div class="pt-3">
+            <table class="table table-borderless table-sm table-hover pt-5" style="color: #646c9a;">
+              <tbody>
+                <tr>
+                  <th>Tempo médio de transporte</th>
+                  <td><%= @average_carrier_delivery_days_used %> dias</td>
+                </tr>
+                <tr>
+                  <th>Tempo médio de atraso</th>
+                  <td><%= @average_sla %> dias</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

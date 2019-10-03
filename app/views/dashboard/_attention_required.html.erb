@@ -1,0 +1,37 @@
+<div class="kt-portlet kt-portlet--height-fluid">
+  <div class="kt-portlet__head">
+    <div class="kt-portlet__head-label">
+      <h3 class="kt-portlet__head-title">Atrasados ou com problemas</h3>
+    </div>
+  </div>
+  <div class="kt-portlet__body">
+    <div class="kt-section">
+      <div class="kt-section__content">
+        <% if @delayed_or_problematic_shipments.count > 0 %>
+        <table class="table table-head-noborder">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Transportadora</th>
+              <th>Cidade</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @delayed_or_problematic_shipments.each do |shipment| %>
+            <tr>
+              <td><%= link_to shipment.full_name, shipment %></td>
+              <td><%= shipment.carrier.name %></td>
+              <td><%= shipment.city %> / <%= shipment.state %></td>
+              <td><%= status_label(shipment.status) %></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <% else %>
+        Não existem envios atrasados ou com problemas
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="kt-portlet">
+  <div class="kt-portlet__body">
+    <%= form_with(url: dashboard_path, method: "get", local: true) do  %>
+    <div class="row">
+      <div class="col-md-3">
+        <label>Busca rápida:</label>
+        <div class="kt-input-icon kt-input-icon--left">
+          <%= text_field_tag :search, params[:search], class: "form-control", placeholder: "Pedido, envio, nome, CPF, cidade..." %>
+          <span class="kt-input-icon__icon kt-input-icon__icon--left">
+            <span><i class="la la-search"></i></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="col-md-2">
+        <label>Transportadora</label>
+        <%= select_tag(:carrier, options_for_select(carriers_for_select.prepend(['Todas',nil]), selected: params[:carrier]), class:"form-control selectpicker") %>
+      </div>
+
+      <div class="col-md-2">
+        <label>Status</label>
+        <%= select_tag(:status, options_for_select(shipment_statuses_for_select.prepend(['Todos',nil]), selected: params[:status]), class:"form-control selectpicker") %>
+      </div>
+
+      <div class="col-md-2">
+        <label>Atraso</label>
+        <%= select_tag(:late, options_for_select(late_statuses_for_select.prepend(['Nenhum',nil]), selected: params[:late]), class:"form-control selectpicker") %>
+      </div>
+
+      <div class="col-md-2">
+        <label>Período de envio</label>
+        <div class="input-group" id="kt_daterangepicker_2">
+          <%= text_field_tag :date_range, params[:date_range], class:"form-control" %>
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-1">
+        <label>&nbsp;</label>
+        <%= submit_tag 'Filtrar', name:nil, class:'form-control btn btn-default' %>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    $('#kt_daterangepicker_2').daterangepicker({
+      startDate: moment().subtract(29, 'days'),
+      endDate: moment(),
+      ranges: {
+        'Hoje': [moment(), moment()],
+        'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Ultimos 30 Days': [moment().subtract(29, 'days'), moment()],
+      },
+      locale: { customRangeLabel: 'Personalizado' },
+      opens: 'left',
+      buttonClasses: 'btn btn-sm',
+      applyClass: 'btn-primary',
+      cancelClass: 'btn-secondary'
+    }, function(start, end, label) {
+      $('#kt_daterangepicker_2 .form-control').val( start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+    });
+  });
+
+</script>
