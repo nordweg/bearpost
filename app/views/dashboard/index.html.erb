@@ -15,7 +15,7 @@ Visão geral
           <div class="col-md-3">
             <label>Busca rápida:</label>
             <div class="kt-input-icon kt-input-icon--left">
-              <%= text_field_tag :search,params[:search],class:"form-control" %>
+              <%= text_field_tag :search, params[:search], class: "form-control", placeholder: "Pedido, envio, nome, CPF, cidade..." %>
               <span class="kt-input-icon__icon kt-input-icon__icon--left">
                 <span><i class="la la-search"></i></span>
               </span>
@@ -58,12 +58,10 @@ Visão geral
   </div>
 </div>
 
-
-
 <div class="row">
 
   <div class="col-md-8">
-    <div class="kt-portlet kt-portlet--tabs kt-portlet--height-fluid">
+    <div class="kt-portlet kt-portlet--height-fluid">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
@@ -75,9 +73,7 @@ Visão geral
         <div class="tab-content">
           <div class="tab-pane fade active show" id="kt_portlet_tabs_1111_1_content" role="tabpanel">
             <div class="kt-widget-11">
-
               <div id="regions_div" style="width: 100%; height: 500px;" data-chart = "<%= @shipments_by_state %>"></div>
-
             </div>
           </div>
         </div>
@@ -86,7 +82,7 @@ Visão geral
   </div>
 
   <div class="col-md-4">
-    <div class="kt-portlet kt-portlet--tabs kt-portlet--height-fluid">
+    <div class="kt-portlet kt-portlet--height-fluid">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
@@ -98,18 +94,18 @@ Visão geral
         <div class="tab-content">
           <div class="tab-pane fade active show" id="kt_portlet_tabs_1111_1_content" role="tabpanel">
             <div class="kt-widget-11">
-
               <% @shipments_per_status.each do |line| %>
-
               <div class="kt-widget-11__item">
-                <div class="kt-widget-11__wrapper">
-                  <div class="kt-widget-11__title">
-                    <%= line[0] %>
+                <a href="<%= shipments_path(params_builder(params, {status: line[0]})) %>">
+                  <div class="kt-widget-11__wrapper">
+                    <div class="kt-widget-11__title">
+                      <%= t(line[0]) %>
+                    </div>
+                    <div class="kt-widget-11__value">
+                      <%= line[1] %>
+                    </div>
                   </div>
-                  <div class="kt-widget-11__value">
-                    <%= line[1] %>
-                  </div>
-                </div>
+                </a>
                 <div class="kt-widget-11__progress">
                   <div class="progress">
                     <!-- Doc: A bootstrap progress bar can be used to show a user how far along it's in a process, see https://getbootstrap.com/docs/4.1/components/progress/ -->
@@ -117,27 +113,42 @@ Visão geral
                   </div>
                 </div>
               </div>
-
               <% end %>
-
+              <div class="pt-3">
+                <table class="table table-borderless table-sm table-hover pt-5" style="color: #646c9a;">
+                  <tbody>
+                    <tr>
+                      <th>Tempo médio de transporte</th>
+                      <td><%= @average_carrier_delivery_days_used %> dias</td>
+                    </tr>
+                    <tr>
+                      <th>Tempo médio de atraso</th>
+                      <td><%= @average_sla %> dias</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="col-md-3">
+<div class="row">
+
+  <div class="col-md-6">
     <div class="kt-portlet kt-portlet--height-fluid">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">Envios por transportadora</h3>
+          <h3 class="kt-portlet__head-title">Dias para entrega</h3>
         </div>
       </div>
       <div class="kt-portlet__body">
         <div class="kt-section">
           <div class="kt-section__content">
-            <div id="carriersPieChart" style="width: 100%; height: 300px;" data-chart="<%= @carriers_pie_chart_data %>"></div>
+            <div id="columnchart_material" style="width: 100%; height: 300px;" data-chart="<%= @days_until_delivery %>"></div>
           </div>
         </div>
       </div>
@@ -148,13 +159,30 @@ Visão geral
     <div class="kt-portlet kt-portlet--height-fluid">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
-          <h3 class="kt-portlet__head-title">Envios por modalidade</h3>
+          <h3 class="kt-portlet__head-title">Modalidade</h3>
         </div>
       </div>
       <div class="kt-portlet__body">
         <div class="kt-section">
           <div class="kt-section__content">
             <div id="shippingMethodsPieChart" style="width: 100%; height: 300px;" data-chart="<%= @shipping_method_pie_chart_data %>"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="kt-portlet kt-portlet--height-fluid">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">Transportadora</h3>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-section">
+          <div class="kt-section__content">
+            <div id="carriersPieChart" style="width: 100%; height: 300px;" data-chart="<%= @carriers_pie_chart_data %>"></div>
           </div>
         </div>
       </div>
@@ -201,76 +229,120 @@ Visão geral
 
 </div>
 
+<div class="row">
+
+
+
+</div>
+
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawCarriersPieChart);
-google.charts.setOnLoadCallback(drawShippingMethodsPieChart);
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawCarriersPieChart);
+  google.charts.setOnLoadCallback(drawShippingMethodsPieChart);
 
-function drawCarriersPieChart() {
-  var element = document.getElementById('carriersPieChart')
-  var data_arr = JSON.parse(element.dataset.chart)
-  var data = google.visualization.arrayToDataTable(data_arr);
-  var options = {
-    legend: 'none',
-    pieSliceText: 'label',
-    chartArea: {width: '80%', height: '80%'},
-    colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
-  };
-  var chart = new google.visualization.PieChart(element);
-  chart.draw(data, options);
-}
+  function drawCarriersPieChart() {
+    var element = document.getElementById('carriersPieChart')
+    var data_arr = JSON.parse(element.dataset.chart)
+    var data = google.visualization.arrayToDataTable(data_arr);
+    var options = {
+      legend: 'none',
+      pieSliceText: 'label',
+      chartArea: {width: '80%', height: '80%'},
+      colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
+    };
+    var chart = new google.visualization.PieChart(element);
+    chart.draw(data, options);
+  }
 
-function drawShippingMethodsPieChart() {
-  var element = document.getElementById('shippingMethodsPieChart')
-  var data_arr = JSON.parse(element.dataset.chart)
-  var data = google.visualization.arrayToDataTable(data_arr);
-  var options = {
-    legend: 'none',
-    pieSliceText: 'label',
-    chartArea: {width: '80%', height: '80%'},
-    colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
-  };
-  var chart = new google.visualization.PieChart(element);
-  chart.draw(data, options);
-}
+  function drawShippingMethodsPieChart() {
+    var element = document.getElementById('shippingMethodsPieChart')
+    var data_arr = JSON.parse(element.dataset.chart)
+    var data = google.visualization.arrayToDataTable(data_arr);
+    var options = {
+      legend: 'none',
+      pieSliceText: 'label',
+      chartArea: {width: '80%', height: '80%'},
+      colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
+    };
+    var chart = new google.visualization.PieChart(element);
+    chart.draw(data, options);
+  }
+
+</script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {
+    'packages':['geochart'],
+    // Note: you will need to get a mapsApiKey for your project.
+    // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+    'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+  });
+  google.charts.setOnLoadCallback(drawRegionsMap);
+
+  function drawRegionsMap() {
+    var element = document.getElementById('regions_div')
+    var data_arr = JSON.parse(element.dataset.chart)
+    var data = google.visualization.arrayToDataTable(data_arr);
+    var options = {
+      region: 'BR',
+      displayMode: 'regions',
+      resolution: 'provinces',
+      colorAxis: {minValue: 0,  colors: ['#e8ecfa', '#646c9a']}
+    };
+    var chart = new google.visualization.GeoChart(element);
+    chart.draw(data, options);
+  }
+
+  $(document).ready(function() {
+    $('#kt_daterangepicker_2').daterangepicker({
+      startDate: moment().subtract(29, 'days'),
+      endDate: moment(),
+      ranges: {
+        'Hoje': [moment(), moment()],
+        'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Ultimos 30 Days': [moment().subtract(29, 'days'), moment()],
+      },
+      locale: { customRangeLabel: 'Personalizado' },
+      opens: 'left',
+      buttonClasses: 'btn btn-sm',
+      applyClass: 'btn-primary',
+      cancelClass: 'btn-secondary'
+    }, function(start, end, label) {
+      $('#kt_daterangepicker_2 .form-control').val( start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+    });
+  });
+
+  $(document).on('turbolinks:load', function () {
+    $('.selectpicker').each(function (i, el) {
+      if (!$(el).parent().hasClass('bootstrap-select')) {
+        $(el).selectpicker('refresh');
+      }
+    });
+  });
 
 </script>
 
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-google.charts.load('current', {
-  'packages':['geochart'],
-  // Note: you will need to get a mapsApiKey for your project.
-  // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-  'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
-});
-google.charts.setOnLoadCallback(drawRegionsMap);
+  google.charts.load('current', {'packages':['bar']});
+  google.charts.setOnLoadCallback(drawChart);
 
-function drawRegionsMap() {
-  var element = document.getElementById('regions_div')
-  var data_arr = JSON.parse(element.dataset.chart)
-  var data = google.visualization.arrayToDataTable(data_arr);
-  var options = {
-    region: 'BR',
-    displayMode: 'regions',
-    resolution: 'provinces',
-    colorAxis: {minValue: 0,  colors: ['#e8ecfa', '#646c9a']}
-  };
+  function drawChart() {
+    var element = document.getElementById('columnchart_material')
+    var data_arr = JSON.parse(element.dataset.chart)
+    var data = google.visualization.arrayToDataTable(data_arr);
 
-  var chart = new google.visualization.GeoChart(element);
+    var options = {
+      legend: {position: 'none'},
+      chartArea: {width: '80%', height: '80%'},
+      colors:['#3D4465','#767C97', "#AFB4C8", "#E8ECFA"],
+    };
 
-  chart.draw(data, options);
-}
+    var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
 
-$(document).on('turbolinks:load', function () {
-  $('.selectpicker').each(function (i, el) {
-    if (!$(el).parent().hasClass('bootstrap-select')) {
-      $(el).selectpicker('refresh');
-    }
-  });
-});
-
+    chart.draw(data, google.charts.Bar.convertOptions(options));
+  }
 </script>
