@@ -30,6 +30,16 @@
         colors:['#646C9A','#9097BA', "#BCC1DA", "#E8ECFA"],
       };
       var chart = new google.visualization.PieChart(element);
+      function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+        if (selectedItem) {
+          searchParams = new URLSearchParams(window.location.search);
+          carrier = data.getValue(selectedItem.row, 2);
+          searchParams.set("carrier", carrier);
+          window.location.href = "/shipments?" + searchParams.toString();
+        }
+      }
+      google.visualization.events.addListener(chart, 'select', selectHandler);
       chart.draw(data, options);
     }
   });

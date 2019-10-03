@@ -19,9 +19,9 @@ module ShipmentsHelper
     end
 
     if late
-      icon = "<i style='font-size: 20px;' class='fas fa-exclamation-circle kt-font-warning'></i>".html_safe
+      icon = "<i style='font-size: 22px;' class='la la-exclamation-circle kt-font-warning'></i>".html_safe
     elsif realized
-      icon = "<i style='font-size: 20px;' class='fas fa-check-circle kt-font-info'></i>".html_safe
+      icon = "<i style='font-size: 22px;' class='la la-check-circle kt-font-info'></i>".html_safe
     else
       icon = nil
     end

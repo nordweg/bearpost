@@ -43,6 +43,7 @@ class Shipment < ApplicationRecord
   def log_shipment_creation_on_histories
     histories.create(
       user: Current.user,
+      changed_by: Current.connected,
       description: "Pedido criado",
       category:'status',
       date: DateTime.now,
@@ -92,6 +93,7 @@ class Shipment < ApplicationRecord
     histories.create(
       user: Current.user,
       description: "Status alterado de #{I18n.t saved_changes["status"][0]} para #{I18n.t saved_changes["status"][1]}",
+      bearpost_status: saved_changes["status"][1],
       category:'status',
       date: DateTime.now,
       changed_by: Current.connected
@@ -148,6 +150,7 @@ class Shipment < ApplicationRecord
         OR regexp_replace(cpf, '\\D', '', 'g') ILIKE regexp_replace(:search, '\\D', '', 'g')
         OR order_number ILIKE :search
         OR shipment_number ILIKE :search
+        OR state ILIKE :search
         OR city ILIKE :search",
         search: "%#{params[:search]}%"
       )
@@ -157,6 +160,8 @@ class Shipment < ApplicationRecord
     shipments = shipments.where(status:params[:status]) if params[:status].present?
     shipments = shipments.where(carrier_class: params[:carrier]) if params[:carrier].present?
     shipments = shipments.where(params[:late] => true) if params[:late].present?
+    shipments = shipments.where(carrier_delivery_days_used: params[:carrier_delivery_days_used]) if params[:carrier_delivery_days_used].present?
+    shipments = shipments.where(shipping_method: params[:shipping_method]) if params[:shipping_method].present?
     if params[:date_range].present?
       start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
       end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day

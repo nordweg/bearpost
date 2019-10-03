@@ -1,19 +1,8 @@
-<%
-case history.category
-when 'status'
-  icon_class = "flaticon-rotate kt-font-warning"
-  event_type = "kt-timeline__item kt-timeline__item--warning"
-when 'carrier'
-  icon_class = "flaticon-paper-plane-1 kt-font-brand"
-  event_type = "kt-timeline__item kt-timeline__item--brand"
-end
-%>
-
-<div class="<%= event_type %>">
+<div class="kt-timeline__item kt-timeline__item--<%= icon_color(history) %>">
   <div class="kt-timeline__item-section">
     <div class="kt-timeline__item-section-border" rel="tooltip" title="<%= tooltip_title(history) %>">
       <div class="kt-timeline__item-section-icon">
-        <i class="<%= icon_class %>"></i>
+        <i class="<%= history_icon(history)%> kt-font-<%= icon_color(history) %>"></i>
       </div>
     </div>
     <span class="kt-timeline__item-datetime mr-3">

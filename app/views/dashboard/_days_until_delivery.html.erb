@@ -31,6 +31,16 @@
         colors:['#646C9A','#9097BA', "#BCC1DA", "#E8ECFA"],
       };
       var chart = new google.visualization.ColumnChart(element);
+      function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+        if (selectedItem) {
+          searchParams = new URLSearchParams(window.location.search);
+          carrier_delivery_days_used = data.getValue(selectedItem.row, 0).match(/\d+/)[0];
+          searchParams.set("carrier_delivery_days_used", carrier_delivery_days_used);
+          window.location.href = "/shipments?" + searchParams.toString();
+        }
+      }
+      google.visualization.events.addListener(chart, 'select', selectHandler);
       chart.draw(data, options);
     }
   });

@@ -38,6 +38,12 @@ Marcar como a caminho
 
 <div class="row">
   <div class="col-lg-12">
+    <%= render "shared/shipment_search_bar", path: shipments_path %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -52,83 +58,7 @@ Marcar como a caminho
         </div>
       </div>
 
-      <div class="kt-portlet__body">
-        <%= form_with(url: shipments_path, method: "get", local: true) do  %>
-        <div class="row">
-          <div class="col-md-3">
-            <label>Busca rápida:</label>
-            <div class="kt-input-icon kt-input-icon--left">
-              <%= text_field_tag :search, params[:search], class:"form-control", placeholder: "Pedido, envio, nome, CPF, cidade..." %>
-              <span class="kt-input-icon__icon kt-input-icon__icon--left">
-                <span><i class="la la-search"></i></span>
-              </span>
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <label>Transportadora</label>
-            <%= select_tag(:carrier, options_for_select(carriers_for_select.prepend(['Todas',nil]), selected: params[:carrier]), class:"form-control selectpicker") %>
-          </div>
-
-          <div class="col-md-2">
-            <label>Status</label>
-            <%= select_tag(:status, options_for_select(shipment_statuses_for_select.prepend(['Todos',nil]), selected: params[:status]), class:"form-control selectpicker") %>
-          </div>
-
-          <div class="col-md-2">
-            <label>Atraso</label>
-            <%= select_tag(:late, options_for_select(late_statuses_for_select.prepend(['Nenhum',nil]), selected: params[:late]), class:"form-control selectpicker") %>
-          </div>
-
-          <div class="col-md-2">
-            <label>Período de envio</label>
-            <div class="input-group" id="kt_daterangepicker_2">
-              <%= text_field_tag :date_range, params[:date_range], class:"form-control" %>
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-1">
-            <label>&nbsp;</label>
-            <%= submit_tag 'Filtrar', name:nil, class:'form-control btn btn-default' %>
-          </div>
-        </div>
-        <% end %>
-
-        <div class="kt-form kt-fork--label-align-right kt-margin-t-20 collapse" id="kt_datatable_group_action_form">
-          <div class="row align-items-center">
-            <div class="col-xl-12">
-              <div class="kt-form__group kt-form__group--inline">
-                <div class="kt-form__label kt-form__label-no-wrap">
-                  <label class="kt--font-bold kt--font-danger-">
-                    <span id="kt_datatable_selected_number">0</span> envios selecionados:
-                  </label>
-                </div>
-                <div class="kt-form__control">
-                  <div class="btn-toolbar">
-                    <div class="dropdown">
-                      <button type="button" class="btn btn-sm btn-accent dropdown-toggle" data-toggle="dropdown">
-                        Atualizar status
-                      </button>
-                      <div class="dropdown-menu">
-                        <a class="dropdown-item set-status-JS" data-status="pending" href="javascript:;">Pendente</a>
-                        <a class="dropdown-item set-status-JS" data-status="ready"   href="javascript:;">Pronto para envio</a>
-                        <a class="dropdown-item set-status-JS" data-status="shipped" href="javascript:;">Enviado</a>
-                      </div>
-                    </div>
-                    &nbsp;&nbsp;&nbsp;
-                    <!-- <button class="btn btn-sm btn-metal" type="button" id="">Placeholder</button> -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="kt-portlet__body kt-portlet__body--fit">
+      <div class="kt-portlet__body kt-portlet__body--fit mt-4">
         <div class="kt-datatable kt-datatable--default">
           <table class="table table-hover kt-table">
             <thead>
@@ -206,25 +136,6 @@ Marcar como a caminho
       } else {
         $('input:checkbox').prop('checked', false);
       }
-    });
-
-    $(document).ready(function() {
-      $('#kt_daterangepicker_2').daterangepicker({
-        startDate: moment().subtract(29, 'days'),
-        endDate: moment(),
-        ranges: {
-          'Hoje': [moment(), moment()],
-          'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-          'Ultimos 30 Days': [moment().subtract(29, 'days'), moment()],
-        },
-        locale: { customRangeLabel: 'Personalizado' },
-        opens: 'left',
-        buttonClasses: 'btn btn-sm',
-        applyClass: 'btn-primary',
-        cancelClass: 'btn-secondary'
-      }, function(start, end, label) {
-        $('#kt_daterangepicker_2 .form-control').val( start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-      });
     });
 
     $(document).on('turbolinks:load', function () {

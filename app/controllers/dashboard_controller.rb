@@ -1,6 +1,9 @@
 class DashboardController < ApplicationController
 
   def index
+    unless params[:date_range]
+      redirect_to dashboard_path(date_range:"#{30.days.ago.strftime("%d/%m/%Y")} - #{Date.today.strftime("%d/%m/%Y")}")
+    end
     @shipments = Shipment.filter(params)
     @late_shipments = @shipments.attention_required
     @carriers_pie_chart_data = get_shipments_per_carrier_pie_chart_data(@shipments)
@@ -15,9 +18,9 @@ class DashboardController < ApplicationController
   end
 
   def get_shipments_per_carrier_pie_chart_data(shipments)
-    data = [["Transportadora", "Envios"]]
+    data = [["Transportadora", "Envios", "Carrier"]]
     grouped_shipments = shipments.group(:carrier_class).order('carrier_class asc').count
-    grouped_shipments.each { |k, v| data << [k.constantize.name, v] }
+    grouped_shipments.each { |k, v| data << [k.constantize.name, v, k] }
     data
   end
 
