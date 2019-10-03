@@ -103,6 +103,21 @@
             <div class="kt-head__sub"><span class="kt-head__desc">23 new notifications</span></div>
           </div>
           <div class="kt-notification kt-margin-t-30 kt-margin-b-20 kt-scroll" data-scroll="true" data-height="270" data-mobile-height="220">
+            <% current_user.notifications.each do |notification| %>
+            <a href="<%= notification.path %>" class="kt-notification__item">
+              <div class="kt-notification__item-icon">
+                <i class="flaticon2-delivery-truck kt-font-success"></i>
+              </div>
+              <div class="kt-notification__item-details">
+                <div class="kt-notification__item-title">
+                  <%= notification.description %>
+                </div>
+                <div class="kt-notification__item-time">
+                  2 hrs ago
+                </div>
+              </div>
+            </a>
+            <% end %>
             <a href="#" class="kt-notification__item">
               <div class="kt-notification__item-icon">
                 <i class="flaticon2-line-chart kt-font-success"></i>
