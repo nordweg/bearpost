@@ -8,10 +8,12 @@ Rails.application.routes.draw do
   get  'track/:shipment_number',                     to: "tracking#show"
   get  'dashboard',                                  to: "dashboard#index"
 
-  # CORREIOS ROUTES - DELETE ONCE SETTINGS ARE NOT SPECIFIC # REFACTOR
-  post "/correios/:shipment_id/get_plp",                        to: "correios#get_plp"
-  post "/correios/:account_id/:shipping_method/send_plp",       to: "correios#send_plp"
-  post "/correios/:account_id/:shipping_method/",               to: "correios#save_new_range"
+  resources :settings do
+    collection do
+      post :update_api_key
+      post :update_external_order_url
+    end
+  end
 
   devise_for :users
   resources :users

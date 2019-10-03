@@ -1,81 +1,103 @@
 <%= content_for :subheader_title do %>
-  Configurações
+Configurações
 <% end %>
 
 <div class="row">
   <div class="col-md-6">
-    <div class="col-md-12">
-      <div class="kt-portlet">
-        <div class="kt-portlet__head">
-          <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-              Usuários
-            </h3>
-          </div>
-          <div class="kt-portlet__head-toolbar">
-            <div class="kt-portlet__head-wrapper">
-              <%= link_to new_user_path, class: "btn btn-default btn-bold btn-upper btn-font-sm" do %>
-              <i class="la la-plus"></i>
-              Novo usuário
-              <% end %>
+
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Configurações gerais
+          </h3>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <div class="form-group">
+            <%= form_for :settings, url: "settings/update_external_order_url" do |f| %>
+            <label>Link externo para o pedido</label>
+            <div class="input-group">
+                <%= f.text_field :external_order_url, class:"form-control", value: @external_order_url %>
+                <div class="input-group-append">
+                  <%= f.submit "Atualizar", class:"btn btn-secondary ml-3" %>
+                </div>
             </div>
+            <% end %>
           </div>
         </div>
-        <div class="kt-portlet__body">
-          <div class="kt-portlet__content">
-            <div class="kt-section">
-              <div class="kt-section__content">
-                <table class="table table-head-noborder">
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Email</th>
-                      <th>Último acesso</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% User.all.each do |user| %>
-                    <tr>
-                      <td><%= link_to user.full_name, user %></td>
-                      <td><%= link_to user.email, user %></td>
-                      <td><%= l(user.last_sign_in_at, format: :long) if user.last_sign_in_at %></td>
-                    </tr>
-                    <% end %>
-                  </tbody>
-                </table>
-              </div>
+      </div>
+    </div>
+
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Usuários
+          </h3>
+        </div>
+        <div class="kt-portlet__head-toolbar">
+          <div class="kt-portlet__head-wrapper">
+            <%= link_to new_user_path, class: "btn btn-default btn-bold btn-upper btn-font-sm" do %>
+            <i class="la la-plus"></i>
+            Novo usuário
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <div class="kt-section">
+            <div class="kt-section__content">
+              <table class="table table-head-noborder">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Último acesso</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% User.all.each do |user| %>
+                  <tr>
+                    <td><%= link_to user.full_name, user %></td>
+                    <td><%= link_to user.email, user %></td>
+                    <td><%= l(user.last_sign_in_at, format: :long) if user.last_sign_in_at %></td>
+                  </tr>
+                  <% end %>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-12">
-      <div class="kt-portlet">
-        <div class="kt-portlet__head">
-          <div class="kt-portlet__head-label">
-            <h3 class="kt-portlet__head-title">
-              Integrações
-            </h3>
-          </div>
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            Integrações
+          </h3>
         </div>
-        <div class="kt-portlet__body">
-          <div class="kt-portlet__content">
-            <div class="form-group form-group-last">
-              <div class="alert alert-secondary" role="alert">
-                <div class="alert-icon"><i class="flaticon-warning kt-font-brand"></i></div>
-                <div class="alert-text">
-                  A chave da API é secreta. Com ela, outras pessoas poderão acessar os seus dados. Guarde-a em segurança.
-                </div>
+      </div>
+      <div class="kt-portlet__body">
+        <div class="kt-portlet__content">
+          <div class="form-group form-group-last">
+            <div class="alert alert-secondary" role="alert">
+              <div class="alert-icon"><i class="flaticon-warning kt-font-brand"></i></div>
+              <div class="alert-text">
+                A chave da API é secreta. Com ela, outras pessoas poderão acessar os seus dados. Guarde-a em segurança.
               </div>
             </div>
-            <div class="form-group ">
-              <label>Chave da API</label>
-              <div class="input-group">
-                <input type="text" class="form-control" disabled="disabled" value="<%= @api_key %>">
-                <div class="input-group-append">
-                  <%= button_to 'Gerar nova chave', settings_update_api_key_path, class: "btn btn-secondary ml-3", :method=>:post  %>
-                </div>
+          </div>
+          <div class="form-group">
+            <label>Chave da API</label>
+            <div class="input-group">
+              <input type="text" class="form-control" disabled="disabled" value="<%= @api_key %>">
+              <div class="input-group-append">
+                <%= button_to 'Gerar nova chave', settings_update_api_key_path, class: "btn btn-secondary ml-3", :method=>:post  %>
               </div>
             </div>
           </div>
@@ -109,10 +131,10 @@
                 <td><%= account.name %></td>
                 <td class="text-right">
                   <%= link_to edit_account_path(account), class:"btn btn-sm btn-clean btn-icon btn-icon-sm" do %>
-                    <i class="la la-edit"></i>
+                  <i class="la la-edit"></i>
                   <% end %>
                   <%= link_to account, method: :delete, data: { confirm: 'Tem certeza?' }, class:"btn btn-sm btn-clean btn-icon btn-icon-sm" do %>
-                    <i class="la la-trash"></i>
+                  <i class="la la-trash"></i>
                   <% end %>
                 </td>
               </tr>

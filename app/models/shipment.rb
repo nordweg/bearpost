@@ -45,7 +45,7 @@ class Shipment < ApplicationRecord
       user: Current.user,
       changed_by: Current.connected,
       description: "Pedido criado",
-      category:'status',
+      category:"New",
       date: DateTime.now,
     )
   end
@@ -94,7 +94,7 @@ class Shipment < ApplicationRecord
       user: Current.user,
       description: "Status alterado de #{I18n.t saved_changes["status"][0]} para #{I18n.t saved_changes["status"][1]}",
       bearpost_status: saved_changes["status"][1],
-      category:'status',
+      category: saved_changes["status"][1],
       date: DateTime.now,
       changed_by: Current.connected
     )
@@ -126,6 +126,12 @@ class Shipment < ApplicationRecord
 
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def external_order_url
+    external_order_url = Setting.find_by(key:"external_order_url")
+    return self unless external_order_url
+    external_order_url.value.sub('{tracking}',order_number)
   end
 
   def tracking_url

@@ -5,6 +5,4 @@ class History < ApplicationRecord
   scope :recent_first,   -> { order(date: :desc) }
 
   validates_uniqueness_of :description, scope: [:shipment_id, :date]
-
-
 end
