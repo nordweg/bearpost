@@ -1,0 +1,36 @@
+<div class="kt-portlet kt-portlet--height-fluid">
+  <div class="kt-portlet__head">
+    <div class="kt-portlet__head-label">
+      <h3 class="kt-portlet__head-title">Transportadora</h3>
+    </div>
+  </div>
+  <div class="kt-portlet__body">
+    <div class="kt-section">
+      <div class="kt-section__content">
+        <div id="carriersPieChart" style="width: 100%; height: 300px;" data-chart="<%= @carriers_pie_chart_data %>"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawCarriersPieChart);
+
+    function drawCarriersPieChart() {
+      var element = document.getElementById('carriersPieChart')
+      var data_arr = JSON.parse(element.dataset.chart)
+      var data = google.visualization.arrayToDataTable(data_arr);
+      var options = {
+        legend: 'none',
+        pieSliceText: 'label',
+        chartArea: {width: '80%', height: '80%'},
+        colors:['#646C9A','#9097BA', "#BCC1DA", "#E8ECFA"],
+      };
+      var chart = new google.visualization.PieChart(element);
+      chart.draw(data, options);
+    }
+  });
+</script>

@@ -11,6 +11,7 @@ class DashboardController < ApplicationController
     @average_carrier_delivery_days_used = get_average_carrier_delivery_days_used(@shipments)
     @average_client_delivery_days_used = get_average_client_delivery_days_used(@shipments)
     @days_until_delivery = get_days_until_delivery(@shipments)
+    @delayed_or_problematic_shipments = Shipment.attention_required
   end
 
   def get_shipments_per_carrier_pie_chart_data(shipments)
@@ -69,6 +70,7 @@ class DashboardController < ApplicationController
     end
     data.sort! {|a, b| a[0] <=> b[0]}
     data.unshift(["Dias", "Envios"])
+    data.map {|i| [i[0].to_s + " dias", i[1]]}
   end
 
 end
