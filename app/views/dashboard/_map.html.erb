@@ -10,7 +10,7 @@
     <div class="tab-content">
       <div class="tab-pane fade active show" id="kt_portlet_tabs_1111_1_content" role="tabpanel">
         <div class="kt-widget-11">
-          <div id="regions_div" style="width: 100%; height: 500px;" data-chart = "<%= @shipments_by_state %>"></div>
+          <div id="regions_div" style="width: 100%; height: 470px;" data-chart = "<%= @shipments_by_state %>"></div>
         </div>
       </div>
     </div>
@@ -18,7 +18,6 @@
 </div>
 
 <script type="text/javascript">
-
   $(document).ready(function() {
     google.charts.load('current', {
       'packages':['geochart'],
@@ -27,7 +26,6 @@
       'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
     });
     google.charts.setOnLoadCallback(drawRegionsMap);
-
     function drawRegionsMap() {
       var element = document.getElementById('regions_div')
       var data_arr = JSON.parse(element.dataset.chart)
@@ -42,5 +40,4 @@
       chart.draw(data, options);
     }
   });
-
 </script>
