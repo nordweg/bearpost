@@ -10,6 +10,7 @@ class DashboardController < ApplicationController
     @average_sla = get_average_sla(@shipments)
     @average_carrier_delivery_days_used = get_average_carrier_delivery_days_used(@shipments)
     @average_client_delivery_days_used = get_average_client_delivery_days_used(@shipments)
+    @days_until_delivery = get_days_until_delivery(@shipments)
   end
 
   def get_shipments_per_carrier_pie_chart_data(shipments)
@@ -59,6 +60,15 @@ class DashboardController < ApplicationController
       data << [state, number]
     end
     data
+  end
+
+  def get_days_until_delivery(shipments)
+    data = []
+    shipments.group(:carrier_delivery_days_used).count.each do |days, number|
+      data << [days, number] unless days == nil
+    end
+    data.sort! {|a, b| a[0] <=> b[0]}
+    data.unshift(["Dias", "Envios"])
   end
 
 end
