@@ -82,3 +82,15 @@ $(document).ready(function() {
 });
 
 </script>
+
+<!-- Avoids Turboliks bug where JS select only works after reloading -->
+<!-- REFACTOR > Maybe there is a better solution? -->
+<script type="text/javascript">
+  $(document).on('turbolinks:load', function () {
+    $('.selectpicker').each(function (i, el) {
+      if (!$(el).parent().hasClass('bootstrap-select')) {
+        $(el).selectpicker('refresh');
+      }
+    });
+  });
+</script>
