@@ -21,10 +21,8 @@ Rails.application.routes.draw do
   resources :packages
   resources :companies
   resources :carriers do
-    collection do
-      post 'sync_ready_shipments'
-    end
     member do
+      post 'transmit_ready_shipments'
       post "validate_credentials_ajax"
     end
   end
@@ -33,12 +31,12 @@ Rails.application.routes.draw do
     collection do
       post 'new_from_xml'
       get  'update_all_shipments_delivery_status'
-      get  'sync_all_ready_shipments_with_carriers'
+      get  'transmit_ready_shipments_to_carriers'
     end
     member do
       get  'save_tracking_number'
       get  'get_labels'
-      post 'sync_shipment_with_carrier'
+      post 'transmit_shipment_to_carrier'
       post 'set_as_shipped'
       post 'save_delivery_updates'
     end
@@ -50,7 +48,7 @@ Rails.application.routes.draw do
         member do
           get  'save_tracking_number',       to: "shipments#save_tracking_number"
           get  'get_labels',                 to: "shipments#get_labels", format: :pdf
-          post 'sync_shipment_with_carrier', to: "shipments#sync_shipment_with_carrier"
+          post 'transmit_shipment_to_carrier', to: "shipments#transmit_shipment_to_carrier"
           post 'update_invoice_xml',         to: "shipments#update_invoice_xml"
           post 'set_as_shipped',             to: "shipments#set_as_shipped"
         end

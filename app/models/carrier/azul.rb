@@ -155,7 +155,7 @@ class Carrier::Azul < Carrier
     delivery_updates
   end
 
-  def sync_shipments(shipments)
+  def transmit_shipments(shipments)
     response = []
     shipments.each do |shipment|
       check_invoice_xml(shipment)

@@ -352,11 +352,10 @@ class Carrier::Correios < Carrier
     delivery_updates
   end
 
-
   # CARRIER ESPECIFIC METHODS
   # Define here internal carrier methods that are used by the default methods above.
 
-  def sync_shipments(shipments)
+  def transmit_shipments(shipments)
     response = []
       correios_response = create_plp(shipments)
       plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)

@@ -52,17 +52,8 @@ module Api::V1
       send_data pdf, filename: 'file.pdf'
     end
 
-    def sync_all_ready_shipments_with_carriers
-      shipments = Shipment.all.ready_to_ship
-      CarrierSyncronizer.sync(shipments)
-    end
-
-    def sync_shipments # REFACTOR > Transfer to carrier controller
-      shipment = get_shipment
-      carrier  = get_carrier(shipment)
-      carrier.sync_shipments(shipment)
-      shipment.sent_to_carrier = true
-      hande_save(shipment)
+    def transmit_ready_shipments_to_carriers
+      ShipmentTransmitter.transmit_all_ready_shipments
     end
 
     def set_as_shipped

@@ -11,6 +11,9 @@ Visão geral
   </div>
 </div>
 
+<!-- Loads Google Charts for all charts in partials below -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <div class="row">
   <div class="col-md-8">
     <%= render "map" %>
@@ -37,10 +40,6 @@ Visão geral
     <%= render "attention_required" %>
   </div>
 </div>
-
-
-<!-- Loads Google Charts for all charts in partials above -->
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <!-- Avoids Turboliks bug where JS select only works after reloading -->
 <!-- REFACTOR > Maybe there is a better solution? -->

@@ -59,7 +59,7 @@ class Carrier
   #     message: 'Envio recebido com sucesso'
   #   }
   # ]
-  def sync_shipments(shipments)
+  def transmit_shipments(shipments)
     raise ::NotImplementedError, 'You must implement sync_shipments method for this carrier.'
   end
 

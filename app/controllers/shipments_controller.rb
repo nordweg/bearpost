@@ -1,7 +1,7 @@
 class ShipmentsController < ApplicationController
 
-  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :save_tracking_number, :get_labels, :ship, :sync_shipment_with_carrier, :set_as_shipped, :save_delivery_updates]
-  before_action :set_carrier,  only: [:show, :save_delivery_updates, :get_labels, :sync_shipment_with_carrier]
+  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :save_tracking_number, :get_labels, :ship, :transmit_shipment_to_carrier, :set_as_shipped, :save_delivery_updates]
+  before_action :set_carrier,  only: [:show, :save_delivery_updates, :get_labels, :transmit_shipment_to_carrier]
 
   def index
     @shipments = Shipment.filter(params)
@@ -76,10 +76,10 @@ class ShipmentsController < ApplicationController
     redirect_to @shipment
   end
 
-  def sync_shipment_with_carrier
+  def transmit_shipment_to_carrier
     begin
-      @carrier.sync_shipments([@shipment])
-      flash[:success] = "Envio sincronizado com a transportadora"
+      @carrier.transmit_shipments([@shipment])
+      flash[:success] = "Envio transmitido para a transportadora"
     rescue Exception => e
       flash[:error] = e.message
     end
@@ -88,8 +88,8 @@ class ShipmentsController < ApplicationController
 
   # Methods for all shipments
 
-  def sync_all_ready_shipments_with_carriers
-    @sync_results = CarrierSyncronizer.sync_all_ready_shipments
+  def transmit_ready_shipments_to_carriers
+    @transmit_results = ShipmentTransmitter.transmit_all_ready_shipments
     render 'send_to_carriers'
   end
 
