@@ -122,7 +122,9 @@ class Carrier::Azul < Carrier
   def authenticate!
     token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
     if token_expire_date.blank? || token_expire_date < DateTime.now
-      get_authentication_token
+      update_authentication_token
+    else
+      true
     end
   end
 
@@ -156,24 +158,15 @@ class Carrier::Azul < Carrier
   def sync_shipments(shipments)
     response = []
     shipments.each do |shipment|
-      begin
-        check_invoice_xml(shipment)
-        encoded_xml = Base64.strict_encode64(shipment.invoice_xml)
-        faraday_response = send_to_azul(encoded_xml)
-        message = faraday_response.body["HasErrors"] ? faraday_response.body["ErrorText"] : faraday_response.body["Value"]
-        shipment.update(sent_to_carrier:true) unless faraday_response.body["HasErrors"]
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: message
-        }
-      rescue  Exception => e
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: e.message
-        }
-      end
+      check_invoice_xml(shipment)
+      faraday_response = send_to_azul(shipment.invoice_xml)
+      message = faraday_response.body["HasErrors"] ? faraday_response.body["ErrorText"] : faraday_response.body["Value"]
+      shipment.update(sent_to_carrier:true) unless faraday_response.body["HasErrors"]
+      response << {
+        shipment: shipment,
+        success: shipment.sent_to_carrier,
+        message: message
+      }
     end
     response
   end
@@ -183,7 +176,7 @@ class Carrier::Azul < Carrier
     check_invoice_xml(shipment)
     get_awb(shipment)
   end
-  
+
   # CARRIER ESPECIFIC METHODS
   # Define here internal carrier methods that are used by the default methods above.
 
@@ -193,7 +186,7 @@ class Carrier::Azul < Carrier
     carrier_setting.save
   end
 
-  def get_authentication_token
+  def update_authentication_token
     credentials = {
         "Email" => carrier_setting.settings["email"],
         "Senha" => carrier_setting.settings["password"],
@@ -250,8 +243,9 @@ class Carrier::Azul < Carrier
     raise Exception.new("Azul - É necessário o XML da nota fiscal") if shipment.invoice_xml.blank?
   end
 
-  def send_to_azul(encoded_xml)
-    token = settings['token']
+  def send_to_azul(invoice_xml)
+    encoded_xml = Base64.strict_encode64(invoice_xml)
+    token = carrier_setting.settings['token']
     body  = {
       "xml": encoded_xml,
     }

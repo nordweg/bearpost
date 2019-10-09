@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resources :companies
   resources :carriers do
     collection do
-      get  'sync_ready_shipments',  to: "carriers#sync_ready_shipments"
+      post 'sync_ready_shipments'
     end
     member do
       post "validate_credentials_ajax"
@@ -31,16 +31,16 @@ Rails.application.routes.draw do
 
   resources :shipments do
     collection do
-      get  '/',                     to: "shipments#index"
-      post 'new_from_xml',          to: "shipments#new_from_xml"
-      get  'update_all_shipments_delivery_status', to: "shipments#update_all_shipments_delivery_status"
+      post 'new_from_xml'
+      get  'update_all_shipments_delivery_status'
+      get  'sync_all_ready_shipments_with_carriers'
     end
     member do
-      get  'save_tracking_number',  to: "shipments#save_tracking_number"
-      get  'get_labels',            to: "shipments#get_labels", format: :pdf
-      post 'send_to_carrier',       to: "shipments#send_to_carrier"
-      post 'set_as_shipped',        to: "shipments#set_as_shipped"
-      post 'save_delivery_updates', to: "shipments#save_delivery_updates"
+      get  'save_tracking_number'
+      get  'get_labels'
+      post 'sync_shipment_with_carrier'
+      post 'set_as_shipped'
+      post 'save_delivery_updates'
     end
   end
 
@@ -48,11 +48,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :shipments do
         member do
-          get  'save_tracking_number', to: "shipments#save_tracking_number"
-          get  'get_labels',           to: "shipments#get_labels", format: :pdf
-          post 'send_to_carrier',      to: "shipments#send_to_carrier"
-          post 'update_invoice_xml',   to: "shipments#update_invoice_xml"
-          post 'set_as_shipped',       to: "shipments#set_as_shipped"
+          get  'save_tracking_number',       to: "shipments#save_tracking_number"
+          get  'get_labels',                 to: "shipments#get_labels", format: :pdf
+          post 'sync_shipment_with_carrier', to: "shipments#sync_shipment_with_carrier"
+          post 'update_invoice_xml',         to: "shipments#update_invoice_xml"
+          post 'set_as_shipped',             to: "shipments#set_as_shipped"
         end
       end
       resources :shipping_methods

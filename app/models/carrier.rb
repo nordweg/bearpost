@@ -83,7 +83,7 @@ class Carrier
 
   # Sets which view should be used in carrier settings. Will use views/carriers/_general_settings as default or
   # overwrite if you want to use a personalized view instead.
-  def self.settings_view # REFACTOR > RENAME TO
+  def self.custom_settings_view # REFACTOR > RENAME TO
     'general_settings'
   end
 

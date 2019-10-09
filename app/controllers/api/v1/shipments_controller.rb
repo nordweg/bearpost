@@ -52,6 +52,11 @@ module Api::V1
       send_data pdf, filename: 'file.pdf'
     end
 
+    def sync_all_ready_shipments_with_carriers
+      shipments = Shipment.all.ready_to_ship
+      CarrierSyncronizer.sync(shipments)
+    end
+
     def sync_shipments # REFACTOR > Transfer to carrier controller
       shipment = get_shipment
       carrier  = get_carrier(shipment)
@@ -84,7 +89,7 @@ module Api::V1
     end
 
     def get_carrier(shipment)
-      carrier = shipment.carrier.new(shipment.carrier_setting)
+      carrier = shipment.carrier.new(shipment.carrier_settings)
       raise Exception.new('Carrier not found') if carrier.blank?
       carrier
     end

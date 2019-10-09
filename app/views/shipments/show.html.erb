@@ -31,8 +31,9 @@
       Opções
     </button>
     <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(86px, 33px, 0px);">
-      <%= link_to "Informações adicionais", "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
+      <%= link_to "Enviar para transportadora", sync_shipment_with_carrier_shipment_path, class: "dropdown-item" , method:'post' %>
       <div class="dropdown-divider"></div>
+      <%= link_to "Informações adicionais", "#", class: "dropdown-item", "data-toggle" => "modal", 'data-target' => '#extraInfoModal' %>
       <% @carrier.shipment_menu_links.each do |text, path| %>
       <%= link_to text, path.gsub(/:id/,"#{@shipment.id}"), class: "dropdown-item", method: :post %>
       <% end %>
@@ -104,11 +105,11 @@
                   <tr>
                     <th>Sincronizado</th>
                     <td>
-                      <% if @shipment.sent_to_carrier %>
+                      <%# if @shipment.sent_to_carrier %>
                       Sim <i class="la la-check-circle"></i>
-                      <% else %>
-                      <%= link_to "Não", send_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
-                      <% end %>
+                      <%# else %>
+                      <%= link_to "Não", sync_shipment_with_carrier_shipment_path, class: "kt-link" , method:'post' %>
+                      <%# end %>
                     </td>
                   </tr>
                 </tbody>

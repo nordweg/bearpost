@@ -1,7 +1,7 @@
 class ShipmentsController < ApplicationController
 
-  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :save_tracking_number, :get_labels, :ship, :sync_with_carrier, :set_as_shipped, :save_delivery_updates]
-  before_action :set_carrier, only: [:show, :save_delivery_updates, :get_labels]
+  before_action :set_shipment, only: [:show, :edit, :update, :destroy, :save_tracking_number, :get_labels, :ship, :sync_shipment_with_carrier, :set_as_shipped, :save_delivery_updates]
+  before_action :set_carrier,  only: [:show, :save_delivery_updates, :get_labels, :sync_shipment_with_carrier]
 
   def index
     @shipments = Shipment.filter(params)
@@ -68,7 +68,7 @@ class ShipmentsController < ApplicationController
 
   def save_delivery_updates
     begin
-      CarrierSyncronizer.update_shipment_delivery_status(@shipment)
+      DeliveryStatusUpdater.update_single_shipment(@shipment)
       flash[:success] = "Rastreios atualizados com sucesso"
     rescue Exception => e
       flash[:error] = e.message
@@ -76,14 +76,26 @@ class ShipmentsController < ApplicationController
     redirect_to @shipment
   end
 
+  def sync_shipment_with_carrier
+    begin
+      @carrier.sync_shipments([@shipment])
+      flash[:success] = "Envio sincronizado com a transportadora"
+    rescue Exception => e
+      flash[:error] = e.message
+    end
+    redirect_to @shipment
+  end
+
+  # Methods for all shipments
+
   def sync_all_ready_shipments_with_carriers
-    shipments = Shipment.all.ready_to_ship
-    CarrierSyncronizer.sync(shipments)
+    @sync_results = CarrierSyncronizer.sync_all_ready_shipments
+    render 'send_to_carriers'
   end
 
   def update_all_shipments_delivery_status
     begin
-      CarrierSyncronizer.update_all_shipments_delivery_status
+      DeliveryStatusUpdater.update_all_shipments
       flash[:success] = "Rastreios atualizados com sucesso"
     rescue Exception => e
       flash[:error] = e.message
@@ -91,16 +103,8 @@ class ShipmentsController < ApplicationController
     redirect_to :shipments
   end
 
-  def sync_shipment_with_carrier
-    sync_result = CarrierSyncronizer.sync([@shipment])
-    message = sync_result.first[:message]
-    sync_result.first[:success] ? flash[:success] = message : flash[:error] = message
-    redirect_to @shipment
-  end
-
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_shipment
     @shipment = Shipment.find(params[:id])
   end
