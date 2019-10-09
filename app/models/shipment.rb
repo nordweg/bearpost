@@ -168,6 +168,7 @@ class Shipment < ApplicationRecord
     shipments = shipments.where(params[:late] => true) if params[:late].present?
     shipments = shipments.where(carrier_delivery_days_used: params[:carrier_delivery_days_used]) if params[:carrier_delivery_days_used].present?
     shipments = shipments.where(shipping_method: params[:shipping_method]) if params[:shipping_method].present?
+    shipments = shipments.where(state: params[:state]) if params[:state].present?
     if params[:date_range].present?
       start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
       end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day

@@ -5,6 +5,9 @@ Visão geral
 <% content_for :subheader_toolbar do %>
 <% end %>
 
+<!-- Loads Google Charts for all charts in partials below -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <div class="row">
   <div class="col-lg-12">
     <%= render "shared/shipment_search_bar", path: dashboard_path %>
@@ -40,15 +43,3 @@ Visão geral
     <%= render "attention_required" %>
   </div>
 </div>
-
-<!-- Avoids Turboliks bug where JS select only works after reloading -->
-<!-- REFACTOR > Maybe there is a better solution? -->
-<script type="text/javascript">
-  $(document).on('turbolinks:load', function () {
-    $('.selectpicker').each(function (i, el) {
-      if (!$(el).parent().hasClass('bootstrap-select')) {
-        $(el).selectpicker('refresh');
-      }
-    });
-  });
-</script>

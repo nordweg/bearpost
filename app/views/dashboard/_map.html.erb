@@ -42,7 +42,7 @@
         if (selected_state) {
           searchParams = new URLSearchParams(window.location.search);
           state_name = data.getValue(selected_state.row, 0);
-          searchParams.set("search", state_name);
+          searchParams.set("state", state_name);
           window.location.href = "/shipments?" + searchParams.toString();
         }
       }
