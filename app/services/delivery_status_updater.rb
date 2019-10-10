@@ -1,10 +1,21 @@
 class DeliveryStatusUpdater
-  def self.update(shipments)
+  def self.update_shipment(shipment)
+    delivery_updates = get_delivery_updates(shipment)
+    create_histories(shipment, delivery_updates)
+    update_current_status(shipment, delivery_updates)
+  end
+
+  def self.update_all_shipments
+    shipments = Shipment.shipped.not_delivered
+    update_shipments(shipments)
+  end
+
+  def self.update_shipments(shipments)
     errors = []
     shipments_updated = 0
     shipments.each do |shipment|
       begin
-        update_single_shipment(shipment)
+        update_shipment(shipment)
         shipments_updated += 1
       rescue Exception => e
         errors << "Shipment #{shipment.id} - #{shipment.carrier}: #{e.message}"
@@ -13,18 +24,6 @@ class DeliveryStatusUpdater
     end
     puts "STATUS UPDATE RESULTS: #{shipments_updated} shipments updated, #{errors.size} errors"
     puts errors
-  end
-
-  def self.update_all_shipments
-    shipments = Shipment.shipped.not_delivered
-    update(shipments)
-  end
-
-  def self.update_single_shipment(shipment)
-    raise "O envio #{shipment.number} não possui rastreio" unless shipment.tracking_number
-    delivery_updates = get_delivery_updates(shipment)
-    create_histories(shipment,delivery_updates)
-    update_current_status(shipment,delivery_updates)
   end
 
   def self.get_delivery_updates(shipment)

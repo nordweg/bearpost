@@ -102,16 +102,6 @@
                       <% end %>
                     </td>
                   </tr>
-                  <tr>
-                    <th>Transmitido</th>
-                    <td>
-                      <% if @shipment.sent_to_carrier %>
-                      Sim <i class="la la-check-circle"></i>
-                      <% else %>
-                      <%= link_to "Transmitir", transmit_shipment_to_carrier_shipment_path, class: "kt-link" , method:'post' %>
-                      <% end %>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>

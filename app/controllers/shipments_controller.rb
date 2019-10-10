@@ -68,7 +68,7 @@ class ShipmentsController < ApplicationController
 
   def save_delivery_updates
     begin
-      DeliveryStatusUpdater.update_single_shipment(@shipment)
+      DeliveryStatusUpdater.update_shipment(@shipment)
       flash[:success] = "Rastreios atualizados com sucesso"
     rescue Exception => e
       flash[:error] = e.message

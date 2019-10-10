@@ -1,4 +1,4 @@
-class ShipmentTransmitter # REFACTOR > Make this simpler to understand
+class ShipmentTransmitter
   def self.transmit(shipments)
     transmit_results = []
     grouped_shipments = group_shipments_by_account_and_carrier(shipments)
