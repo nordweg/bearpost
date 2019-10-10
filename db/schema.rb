@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_02_172338) do
+ActiveRecord::Schema.define(version: 2019_10_10_200335) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 2019_10_02_172338) do
     t.jsonb "settings", default: {}
     t.xml "invoice_xml"
     t.integer "company_id"
-    t.boolean "sent_to_carrier", default: false
+    t.boolean "transmitted_to_carrier", default: false
     t.datetime "last_synched_at"
     t.datetime "ready_for_shipping_at"
     t.datetime "delivered_at"

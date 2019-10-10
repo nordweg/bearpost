@@ -36,7 +36,7 @@ class ShipmentTransmitter
   end
 
   def self.transmit_all_ready_shipments
-    shipments = Shipment.all.ready_to_ship
+    shipments = Shipment.all.ready_to_ship.not_transmitted
     transmit(shipments)
   end
 end

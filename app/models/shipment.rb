@@ -2,12 +2,13 @@ class Shipment < ApplicationRecord
   validates_uniqueness_of :shipment_number
   validates_presence_of :carrier_class
 
-  scope :ready_to_ship,               -> { where(status: 'Ready for shipping', sent_to_carrier: false) }
+  scope :ready_to_ship,               -> { where(status: 'Ready for shipping') }
   scope :shipped,                     -> { where(status: ["On the way", "Out for delivery", "Problematic", "Waiting for pickup", "Delivered"]) }
   scope :delivered,                   -> { where(status: 'Delivered') }
   scope :not_delivered,               -> { where.not(status: "Delivered") }
   scope :not_canceled,                -> { where.not(status: "Canceled") }
   scope :in_transit,                  -> { shipped.not_delivered } # see if not.delivered exists
+  scope :not_transmitted,             -> { where(transmitted_to_carrier: false) }
   scope :handling_late,               -> { where(handling_late: true) }
   scope :carrier_delivery_late,       -> { where(carrier_delivery_late: true) }
   scope :client_delivery_late,        -> { where(client_delivery_late: true) }
@@ -22,10 +23,12 @@ class Shipment < ApplicationRecord
 
   after_create :log_shipment_creation_on_histories
   after_create :create_package
+
   before_save  :get_invoice_number, if: :will_save_change_to_invoice_xml?
   before_save  :get_delivery_dates
   before_save  :get_status_dates, if: :will_save_change_to_status?
-  after_update :save_status_change_to_history, if: :saved_change_to_status?
+  before_save  :log_status_change, if: :will_save_change_to_status?, unless: :new_record?
+  before_save  :log_transmittion_to_carrier, if: :will_save_change_to_transmitted_to_carrier?
 
   STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
 
@@ -89,12 +92,22 @@ class Shipment < ApplicationRecord
     self.save
   end
 
-  def save_status_change_to_history
+  def log_status_change
     histories.create(
       user: Current.user,
-      description: "Status alterado de #{I18n.t saved_changes["status"][0]} para #{I18n.t saved_changes["status"][1]}",
-      bearpost_status: saved_changes["status"][1],
-      category: saved_changes["status"][1],
+      description: "Status alterado de #{I18n.t status_was} para #{I18n.t status}",
+      bearpost_status: status,
+      category: status,
+      date: DateTime.now,
+      changed_by: Current.connected
+    )
+  end
+
+  def log_transmittion_to_carrier
+    histories.create(
+      user: Current.user,
+      description: "Envio transmitido para a transportadora",
+      category: "Transmission",
       date: DateTime.now,
       changed_by: Current.connected
     )
@@ -144,7 +157,7 @@ class Shipment < ApplicationRecord
 
   def as_json(*)
     super.except("updated_at","invoice_xml").tap do |hash|
-      hash["transmitted"] = sent_to_carrier ? 'true' : 'false'
+      hash["transmitted"] = transmitted_to_carrier ? 'true' : 'false'
       hash["carrier"] = carrier.name
     end
   end

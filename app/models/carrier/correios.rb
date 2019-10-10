@@ -359,10 +359,10 @@ class Carrier::Correios < Carrier
       shipments.each do |shipment|
         settings = shipment.settings
         settings['plp'] = plp_number
-        shipment.update(settings:settings, sent_to_carrier:true)
+        shipment.update(settings:settings, transmitted_to_carrier:true)
         response << {
           shipment: shipment,
-          success: shipment.sent_to_carrier,
+          success: shipment.transmitted_to_carrier,
           message: message
         }
       end

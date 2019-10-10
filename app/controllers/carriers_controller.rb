@@ -24,7 +24,7 @@ class CarriersController < ApplicationController
 
   def transmit_ready_shipments
     account = Account.find(params[:account])
-    shipments = @carrier.shipments.ready_to_ship.where(account:account)
+    shipments = @carrier.shipments.ready_to_ship.not_transmitted.where(account:account)
     carrier_setting = CarrierSetting.find_by(carrier_class:@carrier.to_s, account:account)
     @carrier.new(carrier_setting).transmit_shipments(shipments) if shipments.any?
   end
