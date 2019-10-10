@@ -156,10 +156,10 @@ class Carrier::Azul < Carrier
       check_invoice_xml(shipment)
       faraday_response = send_to_azul(shipment.invoice_xml)
       message = faraday_response.body["HasErrors"] ? faraday_response.body["ErrorText"] : faraday_response.body["Value"]
-      shipment.update(sent_to_carrier:true) unless faraday_response.body["HasErrors"]
+      shipment.update(transmitted_to_carrier:true) unless faraday_response.body["HasErrors"]
       response << {
         shipment: shipment,
-        success: shipment.sent_to_carrier,
+        success: shipment.transmitted_to_carrier,
         message: message
       }
     end
