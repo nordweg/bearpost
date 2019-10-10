@@ -1,3 +1,6 @@
+<!-- Loads Google Charts for all charts in partials below -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <% content_for :subheader_title do %>
 Visão geral
 <% end %>
@@ -13,9 +16,6 @@ Visão geral
     <%= render "shared/shipment_search_bar", path: dashboard_path %>
   </div>
 </div>
-
-<!-- Loads Google Charts for all charts in partials below -->
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <div class="row">
   <div class="col-md-8">

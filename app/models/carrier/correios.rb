@@ -275,10 +275,6 @@ class Carrier::Correios < Carrier
     true
   end
 
-  def valid_credentials?
-    true
-  end
-
   def self.settings
     [
       :sigep_user,

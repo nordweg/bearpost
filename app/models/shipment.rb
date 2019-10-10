@@ -144,7 +144,7 @@ class Shipment < ApplicationRecord
 
   def as_json(*)
     super.except("updated_at","invoice_xml").tap do |hash|
-      hash["synced_with_carrier"] = sent_to_carrier ? 'true' : 'false'
+      hash["transmitted"] = sent_to_carrier ? 'true' : 'false'
       hash["carrier"] = carrier.name
     end
   end

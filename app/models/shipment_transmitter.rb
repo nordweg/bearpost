@@ -17,10 +17,10 @@ class ShipmentTransmitter # REFACTOR > Make this simpler to understand
             transmit_result: shipments_array.map { |shipment| {shipment: shipment, success: false, message: e.message} }
           }
         end
-        transmit_results << sync_result
+        transmit_results << transmit_result
       end
     end
-    sync_results
+    transmit_results
   end
 
   def self.group_shipments_by_account_and_carrier(shipments)
@@ -37,6 +37,6 @@ class ShipmentTransmitter # REFACTOR > Make this simpler to understand
 
   def self.transmit_all_ready_shipments
     shipments = Shipment.all.ready_to_ship
-    sync(shipments)
+    transmit(shipments)
   end
 end

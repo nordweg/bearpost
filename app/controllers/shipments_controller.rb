@@ -78,8 +78,13 @@ class ShipmentsController < ApplicationController
 
   def transmit_shipment_to_carrier
     begin
-      @carrier.transmit_shipments([@shipment])
-      flash[:success] = "Envio transmitido para a transportadora"
+      response = @carrier.transmit_shipments([@shipment])
+      response = response.first
+      if response[:success] == true
+        flash[:success] = response[:message]
+      else
+        flash[:error] = response[:message]
+      end
     rescue Exception => e
       flash[:error] = e.message
     end
