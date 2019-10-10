@@ -3,17 +3,16 @@ Envios
 <% end %>
 
 <% content_for :subheader_toolbar do %>
-
-<%= link_to sync_ready_shipments_carriers_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
-<i class="la la-truck"></i> Sincronizar pedidos
+<%= link_to transmit_ready_shipments_to_carriers_shipments_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
+<i class="la la-upload"></i> Transmitir pedidos
 <% end %>
 
 <%= link_to update_all_shipments_delivery_status_shipments_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
-Atualizar status
+<i class="la la-rotate-right"></i> Atualizar status
 <% end %>
 
 <%= link_to "javascript:;", class: "btn btn-sm btn-secondary btn-label-brand", id:"update-selected-JS" do %>
-Marcar como a caminho
+<i class="flaticon2-delivery-truck"></i> Marcar como a caminho
 <% end %>
 
 <div class="btn-group">

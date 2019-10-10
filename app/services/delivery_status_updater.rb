@@ -1,44 +1,21 @@
-class CarrierSyncronizer
-
-  def self.sync(shipments) # REFACTOR > Rename this so its clear if its sending shipment or synching delivery statuses
-    sync_results = []
-    grouped_shipments = group_shipments_by_account_and_carrier(shipments)
-    grouped_shipments.each do |account, carriers_hash|
-      carriers_hash.each do |carrier, shipments_array|
-        sync_result = {
-          account: account,
-          carrier: carrier,
-          sync_result: carrier.sync_shipments(shipments_array)
-        }
-        sync_results << sync_result
-      end
-    end
-    sync_results
+class DeliveryStatusUpdater
+  def self.update_shipment(shipment)
+    delivery_updates = get_delivery_updates(shipment)
+    create_histories(shipment, delivery_updates)
+    update_current_status(shipment, delivery_updates)
   end
 
-  def group_shipments_by_account_and_carrier(shipments)
-    grouped_shipments = {}
-    shipments.each do |shipment|
-      account = shipment.account
-      carrier = shipment.carrier_class
-      grouped_shipments[account] ||= {}
-      grouped_shipments[account][carrier] ||= []
-      grouped_shipments[account][carrier] << shipment
-    end
-    grouped_shipments
-  end
-
-  def self.update_all_shipments_delivery_status
+  def self.update_all_shipments
     shipments = Shipment.shipped.not_delivered
-    CarrierSyncronizer.update_shipments_delivery_status(shipments)
+    update_shipments(shipments)
   end
 
-  def self.update_shipments_delivery_status(shipments)
+  def self.update_shipments(shipments)
     errors = []
     shipments_updated = 0
     shipments.each do |shipment|
       begin
-        update_shipment_delivery_status(shipment)
+        update_shipment(shipment)
         shipments_updated += 1
       rescue Exception => e
         errors << "Shipment #{shipment.id} - #{shipment.carrier}: #{e.message}"
@@ -47,12 +24,6 @@ class CarrierSyncronizer
     end
     puts "STATUS UPDATE RESULTS: #{shipments_updated} shipments updated, #{errors.size} errors"
     puts errors
-  end
-
-  def self.update_shipment_delivery_status(shipment)
-    delivery_updates = get_delivery_updates(shipment)
-    create_histories(shipment,delivery_updates)
-    update_current_status(shipment,delivery_updates)
   end
 
   def self.get_delivery_updates(shipment)
@@ -92,5 +63,4 @@ class CarrierSyncronizer
     end
     shipment.update(status: current_status, delivered_at: delivery_date)
   end
-
 end

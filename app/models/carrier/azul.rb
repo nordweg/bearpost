@@ -119,25 +119,22 @@ class Carrier::Azul < Carrier
     "http://www.azulcargo.com.br/Rastreio.aspx?n={tracking}&tipoAwb=Nacional"
   end
 
-  def authenticate!
+  def get_authenticated_token!
     token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
     if token_expire_date.blank? || token_expire_date < DateTime.now
-      get_authentication_token
+      update_authentication_token
     end
+    carrier_setting.settings['authentication_token']
   end
 
-  def valid_credentials?
-    authenticate_user( # REFACTOR > I don't think authenticate_user is available anymore
-      carrier_setting.settings["email"],
-      carrier_setting.settings["password"],
-      carrier_setting.settings["document"]
-    )
+  def authenticate!
+    update_authentication_token
   end
 
   def get_delivery_updates(shipment)
-    authenticate!
+    get_authenticated_token!
     check_tracking_number(shipment)
-    token = carrier_setting.settings['token'] # REFACTOR > Call it authentication_token. Had to read the rest of the code to figure out what token it is
+    token = carrier_setting.settings['authentication_token'] # REFACTOR > Call it authentication_token. Had to read the rest of the code to figure out what token it is
     response = connection.get("api/Ocorrencias/Consultar?Token=#{token}&AWB=#{shipment.tracking_number}")
     check_response(response)
     events = response.body.dig("Value", 0, "Ocorrencias")
@@ -153,47 +150,38 @@ class Carrier::Azul < Carrier
     delivery_updates
   end
 
-  def sync_shipments(shipments)
+  def transmit_shipments(shipments)
     response = []
     shipments.each do |shipment|
-      begin
-        check_invoice_xml(shipment)
-        encoded_xml = Base64.strict_encode64(shipment.invoice_xml)
-        faraday_response = send_to_azul(encoded_xml)
-        message = faraday_response.body["HasErrors"] ? faraday_response.body["ErrorText"] : faraday_response.body["Value"]
-        shipment.update(sent_to_carrier:true) unless faraday_response.body["HasErrors"]
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: message
-        }
-      rescue  Exception => e
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: e.message
-        }
-      end
+      check_invoice_xml(shipment)
+      faraday_response = send_to_azul(shipment.invoice_xml)
+      message = faraday_response.body["HasErrors"] ? faraday_response.body["ErrorText"] : faraday_response.body["Value"]
+      shipment.update(sent_to_carrier:true) unless faraday_response.body["HasErrors"]
+      response << {
+        shipment: shipment,
+        success: shipment.sent_to_carrier,
+        message: message
+      }
     end
     response
   end
 
   def get_tracking_number(shipment)
-    authenticate!
+    get_authenticated_token!
     check_invoice_xml(shipment)
     get_awb(shipment)
   end
-  
+
   # CARRIER ESPECIFIC METHODS
   # Define here internal carrier methods that are used by the default methods above.
 
   def save_authentication_token(token)
-    carrier_setting.settings['token'] = token
+    carrier_setting.settings['authentication_token'] = token
     carrier_setting.settings['token_expire_date'] = DateTime.now + 5.hours
     carrier_setting.save
   end
 
-  def get_authentication_token
+  def update_authentication_token
     credentials = {
         "Email" => carrier_setting.settings["email"],
         "Senha" => carrier_setting.settings["password"],
@@ -234,7 +222,7 @@ class Carrier::Azul < Carrier
     xml = Nokogiri::XML(shipment.invoice_xml)
     str = xml.at_css('infNFe').attribute("Id").try(:content)
     nfe_key = str[3..-1]
-    token = carrier_setting.settings['token']
+    token = carrier_setting.settings['authentication_token']
     response = connection.get("api/Ocorrencias/Consultar?token=#{token}&ChaveNFE=#{nfe_key}")
     check_response(response)
     response.body.dig("Value",0,"Awb")
@@ -250,8 +238,9 @@ class Carrier::Azul < Carrier
     raise Exception.new("Azul - É necessário o XML da nota fiscal") if shipment.invoice_xml.blank?
   end
 
-  def send_to_azul(encoded_xml)
-    token = settings['token']
+  def send_to_azul(invoice_xml)
+    encoded_xml = Base64.strict_encode64(invoice_xml)
+    token = carrier_setting.settings['authentication_token']
     body  = {
       "xml": encoded_xml,
     }

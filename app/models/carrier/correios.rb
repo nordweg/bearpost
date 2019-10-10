@@ -275,10 +275,6 @@ class Carrier::Correios < Carrier
     true
   end
 
-  def valid_credentials?
-    true
-  end
-
   def self.settings
     [
       :sigep_user,
@@ -301,10 +297,10 @@ class Carrier::Correios < Carrier
   end
 
   def get_tracking_number(shipment)
-    account         = shipment.account
     shipping_method = shipment.shipping_method
-    check_tracking_number_availability(account,shipping_method)
-    current_range = settings['shipping_methods'][shipping_method]['ranges'].first
+    check_tracking_number_availability(shipping_method)
+    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method)
+    current_range = shipping_method_settings['ranges'].first
     prefix        = current_range['prefix']
     number        = current_range['next_number']
     sufix         = current_range['sufix']
@@ -352,13 +348,11 @@ class Carrier::Correios < Carrier
     delivery_updates
   end
 
-
   # CARRIER ESPECIFIC METHODS
   # Define here internal carrier methods that are used by the default methods above.
 
-  def sync_shipments(shipments)
+  def transmit_shipments(shipments)
     response = []
-    begin
       correios_response = create_plp(shipments)
       plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
       message = "Enviado na PLP #{plp_number}"
@@ -372,56 +366,7 @@ class Carrier::Correios < Carrier
           message: message
         }
       end
-    rescue Exception => e
-      shipments.each do |shipment|
-        response << {
-          shipment: shipment,
-          success: shipment.sent_to_carrier,
-          message: e.message
-        }
-      end
-    end
     response
-  end
-
-  def save_new_range(shipping_method)
-    ranges_array = get_ranges_from_correios(shipping_method)
-    next_number  = ranges_array[0][2..9]
-    last_number  = ranges_array[-1][2..9]
-    prefix       = ranges_array[0][0..1]
-    sufix        = ranges_array[0][-2..-1]
-    range_hash   = {
-      "created_at":  DateTime.now,
-      "prefix":      prefix,
-      "next_number": next_number.to_i,
-      "last_number": last_number.to_i,
-      "sufix":       sufix,
-    }
-    ranges = carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] || []
-    ranges << range_hash
-    carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] = ranges
-    carrier_setting.save
-  end
-
-  def count_available_labels(shipping_method)
-    settings = carrier_setting.settings['shipping_methods'][shipping_method]
-    return 0 if settings['ranges'].blank?
-    total = 0
-    settings['ranges'].each do |range|
-      total += range['last_number'] - range['next_number'] + 1
-    end
-    total
-  end
-
-  def check_posting_card(account)
-    message = {
-      "usuario" => carrier_setting.settings["sigep_user"],
-      "senha" => carrier_setting.settings["sigep_password"],
-      "numeroCartaoPostagem" => carrier_setting.settings["posting_card"],
-    }
-    response = client(account).call(:get_status_cartao_postagem, message: message)
-
-    response.body.dig(:get_status_cartao_postagem_response,:return)
   end
 
   def get_ranges_from_correios(shipping_method)
@@ -440,7 +385,58 @@ class Carrier::Correios < Carrier
     ranges.split(',')
   end
 
+  def save_new_range(shipping_method)
+    ranges_array = get_ranges_from_correios(shipping_method)
+    next_number  = ranges_array[0][2..9]
+    last_number  = ranges_array[-1][2..9]
+    prefix       = ranges_array[0][0..1]
+    sufix        = ranges_array[0][-2..-1]
+    range_hash   = {
+      "created_at":  DateTime.now,
+      "prefix":      prefix,
+      "next_number": next_number.to_i,
+      "last_number": last_number.to_i,
+      "sufix":       sufix,
+    }
+    carrier_setting.settings['shipping_methods'] ||= {}
+    carrier_setting.settings['shipping_methods'][shipping_method] ||= {}
+    carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] ||= []
+    carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] << range_hash
+    carrier_setting.save
+  end
+
+  def count_available_labels(shipping_method)
+    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method) || {}
+    return 0 if shipping_method_settings['ranges'].blank?
+    total = 0
+    shipping_method_settings['ranges'].each do |range|
+      total += range['last_number'] - range['next_number'] + 1
+    end
+    total
+  end
+
+  def check_tracking_number_availability(shipping_method)
+    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method) || {}
+    ranges = shipping_method_settings['ranges'] || []
+    if count_available_labels(shipping_method) < carrier_setting.settings["#{shipping_method.downcase}_label_minimum_quantity"].to_i
+      save_new_range(shipping_method)
+    end
+  end
+
+  def check_posting_card(account)
+    message = {
+      "usuario" => carrier_setting.settings["sigep_user"],
+      "senha" => carrier_setting.settings["sigep_password"],
+      "numeroCartaoPostagem" => carrier_setting.settings["posting_card"],
+    }
+    response = connection.call(:get_status_cartao_postagem, message: message)
+
+    response.body.dig(:get_status_cartao_postagem_response,:return)
+  end
+
   def create_plp(shipments)
+    shipments_without_tracking = shipments.select {|shipment| shipment.tracking_number.blank?}
+    raise Exception.new("Envios #{shipments_without_tracking.pluck(:shipment_number)} não possuem rastreio") if shipments_without_tracking.any?
     account  = shipments.first.account
     user     = carrier_setting.settings["sigep_user"]
     password = carrier_setting.settings["sigep_password"]
@@ -458,7 +454,7 @@ class Carrier::Correios < Carrier
       "usuario" => user,
       "senha" => password,
     }
-    client(account).call(:fecha_plp_varios_servicos, message:message)
+    connection.call(:fecha_plp_varios_servicos, message:message)
   end
 
   def get_plp_xml(account, plp_number)
@@ -467,7 +463,7 @@ class Carrier::Correios < Carrier
       "usuario" => carrier_setting.settings["sigep_user"],
       "senha" => carrier_setting.settings["sigep_password"],
     }
-    client(account).call(:solicita_xml_plp, message:message)
+    connection.call(:solicita_xml_plp, message:message)
   end
 
   def build_xml(shipments)
@@ -581,7 +577,7 @@ class Carrier::Correios < Carrier
   end
 
   def busca_cliente(account)
-    settings = CarrierSetting.carrier(Carrier::Correios).settings
+    settings = carrier_setting.settings
     user = settings[:sigep_user]
     password = settings[:sigep_password]
     posting_card = settings[:posting_card]
@@ -594,19 +590,11 @@ class Carrier::Correios < Carrier
       "senha" => password,
     }
 
-    client(account).call(:busca_cliente, message:message)
+    connection.call(:busca_cliente, message:message)
   end
 
   def consulta_cep(account)
     connection.call(:consulta_cep, message:{'cep'=>'70002900'})
-  end
-
-  def check_tracking_number_availability(account,shipping_method)
-    settings        = self.settings['shipping_methods'][shipping_method]
-    ranges          = settings['ranges'] || []
-    if count_available_labels(shipping_method) < settings['label_minimum_quantity'].to_i
-      save_new_range(account,shipping_method)
-    end
   end
 
   def verify_service_availability
@@ -623,11 +611,8 @@ class Carrier::Correios < Carrier
 
   def connection
     url = test_mode? ? TEST_URL : LIVE_URL
-    user = settings.dig(:sigep_user)
-    password = settings.dig(:sigep_password)
     Savon.client(
       wsdl: url,
-      basic_auth: [user,password],
       headers: { 'SOAPAction' => '' }
     )
   end
