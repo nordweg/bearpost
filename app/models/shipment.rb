@@ -185,7 +185,7 @@ class Shipment < ApplicationRecord
     if params[:date_range].present?
       start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
       end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day
-      shipments = shipments.where("shipped_at > ? AND shipped_at < ?", start_date, end_date)
+      shipments = shipments.where("shipped_at > ? AND shipped_at < ? OR shipped_at IS NULL", start_date, end_date)
     end
     shipments
   end

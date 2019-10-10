@@ -51,8 +51,10 @@
 
 $(document).ready(function() {
   picker = $('#kt_daterangepicker_2').daterangepicker({
-    startDate: "<%= params[:date_range][0..9] if params[:date_range] %>",
-    endDate: "<%= params[:date_range][13..-1] if params[:date_range] %>",
+    <% if params[:date_range] %>
+    startDate: "<%= params[:date_range][0..9] %>",
+    endDate: "<%= params[:date_range][13..-1] %>",
+    <% end %>
     autoUpdateInput: false,
     locale: {
       format: 'DD/MM/YYYY',
