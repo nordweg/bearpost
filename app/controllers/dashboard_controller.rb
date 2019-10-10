@@ -34,7 +34,7 @@ class DashboardController < ApplicationController
   def get_shipments_per_status(shipments)
     data = []
     total_shipments = shipments.count
-    shipments.all.group(:status).count.each do |status, quantity|
+    shipments.group(:status).count.each do |status, quantity|
       percentage = (quantity.to_f / total_shipments.to_f) * 100
       data << [ status, quantity, percentage]
     end
