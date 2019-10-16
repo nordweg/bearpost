@@ -28,8 +28,10 @@ pt-BR:
   cnpj: CNPJ
   pac_label_minimum_quantity: "PAC: Quantidade mínima de etiquetas"
   pac_label_reorder_quantity: "PAC: Quantidade de reposição de etiquetas"
+  pac_service_id: "PAC: ID do serviço"
   sedex_label_minimum_quantity: "SEDEX: Quantidade mínima de etiquetas"
   sedex_label_reorder_quantity: "SEDEX: Quantidade de reposição de etiquetas"
+  sedex_service_id: "SEDEX: ID do serviço"
   views:
     email: oi
     pagination:

@@ -115,7 +115,6 @@ class Shipment < ApplicationRecord
 
   def get_tracking_number
     return tracking_number if tracking_number.present?
-    carrier = self.carrier.new(carrier_settings)
     tracking_number = carrier.get_tracking_number(self)
     self.update(tracking_number: tracking_number)
     self.tracking_number
@@ -148,17 +147,21 @@ class Shipment < ApplicationRecord
   end
 
   def tracking_url
-    carrier.tracking_url.gsub("{tracking}","#{tracking_number}")
+    carrier_from_class.tracking_url.gsub("{tracking}","#{tracking_number}")
   end
 
   def carrier
+    Object.const_get(carrier_class).new(carrier_settings)
+  end
+
+  def carrier_from_class
     Object.const_get(carrier_class)
   end
 
   def as_json(*)
     super.except("updated_at","invoice_xml").tap do |hash|
       hash["transmitted"] = transmitted_to_carrier ? 'true' : 'false'
-      hash["carrier"] = carrier.name
+      hash["carrier"] = carrier_from_class.name
     end
   end
 

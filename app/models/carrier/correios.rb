@@ -287,8 +287,10 @@ class Carrier::Correios < Carrier
       :cnpj,
       :pac_label_minimum_quantity,
       :pac_label_reorder_quantity,
+      :pac_service_id,
       :sedex_label_minimum_quantity,
       :sedex_label_reorder_quantity,
+      :sedex_service_id
     ]
   end
 
@@ -307,7 +309,7 @@ class Carrier::Correios < Carrier
     verification_digit = get_verification_digit(number)
     tracking_number    = "#{prefix}#{number}#{verification_digit}#{sufix}"
     if current_range['next_number'] + 1 > current_range['last_number']
-      settings['shipping_methods'][shipping_method]['ranges'].delete(current_range)
+      carrier_setting.settings['shipping_methods'][shipping_method]['ranges'].delete(current_range)
     else
       current_range['next_number'] += 1
     end
@@ -375,7 +377,7 @@ class Carrier::Correios < Carrier
     message = {
       "tipoDestinatario" =>  "C",
       "identificador" => carrier_setting.settings["cnpj"],
-      "idServico" => "124884",
+      "idServico" => carrier_setting.settings["#{shipping_method.downcase}_service_id"],
       "qtdEtiquetas" => reorder_quantity,
       "usuario" => carrier_setting.settings["sigep_user"],
       "senha" => carrier_setting.settings["sigep_password"],
@@ -576,12 +578,12 @@ class Carrier::Correios < Carrier
     hash.find {|key,value| key.downcase.include?(state.downcase)}[1]
   end
 
-  def busca_cliente(account)
-    settings = carrier_setting.settings
-    user = settings[:sigep_user]
-    password = settings[:sigep_password]
-    posting_card = settings[:posting_card]
-    contract = settings[:contract]
+  def self.busca_cliente(account)
+    settings = account.carrier_setting_for(self).settings
+    user = settings['sigep_user']
+    password = settings['sigep_password']
+    posting_card = settings['posting_card']
+    contract = settings['contract']
 
     message = {
       "idContrato" => contract,
@@ -590,23 +592,9 @@ class Carrier::Correios < Carrier
       "senha" => password,
     }
 
-    connection.call(:busca_cliente, message:message)
-  end
-
-  def consulta_cep(account)
-    connection.call(:consulta_cep, message:{'cep'=>'70002900'})
-  end
-
-  def verify_service_availability
-    message = {
-      "codAdministrativo" => settings[:administrative_code],
-      "numeroServico" => "04162",
-      "cepOrigem" => "95166000",
-      "cepDestino" => "95150000",
-      "usuario" => settings[:sigep_user],
-      "senha" => settings[:sigep_password],
-    }
-    connection.call(:verifica_disponibilidade_servico, message:message)
+    connection = Savon.client(wsdl: LIVE_URL, headers: { 'SOAPAction' => '' })
+    response = connection.call(:busca_cliente, message:message)
+    response.body.dig(:busca_cliente_response, :return, :contratos, :cartoes_postagem, :servicos).map {|servico| [servico[:id],servico[:descricao]] }
   end
 
   def connection

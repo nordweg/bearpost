@@ -290,20 +290,19 @@
     $("#invoice-selected").toggle();
     $("#invoice_xml").toggle();
   })
-  update_shipping_method_field();
-  $('#shipment_account_id').on('change', function() { update_shipping_method_field() });
   $('#shipment_carrier_class').on('change', function() { update_shipping_method_field() });
   function update_shipping_method_field() {
-    selected_account = $('#shipment_account_id option:selected').text();
+    carriers_and_shipping_methods = <%= raw Carriers.shipping_methods.to_json %>;
     selected_carrier = $('#shipment_carrier_class option:selected').text();
-    available_shipping_methods = <%= raw Carriers.shipping_methods.to_json %>;
-    items = available_shipping_methods[selected_account][selected_carrier];
+    shipping_methods = shipping_methods[selected_carrier];
     $('#shipment_shipping_method').empty();
-    $.each(items, function (i, item) {
+    $.each(shipping_methods, function (i, item) {
         $('#shipment_shipping_method').append($('<option>', {
-            value: item, // Get the value
-            text : item, // Key the key
+            value: item,
+            text : item,
         }));
     });
   }
+  update_shipping_method_field();
+  $("#shipment_shipping_method").val("<%= shipment.shipping_method %>");
 </script>

@@ -5,7 +5,7 @@ class CarrierSetting < ApplicationRecord
   end
 
   def self.get_settings_from_shipment(shipment)
-    self.find_by(account_id: shipment.account_id, carrier_class: shipment.carrier.to_s)
+    self.find_by(account_id: shipment.account_id, carrier_class: shipment.carrier_class)
   end
 
 end

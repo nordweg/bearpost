@@ -15,13 +15,21 @@ module Carriers
     all.find { |c| c.name.downcase == name.to_s.downcase } or raise NameError, "unknown carrier #{name}"
   end
 
+  # def shipping_methods
+  #   hash = {}
+  #   Account.all.each do |account|
+  #     hash[account.name] = {}
+  #     all.each do |carrier|
+  #       hash[account.name][carrier.name] = carrier::SERVICES
+  #     end
+  #   end
+  #   hash
+  # end
+
   def shipping_methods
     hash = {}
-    Account.all.each do |account|
-      hash[account.name] = {}
-      all.each do |carrier|
-        hash[account.name][carrier.name] = carrier::SERVICES
-      end
+    all.each do |carrier|
+      hash[carrier.name] = carrier::SERVICES
     end
     hash
   end

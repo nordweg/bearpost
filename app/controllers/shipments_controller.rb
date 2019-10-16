@@ -115,7 +115,7 @@ class ShipmentsController < ApplicationController
   end
 
   def set_carrier
-    @carrier = @shipment.carrier.new(@shipment.carrier_settings)
+    @carrier = @shipment.carrier
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
