@@ -27,7 +27,7 @@ class ShipmentTransmitter
     grouped_shipments = {}
     shipments.each do |shipment|
       account = shipment.account
-      carrier = shipment.carrier.new(shipment.carrier_settings)
+      carrier = shipment.carrier
       grouped_shipments[account] ||= {}
       grouped_shipments[account][carrier] ||= []
       grouped_shipments[account][carrier] << shipment

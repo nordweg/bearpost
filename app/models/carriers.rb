@@ -17,11 +17,8 @@ module Carriers
 
   def shipping_methods
     hash = {}
-    Account.all.each do |account|
-      hash[account.name] = {}
-      all.each do |carrier|
-        hash[account.name][carrier.name] = carrier::SERVICES
-      end
+    all.each do |carrier|
+      hash[carrier.name] = carrier::SERVICES
     end
     hash
   end

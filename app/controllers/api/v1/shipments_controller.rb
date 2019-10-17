@@ -80,7 +80,7 @@ module Api::V1
     end
 
     def get_carrier(shipment)
-      carrier = shipment.carrier.new(shipment.carrier_settings)
+      carrier = shipment.carrier
       raise Exception.new('Carrier not found') if carrier.blank?
       carrier
     end

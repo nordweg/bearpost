@@ -28,7 +28,7 @@ class DeliveryStatusUpdater
 
   def self.get_delivery_updates(shipment)
     shipment.get_tracking_number
-    delivery_updates = shipment.carrier.new(shipment.carrier_settings).get_delivery_updates(shipment)
+    delivery_updates = shipment.carrier.get_delivery_updates(shipment)
     unknown_delivery_updates = delivery_updates.select { |delivery_update| delivery_update[:bearpost_status] == nil }
     unknown_delivery_updates.each do |delivery_update|
       puts "FOLLOW UP: Shipment #{shipment.id} - The carrier #{shipment.carrier.name} has an unknown status: #{delivery_update[:status_code]}"
