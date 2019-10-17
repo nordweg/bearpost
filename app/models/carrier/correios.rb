@@ -578,7 +578,8 @@ class Carrier::Correios < Carrier
     hash.find {|key,value| key.downcase.include?(state.downcase)}[1]
   end
 
-  def self.busca_cliente(account)
+  # Method for getting available services and their IDs - Use it to find your pac_service_id and sedex_service_id
+  def self.available_services(account)
     settings = account.carrier_setting_for(self).settings
     user = settings['sigep_user']
     password = settings['sigep_password']
@@ -594,7 +595,7 @@ class Carrier::Correios < Carrier
 
     connection = Savon.client(wsdl: LIVE_URL, headers: { 'SOAPAction' => '' })
     response = connection.call(:busca_cliente, message:message)
-    response.body.dig(:busca_cliente_response, :return, :contratos, :cartoes_postagem, :servicos).map {|servico| [servico[:id],servico[:descricao]] }
+    response.body.dig(:busca_cliente_response, :return, :contratos, :cartoes_postagem, :servicos).map {|servico| {id:servico[:id], description:servico[:descricao]} }
   end
 
   def connection
