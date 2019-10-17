@@ -147,15 +147,11 @@ class Shipment < ApplicationRecord
   end
 
   def tracking_url
-    carrier_from_class.tracking_url.gsub("{tracking}","#{tracking_number}")
+    carrier.class.tracking_url.gsub("{tracking}","#{tracking_number}")
   end
 
   def carrier
     Object.const_get(carrier_class).new(carrier_settings)
-  end
-
-  def carrier_from_class
-    Object.const_get(carrier_class)
   end
 
   def as_json(*)

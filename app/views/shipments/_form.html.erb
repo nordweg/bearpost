@@ -294,7 +294,7 @@
   function update_shipping_method_field() {
     carriers_and_shipping_methods = <%= raw Carriers.shipping_methods.to_json %>;
     selected_carrier = $('#shipment_carrier_class option:selected').text();
-    shipping_methods = shipping_methods[selected_carrier];
+    shipping_methods = carriers_and_shipping_methods[selected_carrier];
     $('#shipment_shipping_method').empty();
     $.each(shipping_methods, function (i, item) {
         $('#shipment_shipping_method').append($('<option>', {
