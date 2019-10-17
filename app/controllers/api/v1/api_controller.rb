@@ -24,7 +24,7 @@ module Api::V1
     end
 
     def render_unauthorized
-      render json: 'Credenciais inválidas'.to_json, status: :unauthorized
+      render json: "Credenciais inválidas".to_json, status: :unauthorized
     end
 
     rescue_from Exception do |e|
