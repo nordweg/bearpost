@@ -268,6 +268,7 @@ GEM
     wicked_pdf (1.4.0)
       activesupport
     wkhtmltopdf-binary-edge (0.12.5.0)
+    wkhtmltopdf-heroku (2.12.5.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
 
@@ -307,6 +308,7 @@ DEPENDENCIES
   whenever
   wicked_pdf
   wkhtmltopdf-binary-edge
+  wkhtmltopdf-heroku
 
 BUNDLED WITH
    1.17.3
