@@ -37,8 +37,8 @@ gem 'faraday' # REST requests
 gem 'faraday_middleware'
 
 gem 'wicked_pdf'
-gem "wkhtmltopdf-binary"
-gem "chunky_png"
+gem 'wkhtmltopdf-binary-edge'
+gem 'chunky_png'
 gem 'barby', require: %w(barby barby/barcode/code_128 barby/outputter/png_outputter barby/outputter)
 gem 'devise'
 gem 'active_model_serializers'

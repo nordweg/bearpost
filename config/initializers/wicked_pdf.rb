@@ -22,8 +22,10 @@ WickedPdf.config = {
   page_height: '155mm',
   page_width:  '105mm',
   orientation: "Portrait",
-  zoom: 1,
-  dpi: 203,
-  margin: {top:  0,bottom:0,left: 0,right:0},
-  encoding: 'utf8'
+  # zoom: 1,
+  # dpi: 203,
+  zoom:0.78125,
+  margin: {top:0,bottom:0,left:0,right:0},
+  encoding: 'utf8',
+  disable_smart_shrinking: true
 }

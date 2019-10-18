@@ -271,6 +271,10 @@ class Carrier::Correios < Carrier
     ['PAC','SEDEX']
   end
 
+  def self.custom_label_view
+    'correios_label'
+  end
+
   def authenticate!
     true
   end

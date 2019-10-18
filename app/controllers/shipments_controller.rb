@@ -62,7 +62,7 @@ class ShipmentsController < ApplicationController
     @carrier.prepare_label(@shipment)
     respond_to do |format|
       format.html { render layout: 'pdf' }
-      format.pdf { render pdf: "Etiqueta-#{@shipment.shipment_number}", template: "shipments/get_labels.html.erb" }
+      format.pdf { render pdf: "Etiqueta-#{@shipment.shipment_number}", template: "shipments/get_labels.html.erb"}
     end
   end
 
