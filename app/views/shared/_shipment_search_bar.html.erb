@@ -1,7 +1,7 @@
 <div class="kt-portlet">
   <div class="kt-portlet__body">
     <%= form_with(url: path, method: "get", local: true) do  %>
-    <div class="row">
+    <div class="row mb-3">
       <div class="col-md-3">
         <label>Busca rápida:</label>
         <div class="kt-input-icon kt-input-icon--left">
@@ -29,8 +29,8 @@
 
       <div class="col-md-2">
         <label>Período de envio</label>
-        <div class="input-group" id="kt_daterangepicker_2">
-          <%= text_field_tag :date_range, params[:date_range], class:"form-control" %>
+        <div class="input-group" id="shipped_at_datepicker">
+          <%= text_field_tag :shipped_at_range, params[:shipped_at_range], class:"form-control" %>
           <div class="input-group-append">
             <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
           </div>
@@ -39,21 +39,61 @@
 
       <div class="col-md-1">
         <label>&nbsp;</label>
-        <%= submit_tag 'Filtrar', name:nil, class:'form-control btn btn-default' %>
+        <%= submit_tag 'Filtrar', name:nil, class:'btn btn-default form-control' %>
+      </div>
+
+
+    </div>
+
+    <div class="row mb-3 collapse" id="extra_filters">
+      <div class="col-md-3">
+        <label>Estado:</label>
+        <div class="kt-input-icon kt-input-icon--left">
+          <%= text_field_tag :state, params[:state], class: "form-control", placeholder: "Nome do estado" %>
+          <span class="kt-input-icon__icon kt-input-icon__icon--left">
+            <span><i class="la la-search"></i></span>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label>Conta</label>
+        <%= select_tag(:account_id, options_for_select(accounts_for_select.prepend(['Todas',nil]), selected: params[:account_id]), class:"form-control selectpicker") %>
+      </div>
+      <div class="col-md-2">
+        <label>Transmitido</label>
+        <%= select_tag(:transmitted_to_carrier, options_for_select([['Todos',nil],['Sim',true],['Não',false]], selected: params[:transmitted_to_carrier]), class:"form-control selectpicker") %>
+      </div>
+      <div class="col-md-2">
+        <label>Período de criação</label>
+        <div class="input-group" id="created_at_datepicker">
+          <%= text_field_tag :created_at_range, params[:created_at_range], class:"form-control" %>
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label>Período de entrega</label>
+        <div class="input-group" id="delivered_at_datepicker">
+          <%= text_field_tag :delivered_at_range, params[:delivered_at_range], class:"form-control" %>
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="la la-calendar-check-o"></i></span>
+          </div>
+        </div>
       </div>
     </div>
+    <a data-toggle="collapse" href="#extra_filters" class="text-reset">Filtros avançados</a>
     <% end %>
   </div>
 </div>
 
 
 <script type="text/javascript">
-
 $(document).ready(function() {
-  picker = $('#kt_daterangepicker_2').daterangepicker({
-    <% if params[:date_range] %>
-    startDate: "<%= params[:date_range][0..9] %>",
-    endDate: "<%= params[:date_range][13..-1] %>",
+  picker = $('#shipped_at_datepicker').daterangepicker({
+    <% if params[:shipped_at_range].present? %>
+    startDate: "<%= params[:shipped_at_range][0..9] %>",
+    endDate: "<%= params[:shipped_at_range][13..-1] %>",
     <% end %>
     autoUpdateInput: false,
     locale: {
@@ -73,7 +113,7 @@ $(document).ready(function() {
     cancelClass: 'btn-secondary'
   });
   $('.datepicer-icon').on('click', function(e) {
-    $('#kt_daterangepicker_2').click();
+    $('#shipped_at_datepicker').click();
   });
   picker.on('apply.daterangepicker', function(ev, picker) {
     $(this).find('.form-control').val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
@@ -83,6 +123,73 @@ $(document).ready(function() {
   });
 });
 
+$(document).ready(function() {
+  picker = $('#created_at_datepicker').daterangepicker({
+    <% if params[:created_at_range].present? %>
+    startDate: "<%= params[:created_at_range][0..9] %>",
+    endDate: "<%= params[:created_at_range][13..-1] %>",
+    <% end %>
+    autoUpdateInput: false,
+    locale: {
+      format: 'DD/MM/YYYY',
+      customRangeLabel: 'Personalizado'
+    },
+    ranges: {
+      'Hoje': [moment(), moment()],
+      'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      'Ultimos 30 dias': [moment().subtract(30, 'days'), moment()],
+      'Este Ano': [moment().startOf('year'), moment()],
+      'Todos': [moment().subtract(1000, 'years'), moment().add(1000,'years')]
+    },
+    opens: 'left',
+    buttonClasses: 'btn btn-sm',
+    applyClass: 'btn-primary',
+    cancelClass: 'btn-secondary'
+  });
+  $('.datepicer-icon').on('click', function(e) {
+    $('#created_at_datepicker').click();
+  });
+  picker.on('apply.daterangepicker', function(ev, picker) {
+    $(this).find('.form-control').val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+  picker.on('cancel.daterangepicker', function(ev, picker) {
+    $(this).find('.form-control').val('');
+  });
+});
+
+$(document).ready(function() {
+  picker = $('#delivered_at_datepicker').daterangepicker({
+    <% if params[:delivered_at_range].present? %>
+    startDate: "<%= params[:delivered_at_range][0..9] %>",
+    endDate: "<%= params[:delivered_at_range][13..-1] %>",
+    <% end %>
+    autoUpdateInput: false,
+    locale: {
+      format: 'DD/MM/YYYY',
+      customRangeLabel: 'Personalizado'
+    },
+    ranges: {
+      'Hoje': [moment(), moment()],
+      'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      'Ultimos 30 dias': [moment().subtract(30, 'days'), moment()],
+      'Este Ano': [moment().startOf('year'), moment()],
+      'Todos': [moment().subtract(1000, 'years'), moment().add(1000,'years')]
+    },
+    opens: 'left',
+    buttonClasses: 'btn btn-sm',
+    applyClass: 'btn-primary',
+    cancelClass: 'btn-secondary'
+  });
+  $('.datepicer-icon').on('click', function(e) {
+    $('#delivered_at_datepicker').click();
+  });
+  picker.on('apply.daterangepicker', function(ev, picker) {
+    $(this).find('.form-control').val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+  picker.on('cancel.daterangepicker', function(ev, picker) {
+    $(this).find('.form-control').val('');
+  });
+});
 </script>
 
 <!-- Avoids Turboliks bug where JS select only works after reloading -->

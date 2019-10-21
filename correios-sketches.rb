@@ -92,3 +92,10 @@ History.where(category:'status').each do |history|
   end
   history.update(category:category) if category
 end
+
+# Update shipped_at according to created_at (when they forget to set shipped_at)
+Shipment.where("shipped_at > ?", 2.days.ago).each do |shipment|
+  if shipment.shipped_at.to_date != shipment.created_at.to_date
+    shipment.update(shipped_at:shipment.created_at + 1.hour)
+  end
+end

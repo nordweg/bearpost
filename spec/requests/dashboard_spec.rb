@@ -7,7 +7,7 @@ RSpec.describe "Home", type: :request do
   end
   describe "GET /dashboard" do
     it "works! (now write some real specs)" do
-      get dashboard_path(date_range:"#{30.days.ago.strftime("%d/%m/%Y")} - #{Date.today.strftime("%d/%m/%Y")}")
+      get dashboard_path(shipped_at_range:"#{30.days.ago.strftime("%d/%m/%Y")} - #{Date.today.strftime("%d/%m/%Y")}")
       expect(response).to have_http_status(:success)
     end
   end

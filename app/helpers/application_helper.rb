@@ -24,6 +24,10 @@ module ApplicationHelper
     ]
   end
 
+  def accounts_for_select
+    Account.all.map{|account| [account.name, account.id]}
+  end
+
   def carriers_for_select
     Carriers.all.map{|carrier| [carrier.name, carrier.to_s]}
   end

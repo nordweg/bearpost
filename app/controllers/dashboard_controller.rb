@@ -1,8 +1,8 @@
 class DashboardController < ApplicationController
 
   def index
-    unless params[:date_range]
-      redirect_to dashboard_path(date_range:"#{30.days.ago.strftime("%d/%m/%Y")} - #{Date.today.strftime("%d/%m/%Y")}")
+    unless params[:shipped_at_range]
+      redirect_to dashboard_path(shipped_at_range:"#{30.days.ago.strftime("%d/%m/%Y")} - #{Date.today.strftime("%d/%m/%Y")}")
     end
     @shipments = Shipment.filter(params)
     @late_shipments = @shipments.attention_required
