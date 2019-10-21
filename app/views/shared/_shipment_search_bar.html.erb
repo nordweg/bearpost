@@ -39,13 +39,7 @@
 
       <div class="col-md-1">
         <label>&nbsp;</label>
-        <div class="input-group">
-          <%= submit_tag 'Filtrar', name:nil, class:'btn btn-default form-control' %>
-          <div class="input-group-append">
-            <button type="button" data-toggle="collapse" href="#extra_filters" class="btn btn-secondary dropdown-toggle dropdown-toggle-split">
-            </button>
-          </div>
-        </div>
+        <%= submit_tag 'Filtrar', name:nil, class:'btn btn-default form-control' %>
       </div>
 
 
@@ -88,6 +82,7 @@
         </div>
       </div>
     </div>
+    <a data-toggle="collapse" href="#extra_filters" class="text-reset">Filtros avançados</a>
     <% end %>
   </div>
 </div>
