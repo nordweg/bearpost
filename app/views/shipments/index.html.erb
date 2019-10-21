@@ -3,16 +3,9 @@ Envios
 <% end %>
 
 <% content_for :subheader_toolbar do %>
-<%= link_to transmit_ready_shipments_to_carriers_shipments_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
-<i class="la la-upload"></i> Transmitir pedidos
-<% end %>
 
 <%= link_to update_all_shipments_delivery_status_shipments_path, class: "btn btn-sm btn-secondary btn-label-brand" do %>
 <i class="la la-rotate-right"></i> Atualizar status
-<% end %>
-
-<%= link_to "javascript:;", class: "btn btn-sm btn-secondary btn-label-brand", id:"update-selected-JS" do %>
-<i class="flaticon2-delivery-truck"></i> Marcar como a caminho
 <% end %>
 
 <div class="btn-group">
@@ -44,16 +37,24 @@ Envios
 <div class="row">
   <div class="col-lg-12">
     <div class="kt-portlet">
+
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
           <h3 class="kt-portlet__head-title">
             Envios recentes
           </h3>
         </div>
-        <div class="kt-portlet__head-toolbar">
-          <div class="kt-portlet__head-wrapper">
+      </div>
 
-          </div>
+      <div class="collapse px-4 pt-4" id="selected_shipments_actions">
+        <div>
+          <span class="mx-2"><span id="selected_amount"></span> envios selecionados:</span>
+          <%= link_to "javascript:;", class: "btn btn-sm btn-secondary btn-label-brand", id:"transmit-selected-JS" do %>
+          <i class="la la-upload"></i> Transmitir para transportadora
+          <% end %>
+          <%= link_to "javascript:;", class: "btn btn-sm btn-secondary btn-label-brand", id:"update-selected-JS" do %>
+          <i class="flaticon2-delivery-truck"></i> Marcar como a caminho
+          <% end %>
         </div>
       </div>
 
@@ -76,7 +77,7 @@ Envios
             <tbody>
               <% @shipments.each do |shipment| %>
               <tr>
-                <td><label class="kt-checkbox kt-checkbox--solid p-0 m-0"><input type="checkbox" value="<%= shipment.id %>">&nbsp;<span></span></label></td>
+                <td><label class="kt-checkbox kt-checkbox--solid p-0 m-0"><input type="checkbox" name="shipment_ids[]" value="<%= shipment.id %>">&nbsp;<span></span></label></td>
                 <td><%= link_to shipment.shipment_number, shipment_path(shipment), class: "kt-link" %></td>
                 <td><%= shipment.order_number %></td>
                 <td><%= shipment.carrier.name %> <%= shipment.shipping_method %></td>
@@ -105,14 +106,25 @@ Envios
   </div>
 
   <script>
+    // Script to make select XML button work as a form
     $('#filebutton').click(function(e){
       e.preventDefault();
       $('#fileinput').click();
     });
-
     $('#fileinput').change(function(){
       $(this).parent('form').submit();
     });
+
+    $('#transmit-selected-JS').click(function(){
+      path = "<%= transmit_shipments_to_carriers_shipments_path %>"
+      params = $("input[name='shipment_ids[]']:checked").serialize()
+      window.location.href = path + "?" + params
+      // $.ajax({
+      //   type: "GET",
+      //   url:  "<%= transmit_shipments_to_carriers_shipments_path %>",
+      //   data: $("input[name='shipment_ids[]']:checked").serialize()
+      // });
+    })
 
     $('#update-selected-JS').click(function(){
       $.each($(".kt-checkbox input:checked").not("#select-all-JS"), function(){
@@ -135,7 +147,21 @@ Envios
       } else {
         $('input:checkbox').prop('checked', false);
       }
+      showSelectedOptions()
     });
+
+    // Select handler
+    $('input:checkbox').not("#select-all-JS").change(showSelectedOptions)
+
+    function showSelectedOptions() {
+      count = $('input:checkbox:checked').not("#select-all-JS").length;
+      $('#selected_amount').html(count);
+      if (count > 0) {
+        $('#selected_shipments_actions').collapse('show');
+      } else {
+        $('#selected_shipments_actions').collapse('hide');
+      }
+    }
 
     $(document).on('turbolinks:load', function () {
       $('.selectpicker').each(function (i, el) {

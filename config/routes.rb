@@ -31,7 +31,7 @@ Rails.application.routes.draw do
     collection do
       post 'new_from_xml'
       get  'update_all_shipments_delivery_status'
-      get  'transmit_ready_shipments_to_carriers'
+      get  'transmit_shipments_to_carriers'
     end
     member do
       get  'save_tracking_number'

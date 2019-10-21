@@ -93,9 +93,10 @@ class ShipmentsController < ApplicationController
 
   # Methods for all shipments
 
-  def transmit_ready_shipments_to_carriers
-    @transmit_results = ShipmentTransmitter.transmit_all_ready_shipments
-    render 'send_to_carriers'
+  def transmit_shipments_to_carriers
+    shipments = Shipment.where(id:params[:shipment_ids])
+    @transmit_results = ShipmentTransmitter.transmit(shipments)
+    render 'transmit_results'
   end
 
   def update_all_shipments_delivery_status

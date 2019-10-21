@@ -180,11 +180,23 @@ class Shipment < ApplicationRecord
     shipments = shipments.where(params[:late] => true) if params[:late].present?
     shipments = shipments.where(carrier_delivery_days_used: params[:carrier_delivery_days_used]) if params[:carrier_delivery_days_used].present?
     shipments = shipments.where(shipping_method: params[:shipping_method]) if params[:shipping_method].present?
+    shipments = shipments.where(account_id: params[:account_id]) if params[:account_id].present?
+    shipments = shipments.where(transmitted_to_carrier: params[:transmitted_to_carrier]) if params[:transmitted_to_carrier].present?
     shipments = shipments.where(state: params[:state]) if params[:state].present?
-    if params[:date_range].present?
-      start_date = DateTime.parse(params[:date_range][0..9]).beginning_of_day
-      end_date = DateTime.parse(params[:date_range][13..-1]).end_of_day
+    if params[:shipped_at_range].present?
+      start_date = DateTime.parse(params[:shipped_at_range][0..9]).beginning_of_day
+      end_date = DateTime.parse(params[:shipped_at_range][13..-1]).end_of_day
       shipments = shipments.where("shipped_at > ? AND shipped_at < ? OR shipped_at IS NULL", start_date, end_date)
+    end
+    if params[:created_at_range].present?
+      start_date = DateTime.parse(params[:created_at_range][0..9]).beginning_of_day
+      end_date = DateTime.parse(params[:created_at_range][13..-1]).end_of_day
+      shipments = shipments.where("created_at > ? AND created_at < ? OR created_at IS NULL", start_date, end_date)
+    end
+    if params[:delivered_at_range].present?
+      start_date = DateTime.parse(params[:delivered_at_range][0..9]).beginning_of_day
+      end_date = DateTime.parse(params[:delivered_at_range][13..-1]).end_of_day
+      shipments = shipments.where("delivered_at > ? AND delivered_at < ?", start_date, end_date)
     end
     shipments
   end

@@ -52,7 +52,7 @@ module Api::V1
       send_data pdf, filename: 'file.pdf'
     end
 
-    def transmit_ready_shipments_to_carriers
+    def transmit_shipments_to_carriers
       ShipmentTransmitter.transmit_all_ready_shipments
     end
 
