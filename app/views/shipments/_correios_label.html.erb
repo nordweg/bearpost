@@ -1,4 +1,5 @@
 <% shipment = package.shipment %>
+<% carrier = shipment.carrier %>
 <% total_packages = shipment.packages.size %>
 <style>
 body {  margin: 0 }
@@ -44,12 +45,12 @@ h4 {
 </style>
 
 <div class="label">
-  
+
   <div class="clearfix">
     <div class="top-left">
       <span style="font-size: 22px"><%= shipment.carrier.name %> <strong><%= shipment.shipping_method %></strong></span><br>
       <span style="font-size: 17px">
-        Contrato: <%= @carrier.carrier_setting.settings["contract"] %><br>
+        Contrato: <%= carrier.carrier_setting.settings["contract"] %><br>
         Pedido: <%= shipment.order_number %><br>
       </span>
     </div>
