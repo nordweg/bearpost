@@ -1,5 +1,5 @@
 <% @shipment.packages.each do |package| %>
 <div style="page-break-before: always;">
-  <%= render "general_label", package: package %>
+  <%= render @carrier.class.custom_label_view, package: package %>
 </div>
 <% end %>

@@ -33,25 +33,29 @@ h4 {
   margin-top: 10px;
 }
 
-.space-between {
-  display: flex;
-  justify-content: space-between;
+.top-left {
+  width: 60%;
+  display: inline-block;
+}
+
+.top-right {
+  width: 38%;
+  display: inline-block;
+  text-align: right;
+}
+body {
+  margin: 0;
 }
 </style>
 
 <div class="label">
-  <div class="space-between">
-    <div>
+    <div class="top-left">
       <%= shipment.carrier.name %>
     </div>
-    <div>
+    <div class="top-right">
       Pacote <%= shipment.packages.index(package) + 1 %>/<%= total_packages %><br>
     </div>
-  </div>
 
-  <div class="package">
-    Pacote <%= shipment.packages.index(package) + 1 %>/<%= total_packages %><br>
-  </div>
 
   <% if shipment.tracking_number.present? %>
   <div class='text-center mt20'>
