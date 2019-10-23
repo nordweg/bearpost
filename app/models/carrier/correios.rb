@@ -276,7 +276,12 @@ class Carrier::Correios < Carrier
   end
 
   def authenticate!
-    true
+    services = available_services
+    message = "Estes são os serviços disponíveis para sua conta:"
+    services.each do |service|
+      message << "<br> #{service[:description].strip}: #{service[:id]}"
+    end
+    message
   end
 
   def self.settings
@@ -583,8 +588,8 @@ class Carrier::Correios < Carrier
   end
 
   # Method for getting available services and their IDs - Use it to find your pac_service_id and sedex_service_id
-  def self.available_services(account)
-    settings = account.carrier_setting_for(self).settings
+  def available_services
+    settings = carrier_setting.settings
     user = settings['sigep_user']
     password = settings['sigep_password']
     posting_card = settings['posting_card']
@@ -592,7 +597,7 @@ class Carrier::Correios < Carrier
 
     message = {
       "idContrato" => contract,
-      "idCartaoPostagem" => posting_card,
+      "idCartaoPostagem" => "00#{posting_card}",
       "usuario" => user,
       "senha" => password,
     }

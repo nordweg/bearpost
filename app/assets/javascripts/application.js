@@ -25,6 +25,7 @@
 //= require vendor/js.cookie.js
 //= require vendor/bootstrap-select.min.js
 //= require vendor/clipboard.min.js
+//= require vendor/sweetalert2.min.js
 
 
 //= require keen/scripts.bundle.js

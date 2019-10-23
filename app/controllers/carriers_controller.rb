@@ -15,10 +15,10 @@ class CarriersController < ApplicationController
     begin
       carrier_settings = Account.find(params[:account_id]).carrier_settings.carrier(@carrier)
       carrier = @carrier.new(carrier_settings)
-      carrier.authenticate!
-      render json: "Credenciais válidas".to_json
+      response = carrier.authenticate!
+      render json: response.to_json
     rescue Exception => e
-      render json: e.message.to_json
+      render json: e.message.to_json, status: 500
     end
   end
 
