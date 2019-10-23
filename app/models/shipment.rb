@@ -1,7 +1,4 @@
 class Shipment < ApplicationRecord
-  validates_uniqueness_of :shipment_number
-  validates_presence_of :carrier_class
-
   scope :ready_to_ship,               -> { where(status: 'Ready for shipping') }
   scope :shipped,                     -> { where(status: ["On the way", "Out for delivery", "Problematic", "Waiting for pickup", "Delivered"]) }
   scope :delivered,                   -> { where(status: 'Delivered') }
@@ -36,8 +33,16 @@ class Shipment < ApplicationRecord
     STATUSES
   end
 
-  validates :status, inclusion: {in: STATUSES}
-  validates_presence_of :shipment_number
+  validates                 :status, inclusion: {in: STATUSES}
+  validates_presence_of     :shipment_number
+  validates_uniqueness_of   :shipment_number
+  validates_presence_of     :carrier_class
+  validates_inclusion_of    :shipping_method, in: ->(shipment) { shipment.available_shipping_methods }, if: :carrier_class?
+
+  def available_shipping_methods
+    return [] unless carrier_class.try(:constantize)
+    carrier_class.constantize::SERVICES
+  end
 
   def carrier_settings
     CarrierSetting.get_settings_from_shipment(self)

@@ -109,10 +109,18 @@ $('.connect').click(function(){
     data: data
   });
   request.done(function(response) {
-      alert(response);
+    Swal.fire({
+      title: "Credenciais válidas!",
+      type: "success",
+      html: '<b>Resposta da transportadora</b><br>' + response
+    })
   });
   request.fail(function( jqXHR, textStatus ) {
-    alert("Request failed: " + textStatus);
+    swal.fire({
+      title:"Credenciais inválidas",
+      type: "error",
+      html: '<b>Resposta da transportadora</b><br>' + jqXHR.responseJSON
+    });
   });
 })
 </script>
