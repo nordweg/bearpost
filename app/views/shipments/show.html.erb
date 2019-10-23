@@ -64,7 +64,7 @@
                 <tbody>
                   <tr>
                     <th>Número do pedido</th>
-                    <td><%= link_to @shipment.order_number, @shipment.external_order_url, class: "kt-link", target:'_blank' %></td>
+                    <td><%= link_to @shipment.order_number, @shipment.external_order_url, class: "kt-link", target:'_blank' if @shipment.order_number %></td>
                   </tr>
                   <tr>
                     <th>Conta</th>

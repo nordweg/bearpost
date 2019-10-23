@@ -1,23 +1,18 @@
 class ShipmentTransmitter
   def self.transmit(shipments)
-    transmit_results = []
+    transmit_results = {}
     grouped_shipments = group_shipments_by_account_and_carrier(shipments)
-    grouped_shipments.each do |account, carriers_hash|
-      carriers_hash.each do |carrier, shipments_array|
+    grouped_shipments.each do |account_name, carriers_hash|
+      carriers_hash.each do |carrier_name, shipments_array|
+        transmit_results[account_name] ||= {}
         begin
-          transmit_result = {
-            account: account,
-            carrier: carrier,
-            transmit_result: carrier.transmit_shipments(shipments_array)
-          }
+          carrier_class = Carriers.find(carrier_name)
+          carrier_setting = Account.find_by(name:account_name).carrier_setting_for(carrier_class)
+          carrier = carrier_class.new(carrier_setting)
+          transmit_results[account_name][carrier_name] = carrier.transmit_shipments(shipments_array)
         rescue Exception => e
-          transmit_result = {
-            account: account,
-            carrier: carrier,
-            transmit_result: shipments_array.map { |shipment| {shipment: shipment, success: false, message: e.message} }
-          }
+          transmit_results[account_name][carrier_name] = shipments_array.map { |shipment| {shipment: shipment, success: false, message: e.message} }
         end
-        transmit_results << transmit_result
       end
     end
     transmit_results
@@ -26,8 +21,8 @@ class ShipmentTransmitter
   def self.group_shipments_by_account_and_carrier(shipments)
     grouped_shipments = {}
     shipments.each do |shipment|
-      account = shipment.account
-      carrier = shipment.carrier
+      account = shipment.account.name
+      carrier = shipment.carrier.name
       grouped_shipments[account] ||= {}
       grouped_shipments[account][carrier] ||= []
       grouped_shipments[account][carrier] << shipment
