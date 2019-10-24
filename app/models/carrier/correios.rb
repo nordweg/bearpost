@@ -304,11 +304,6 @@ class Carrier::Correios < Carrier
     ]
   end
 
-  # VIEW
-  def self.options_for_label
-
-  end
-
   def self.tracking_url
     "https://rastreamentocorreios.info/consulta/{tracking}"
   end
