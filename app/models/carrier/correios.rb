@@ -286,20 +286,21 @@ class Carrier::Correios < Carrier
 
   def self.settings
     [
-      :sigep_user,
-      :sigep_password,
-      :tracking_user,
-      :tracking_password,
-      :administrative_code,
-      :contract,
-      :posting_card,
-      :cnpj,
-      :pac_label_minimum_quantity,
-      :pac_label_reorder_quantity,
-      :pac_service_id,
-      :sedex_label_minimum_quantity,
-      :sedex_label_reorder_quantity,
-      :sedex_service_id
+      { field: 'sigep_user', type:'text' },
+      { field: 'sigep_password', type:'password' },
+      { field: 'tracking_user', type:'text' },
+      { field: 'tracking_password', type:'password' },
+      { field: 'administrative_code', type:'text' },
+      { field: 'contract', type:'text' },
+      { field: 'posting_card', type:'text' },
+      { field: 'cnpj', type:'text' },
+      { field: 'pac_label_minimum_quantity', type:'text' },
+      { field: 'pac_label_reorder_quantity', type:'text' },
+      { field: 'pac_service_id', type:'text' },
+      { field: 'sedex_label_minimum_quantity', type:'text' },
+      { field:'sedex_label_reorder_quantity', type:'text'},
+      { field:'sedex_service_id', type: 'text' },
+      { field:'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
     ]
   end
 
@@ -327,7 +328,7 @@ class Carrier::Correios < Carrier
   end
 
   def prepare_label(shipment)
-    if shipment.tracking_number.blank?
+    if carrier_setting.settings['label_type'] == 'tracked_label' && shipment.tracking_number.blank?
       shipment.tracking_number = get_tracking_number(shipment)
       shipment.save
     end
@@ -468,7 +469,7 @@ class Carrier::Correios < Carrier
     connection.call(:fecha_plp_varios_servicos, message:message)
   end
 
-  def get_plp_xml(account, plp_number)
+  def get_plp_xml(plp_number)
     message = {
       "idPlpMaster" => plp_number,
       "usuario" => carrier_setting.settings["sigep_user"],

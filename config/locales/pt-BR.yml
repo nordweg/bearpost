@@ -32,6 +32,9 @@ pt-BR:
   sedex_label_minimum_quantity: "SEDEX: Quantidade mínima de etiquetas"
   sedex_label_reorder_quantity: "SEDEX: Quantidade de reposição de etiquetas"
   sedex_service_id: "SEDEX: ID do serviço"
+  label_type: "Tipo de etiqueta"
+  simple_label: "Etiqueta simples"
+  tracked_label: "Etiqueta com rastreio"
   views:
     email: oi
     pagination:

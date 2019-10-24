@@ -65,10 +65,10 @@ h4 {
 
 
   <% if shipment.tracking_number.present? %>
-  <div class='text-center mt20'>
-    <%= shipment.tracking_number %><br>
-    <%= image_tag(Barby::Code128.new(shipment.tracking_number).to_image(xdim:2).to_data_url) %>
-  </div>
+    <div class='text-center mt20'>
+      <%= shipment.tracking_number %><br>
+      <%= image_tag(Barby::Code128.new(shipment.tracking_number).to_image(xdim:2).to_data_url) %>
+    </div>
   <% end %>
 
   <hr>

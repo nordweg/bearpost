@@ -108,7 +108,11 @@ class Carrier::Azul < Carrier
   # Use carrier.rb as a guideline to know which methods should be overwritten here.
 
   def self.settings
-    ['email','password','document'] # REFACTOR > Is document = CNPJ? Maybe rename?
+    [
+      {field:'email',    type:'text'},
+      {field:'password', type:'password'},
+      {field:'cnpj', type:'text'}
+    ]
   end
 
   def self.shipping_methods
@@ -185,7 +189,7 @@ class Carrier::Azul < Carrier
     credentials = {
         "Email" => carrier_setting.settings["email"],
         "Senha" => carrier_setting.settings["password"],
-        "CpfCnpj" => carrier_setting.settings["document"]
+        "CpfCnpj" => carrier_setting.settings["cnpj"]
     }
     response = connection.post("api/Autenticacao/ValidarUsuarioPortalClienteEdi", credentials)
     if response.body["HasErrors"]
