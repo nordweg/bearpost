@@ -20,7 +20,7 @@
 <div class="tab-content">
   <% @accounts.each do |account| %>
   <% carrier_setting = account.carrier_setting_for(@carrier) %>
-  <% settings = carrier_setting ? carrier_setting.settings.with_indifferent_access : {} %>
+  <% saved_settings = carrier_setting ? carrier_setting.settings : {} %>
   <div class="tab-pane" id="kt_portlet_tabs_1_<%= account.id %>_content" role="tabpanel">
 
     <%= form_for :settings, url: "/accounts/#{account.id}/update_carrier_settings" do |f| %>
@@ -40,14 +40,7 @@
 
           <div class="kt-portlet__body">
             <div class="row">
-              <% @carrier.settings.each do |setting| %>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <%= f.label t(setting) %>
-                  <%= f.text_field setting, value: settings.dig(setting), class:'form-control' %>
-                </div>
-              </div>
-              <% end %>
+              <%= fields_for_settings(@carrier, saved_settings, f) %>
             </div>
             <div>
               <%= link_to "javascript:;", class:"connect" do %>
