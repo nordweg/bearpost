@@ -27,7 +27,7 @@ class Shipment < ApplicationRecord
   before_save  :log_status_change, if: :will_save_change_to_status?, unless: :new_record?
   before_save  :log_transmittion_to_carrier, if: :will_save_change_to_transmitted_to_carrier?
 
-  STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Returned", "Cancelled"]
+  STATUSES = ["Pending", "Ready for shipping", "On the way", "Waiting for pickup", "Out for delivery", "Delivered", "Problematic", "Lost", "Returned", "Cancelled"]
 
   def self.statuses
     STATUSES
