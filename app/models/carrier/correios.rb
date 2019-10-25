@@ -365,20 +365,33 @@ class Carrier::Correios < Carrier
 
   def transmit_shipments(shipments)
     response = []
-      correios_response = create_plp(shipments)
-      plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
-      message = "Enviado na PLP #{plp_number}"
-      shipments.each do |shipment|
-        settings = shipment.settings
-        settings['plp'] = plp_number
-        shipment.update(settings:settings, transmitted_to_carrier:true)
-        response << {
-          shipment: shipment,
-          success: shipment.transmitted_to_carrier,
-          message: message
-        }
+      grouped_shipments = group_shipments_by_shipping_method(shipments)
+      grouped_shipments.each do |shipping_method, shipments|
+        correios_response = create_plp(shipments)
+        plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
+        message = "Enviado na PLP #{plp_number}"
+        shipments.each do |shipment|
+        shipping_methodment|
+          settings = shipment.settings
+          settings['plp'] = plp_number
+          shipment.update(settings:settings, transmitted_to_carrier:true)
+          response << {
+            shipment: shipment,
+            success: shipment.transmitted_to_carrier,
+            message: message
+          }
+        end
       end
     response
+  end
+
+  def group_shipments_by_shipping_method(shipments)
+    grouped_shipments = {}
+    shipments.each do |shipment|
+      grouped_shipments[shipment.shipping_method] ||= []
+      grouped_shipments[shipment.shipping_method] << shipment
+    end
+    grouped_shipments
   end
 
   def get_ranges_from_correios(shipping_method)
@@ -449,7 +462,6 @@ class Carrier::Correios < Carrier
   def create_plp(shipments)
     shipments_without_tracking = shipments.select {|shipment| shipment.tracking_number.blank?}
     raise Exception.new("Envios #{shipments_without_tracking.pluck(:shipment_number)} não possuem rastreio") if shipments_without_tracking.any?
-    account  = shipments.first.account
     user     = carrier_setting.settings["sigep_user"]
     password = carrier_setting.settings["sigep_password"]
     posting_card = carrier_setting.settings["posting_card"]
@@ -480,6 +492,7 @@ class Carrier::Correios < Carrier
 
   def build_xml(shipments)
     account  = shipments.first.account
+    service_id = carrier_setting.settings["#{shipments.first.shipping_method.downcase}_service_id"]
     posting_card = carrier_setting.settings["posting_card"]
     contract = carrier_setting.settings["contract"]
     administrative_code = carrier_setting.settings["administrative_code"]
@@ -516,7 +529,7 @@ class Carrier::Correios < Carrier
           xml.objeto_postal {
             xml.numero_etiqueta shipment.tracking_number[0..9] + shipment.tracking_number[-2..-1]
             xml.codigo_objeto_cliente
-            xml.codigo_servico_postagem '41106'
+            xml.codigo_servico_postagem service_id
             xml.cubagem package.heigth * package.width * package.depth
             xml.peso package.weight
             xml.rt2
