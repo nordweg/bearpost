@@ -40,6 +40,7 @@ module ApplicationHelper
       when "Out for delivery"       then "kt-badge--info"
       when "Delivered"              then "kt-badge--success"
       when "Problematic"            then "kt-badge--danger"
+      when "Lost"                   then "kt-badge--danger"
       when "Returned"               then "kt-badge--metal"
       when "Cancelled"              then "kt-badge--metal"
       when "Waiting for pickup"     then "kt-badge--info"
