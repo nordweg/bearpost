@@ -169,6 +169,7 @@ class Shipment < ApplicationRecord
         OR order_number ILIKE :search
         OR shipment_number ILIKE :search
         OR state ILIKE :search
+        OR zip ILIKE :search
         OR city ILIKE :search",
         search: "%#{params[:search]}%"
       )
