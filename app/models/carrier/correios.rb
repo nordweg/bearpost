@@ -371,7 +371,6 @@ class Carrier::Correios < Carrier
         plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
         message = "Enviado na PLP #{plp_number}"
         shipments.each do |shipment|
-        shipping_methodment|
           settings = shipment.settings
           settings['plp'] = plp_number
           shipment.update(settings:settings, transmitted_to_carrier:true)
