@@ -182,7 +182,10 @@ class Shipment < ApplicationRecord
       shipments = self.all
     end
     shipments = shipments.where(status:params[:status]) if params[:status].present?
-    shipments = shipments.where(carrier_class: params[:carrier]) if params[:carrier].present?
+    if params[:carrier].present?
+      carrier_class = Carriers.find(params[:carrier]).to_s
+      shipments = shipments.where(carrier_class: carrier_class)
+    end
     shipments = shipments.where(params[:late] => true) if params[:late].present?
     shipments = shipments.where(carrier_delivery_days_used: params[:carrier_delivery_days_used]) if params[:carrier_delivery_days_used].present?
     shipments = shipments.where(shipping_method: params[:shipping_method]) if params[:shipping_method].present?

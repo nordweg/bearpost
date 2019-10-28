@@ -2,7 +2,10 @@ module Api::V1
   class ShipmentsController < ApiController
 
     def index
-      render json: Shipment.all
+      shipments = Shipment.filter(params).order(shipped_at: :desc)
+      shipments = shipments.page(params[:page]) if params[:page]
+      render json: shipments
+
     end
 
     def show
