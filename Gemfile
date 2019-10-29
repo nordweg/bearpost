@@ -40,6 +40,7 @@ gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary-edge', group: :development
 gem 'wkhtmltopdf-heroku', group: :production
 gem 'chunky_png'
+gem 'semacode-ruby19'
 
 gem 'barby', require: %w(barby barby/barcode/code_128 barby/outputter/png_outputter barby/outputter)
 gem 'devise'

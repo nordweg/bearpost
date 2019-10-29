@@ -534,7 +534,7 @@ class Carrier::Correios < Carrier
             xml.codigo_objeto_cliente
             xml.codigo_servico_postagem service_id
             xml.cubagem '0,00'
-            xml.peso (package.weight * 1000)
+            xml.peso (package.weight * 1000).to_i
             xml.rt2
             xml.destinatario {
               xml.nome_destinatario { xml.cdata shipment.full_name }
@@ -660,5 +660,42 @@ class Carrier::Correios < Carrier
       verification_digit = 11 - remainder
     end
     verification_digit
+  end
+
+  def data_matrix(shipment)
+    account = shipment.account
+    str = ""
+    str += shipment.zip
+    if shipment.number.numbers_only == shipment.number
+      str += shipment.number.rjust(4, "0")
+    else
+      str += "0000"
+    end
+    str += account.zip
+    if account.number.numbers_only == account.number
+      str += account.number.rjust(4, "0")
+    else
+      str += "0000"
+    end
+    zip_sum = shipment.zip.split('').reduce(0){|sum, num| sum + num.to_i}
+    if zip_sum % 10 == 0
+      str += "0"
+    else
+      str += (10 - zip_sum % 10).to_s
+    end
+    str += "51"
+    str += shipment.tracking_number
+    str += "250000000000"
+    str += carrier_setting.settings['posting_card']
+    str += carrier_setting.settings["#{shipment.shipping_method.downcase}_service_id"]
+    str += "00"
+    str += shipment.number.rjust(5, "0")
+    str += shipment.complement.rjust(20, " ")
+    str += shipment.complement.rjust(20, " ")
+    str += "00000" # Declared amount
+    str += shipment.phone.numbers_only.rjust(12, "0")
+    str += "-00.000000"
+    str += "-00.000000"
+    str += "|"
   end
 end
