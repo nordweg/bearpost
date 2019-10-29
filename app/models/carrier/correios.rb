@@ -533,8 +533,8 @@ class Carrier::Correios < Carrier
             xml.numero_etiqueta shipment.tracking_number[0..9] + shipment.tracking_number[-2..-1]
             xml.codigo_objeto_cliente
             xml.codigo_servico_postagem service_id
-            xml.cubagem package.heigth * package.width * package.depth
-            xml.peso package.weight
+            xml.cubagem '0,00'
+            xml.peso (package.weight * 1000)
             xml.rt2
             xml.destinatario {
               xml.nome_destinatario { xml.cdata shipment.full_name }
