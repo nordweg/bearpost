@@ -496,6 +496,7 @@ class Carrier::Correios < Carrier
     contract = carrier_setting.settings["contract"]
     administrative_code = carrier_setting.settings["administrative_code"]
 
+
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.correioslog {
         xml.tipo_arquivo 'Postagem'
@@ -511,19 +512,22 @@ class Carrier::Correios < Carrier
           xml.numero_contrato contract
           xml.numero_diretoria get_numero_diretoria(account.state)
           xml.codigo_administrativo administrative_code
-          xml.nome_remetente account.name
-          xml.logradouro_remetente account.street
-          xml.numero_remetente account.number
-          xml.complemento_remetente account.complement
-          xml.bairro_remetente account.neighborhood
-          xml.cep_remetente account.zip.try(:numbers_only)
-          xml.cidade_remetente account.city
+          xml.nome_remetente { xml.cdata account.name }
+          xml.logradouro_remetente { xml.cdata account.street }
+          xml.numero_remetente { xml.cdata account.number }
+          xml.complemento_remetente { xml.cdata account.complement }
+          xml.bairro_remetente { xml.cdata account.neighborhood }
+          xml.cep_remetente { xml.cdata account.zip.try(:numbers_only) }
+          xml.cidade_remetente { xml.cdata account.city }
           xml.uf_remetente account.state
-          xml.telefone_remetente account.phone.try(:numbers_only)
-          xml.email_remetente account.email
+          xml.telefone_remetente { xml.cdata account.phone.try(:numbers_only) }
+          xml.email_remetente { xml.cdata account.email }
+          xml.cpf_cnpj_remetente account.cnpj.try(:numbers_only)
+          xml.ciencia_conteudo_proibido 'S'
         }
         xml.forma_pagamento
         shipments.each do |shipment|
+          invoice = shipment.invoice_xml ? Nokogiri::XML(shipment.invoice_xml) : nil
           package = shipment.packages.last
           xml.objeto_postal {
             xml.numero_etiqueta shipment.tracking_number[0..9] + shipment.tracking_number[-2..-1]
@@ -533,24 +537,29 @@ class Carrier::Correios < Carrier
             xml.peso package.weight
             xml.rt2
             xml.destinatario {
-              xml.nome_destinatario shipment.full_name
-              xml.telefone_destinatario shipment.phone.try(:numbers_only)
-              xml.email_destinatario shipment.email
-              xml.logradouro_destinatario shipment.street
-              xml.complemento_destinatario shipment.complement
-              xml.numero_end_destinatario shipment.number
+              xml.nome_destinatario { xml.cdata shipment.full_name }
+              xml.celular_destinatario { xml.cdata shipment.phone.try(:numbers_only) }
+              xml.email_destinatario { xml.cdata shipment.email }
+              xml.logradouro_destinatario { xml.cdata shipment.street }
+              xml.complemento_destinatario { xml.cdata shipment.complement }
+              xml.numero_end_destinatario { xml.cdata shipment.number }
             }
             xml.nacional {
-              xml.bairro_destinatario shipment.neighborhood
-              xml.cidade_destinatario shipment.city
+              xml.bairro_destinatario { xml.cdata shipment.neighborhood }
+              xml.cidade_destinatario { xml.cdata shipment.city }
               xml.uf_destinatario shipment.state
-              xml.cep_destinatario shipment.zip.try(:numbers_only)
+              xml.cep_destinatario { xml.cdata shipment.zip.try(:numbers_only) }
               xml.numero_nota_fiscal shipment.invoice_number
               xml.serie_nota_fiscal shipment.invoice_series
               xml.natureza_nota_fiscal
+              xml.valor_nota_fiscal invoice.at_css('vNF').content.to_f if invoice
             }
             xml.servico_adicional {
               xml.codigo_servico_adicional '025'
+              if invoice
+                xml.codigo_servico_adicional '064'
+                xml.valor_declarado invoice.at_css('vNF').content.to_f
+              end
             }
             xml.dimensao_objeto {
               xml.tipo_objeto '002'
