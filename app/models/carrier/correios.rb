@@ -516,10 +516,10 @@ class Carrier::Correios < Carrier
           xml.numero_remetente account.number
           xml.complemento_remetente account.complement
           xml.bairro_remetente account.neighborhood
-          xml.cep_remetente account.zip
+          xml.cep_remetente account.zip.try(:numbers_only)
           xml.cidade_remetente account.city
           xml.uf_remetente account.state
-          xml.telefone_remetente account.phone
+          xml.telefone_remetente account.phone.try(:numbers_only)
           xml.email_remetente account.email
         }
         xml.forma_pagamento
@@ -534,7 +534,7 @@ class Carrier::Correios < Carrier
             xml.rt2
             xml.destinatario {
               xml.nome_destinatario shipment.full_name
-              xml.telefone_destinatario shipment.phone
+              xml.telefone_destinatario shipment.phone.try(:numbers_only)
               xml.email_destinatario shipment.email
               xml.logradouro_destinatario shipment.street
               xml.complemento_destinatario shipment.complement
@@ -544,7 +544,7 @@ class Carrier::Correios < Carrier
               xml.bairro_destinatario shipment.neighborhood
               xml.cidade_destinatario shipment.city
               xml.uf_destinatario shipment.state
-              xml.cep_destinatario shipment.zip
+              xml.cep_destinatario shipment.zip.try(:numbers_only)
               xml.numero_nota_fiscal shipment.invoice_number
               xml.serie_nota_fiscal shipment.invoice_series
               xml.natureza_nota_fiscal
