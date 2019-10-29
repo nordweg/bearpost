@@ -552,20 +552,20 @@ class Carrier::Correios < Carrier
               xml.numero_nota_fiscal shipment.invoice_number
               xml.serie_nota_fiscal shipment.invoice_series
               xml.natureza_nota_fiscal
-              xml.valor_nota_fiscal invoice.at_css('vNF').content.to_f if invoice
+              xml.valor_nota_fiscal invoice.at_css('vNF').content.gsub(".",",") if invoice
             }
             xml.servico_adicional {
               xml.codigo_servico_adicional '025'
               if invoice
                 xml.codigo_servico_adicional '064'
-                xml.valor_declarado invoice.at_css('vNF').content.to_f
+                xml.valor_declarado invoice.at_css('vNF').content.gsub(".",",")
               end
             }
             xml.dimensao_objeto {
               xml.tipo_objeto '002'
-              xml.dimensao_altura package.heigth
-              xml.dimensao_largura package.width
-              xml.dimensao_comprimento package.depth
+              xml.dimensao_altura package.heigth.to_s.gsub(".",",")
+              xml.dimensao_largura package.width.to_s.gsub(".",",")
+              xml.dimensao_comprimento package.depth.to_s.gsub(".",",")
               xml.dimensao_diametro 0
             }
           }
