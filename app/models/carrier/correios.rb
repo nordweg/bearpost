@@ -496,6 +496,7 @@ class Carrier::Correios < Carrier
     contract = carrier_setting.settings["contract"]
     administrative_code = carrier_setting.settings["administrative_code"]
 
+
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.correioslog {
         xml.tipo_arquivo 'Postagem'
@@ -511,52 +512,60 @@ class Carrier::Correios < Carrier
           xml.numero_contrato contract
           xml.numero_diretoria get_numero_diretoria(account.state)
           xml.codigo_administrativo administrative_code
-          xml.nome_remetente account.name
-          xml.logradouro_remetente account.street
-          xml.numero_remetente account.number
-          xml.complemento_remetente account.complement
-          xml.bairro_remetente account.neighborhood
-          xml.cep_remetente account.zip
-          xml.cidade_remetente account.city
+          xml.nome_remetente { xml.cdata account.name }
+          xml.logradouro_remetente { xml.cdata account.street }
+          xml.numero_remetente { xml.cdata account.number }
+          xml.complemento_remetente { xml.cdata account.complement }
+          xml.bairro_remetente { xml.cdata account.neighborhood }
+          xml.cep_remetente { xml.cdata account.zip.try(:numbers_only) }
+          xml.cidade_remetente { xml.cdata account.city }
           xml.uf_remetente account.state
-          xml.telefone_remetente account.phone
-          xml.email_remetente account.email
+          xml.telefone_remetente { xml.cdata account.phone.try(:numbers_only) }
+          xml.email_remetente { xml.cdata account.email }
+          xml.cpf_cnpj_remetente account.cnpj.try(:numbers_only)
+          xml.ciencia_conteudo_proibido 'S'
         }
         xml.forma_pagamento
         shipments.each do |shipment|
+          invoice = shipment.invoice_xml ? Nokogiri::XML(shipment.invoice_xml) : nil
           package = shipment.packages.last
           xml.objeto_postal {
             xml.numero_etiqueta shipment.tracking_number[0..9] + shipment.tracking_number[-2..-1]
             xml.codigo_objeto_cliente
             xml.codigo_servico_postagem service_id
-            xml.cubagem package.heigth * package.width * package.depth
-            xml.peso package.weight
+            xml.cubagem '0,00'
+            xml.peso (package.weight * 1000).to_i
             xml.rt2
             xml.destinatario {
-              xml.nome_destinatario shipment.full_name
-              xml.telefone_destinatario shipment.phone
-              xml.email_destinatario shipment.email
-              xml.logradouro_destinatario shipment.street
-              xml.complemento_destinatario shipment.complement
-              xml.numero_end_destinatario shipment.number
+              xml.nome_destinatario { xml.cdata shipment.full_name }
+              xml.celular_destinatario { xml.cdata shipment.phone.try(:numbers_only) }
+              xml.email_destinatario { xml.cdata shipment.email }
+              xml.logradouro_destinatario { xml.cdata shipment.street }
+              xml.complemento_destinatario { xml.cdata shipment.complement }
+              xml.numero_end_destinatario { xml.cdata shipment.number }
             }
             xml.nacional {
-              xml.bairro_destinatario shipment.neighborhood
-              xml.cidade_destinatario shipment.city
+              xml.bairro_destinatario { xml.cdata shipment.neighborhood }
+              xml.cidade_destinatario { xml.cdata shipment.city }
               xml.uf_destinatario shipment.state
-              xml.cep_destinatario shipment.zip
+              xml.cep_destinatario { xml.cdata shipment.zip.try(:numbers_only) }
               xml.numero_nota_fiscal shipment.invoice_number
               xml.serie_nota_fiscal shipment.invoice_series
               xml.natureza_nota_fiscal
+              xml.valor_nota_fiscal invoice.at_css('vNF').content.gsub(".",",") if invoice
             }
             xml.servico_adicional {
               xml.codigo_servico_adicional '025'
+              if invoice
+                xml.codigo_servico_adicional '064'
+                xml.valor_declarado invoice.at_css('vNF').content.gsub(".",",")
+              end
             }
             xml.dimensao_objeto {
               xml.tipo_objeto '002'
-              xml.dimensao_altura package.heigth
-              xml.dimensao_largura package.width
-              xml.dimensao_comprimento package.depth
+              xml.dimensao_altura package.heigth.to_s.gsub(".",",")
+              xml.dimensao_largura package.width.to_s.gsub(".",",")
+              xml.dimensao_comprimento package.depth.to_s.gsub(".",",")
               xml.dimensao_diametro 0
             }
           }
@@ -651,5 +660,42 @@ class Carrier::Correios < Carrier
       verification_digit = 11 - remainder
     end
     verification_digit
+  end
+
+  def data_matrix(shipment)
+    account = shipment.account
+    str = ""
+    str += shipment.zip
+    if shipment.number.numbers_only == shipment.number
+      str += shipment.number.rjust(4, "0")
+    else
+      str += "0000"
+    end
+    str += account.zip
+    if account.number.numbers_only == account.number
+      str += account.number.rjust(4, "0")
+    else
+      str += "0000"
+    end
+    zip_sum = shipment.zip.split('').reduce(0){|sum, num| sum + num.to_i}
+    if zip_sum % 10 == 0
+      str += "0"
+    else
+      str += (10 - zip_sum % 10).to_s
+    end
+    str += "51"
+    str += shipment.tracking_number
+    str += "250000000000"
+    str += carrier_setting.settings['posting_card']
+    str += carrier_setting.settings["#{shipment.shipping_method.downcase}_service_id"]
+    str += "00"
+    str += shipment.number.rjust(5, "0")
+    str += shipment.complement.rjust(20, " ")
+    str += shipment.complement.rjust(20, " ")
+    str += "00000" # Declared amount
+    str += shipment.phone.numbers_only.rjust(12, "0")
+    str += "-00.000000"
+    str += "-00.000000"
+    str += "|"
   end
 end

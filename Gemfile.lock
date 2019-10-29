@@ -226,6 +226,8 @@ GEM
     selenium-webdriver (3.142.3)
       childprocess (>= 0.5, < 2.0)
       rubyzip (~> 1.2, >= 1.2.2)
+    semacode-ruby19 (0.7.4)
+      rake (>= 0.7.0)
     socksify (1.7.1)
     spring (2.1.0)
     spring-commands-rspec (1.0.4)
@@ -298,6 +300,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   savon
   selenium-webdriver
+  semacode-ruby19
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)

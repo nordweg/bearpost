@@ -1,10 +1,11 @@
+<% require 'barby/barcode/data_matrix' %>
 <% shipment = package.shipment %>
 <% carrier = shipment.carrier %>
 <% total_packages = shipment.packages.size %>
 <style>
 body {  margin: 0 }
 .label {
-  font-size: 20px;
+  font-size: 18px;
   font-family: helvetica;
   padding: 25px;
   line-height: 1.3;
@@ -17,6 +18,9 @@ body {  margin: 0 }
 .text-center {
   text-align: center;
 }
+.text-right {
+  text-align: right;
+}
 .mt20 {
   margin-top: 20px;
 }
@@ -27,15 +31,14 @@ body {  margin: 0 }
   font-size: 17px;
 }
 h4 {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   margin-top: 10px;
 }
-.top-left {
+.float-left {
   float:left;
 }
-.top-right {
+.float-right {
   float:right;
-  text-align: right;
 }
 .clearfix::after {
   content: "";
@@ -47,17 +50,28 @@ h4 {
 <div class="label">
 
   <div class="clearfix">
-    <div class="top-left">
-      <span style="font-size: 22px"><%= shipment.carrier.name %> <strong><%= shipment.shipping_method %></strong></span><br>
+
+
+  </div>
+
+  <div class="clearfix">
+    <div class="float-left">
+      <%= image_tag(Barby::DataMatrix.new(carrier.data_matrix(shipment)).to_image(xdim:2, margin:0).to_data_url) %>
+    </div>
+    <div class="float-left" style="margin-left:10px">
+      <span style="font-size: 22px"><%= carrier.name %> <strong><%= shipment.shipping_method %></strong></span><br>
       <span style="font-size: 17px">
         Contrato: <%= carrier.carrier_setting.settings["contract"] %><br>
         Pedido: <%= shipment.order_number %><br>
       </span>
     </div>
-    <div class="top-right">
-      Volume: <%= shipment.packages.index(package) + 1 %>/<%= total_packages %><br>
+    <div class="float-right text-right" style="margin-left:10px">
+      <%= wicked_pdf_image_tag "/correios/#{shipment.shipping_method}.png", size: "60" %><br>
+    </div>
+    <div class="float-right">
       <span style="font-size: 17px">
         NF: <%= shipment.invoice_number %><br>
+        Volume: <%= shipment.packages.index(package) + 1 %>/<%= total_packages %><br>
         Peso (g)
       </span>
     </div>
@@ -67,7 +81,7 @@ h4 {
   <% if shipment.tracking_number.present? %>
     <div class='text-center mt20'>
       <%= shipment.tracking_number %><br>
-      <%= image_tag(Barby::Code128.new(shipment.tracking_number).to_image(xdim:2).to_data_url) %>
+      <%= image_tag(Barby::Code128.new(shipment.tracking_number).to_image(xdim:2,height:80).to_data_url) %>
     </div>
   <% end %>
 
@@ -81,7 +95,7 @@ h4 {
     <li><strong><%= shipment.zip %></strong> <%= shipment.city %> / <%= shipment.state %></li>
 
     <% if shipment.zip.present? %>
-    <%= image_tag(Barby::Code128.new(shipment.zip.delete("^0-9")).to_image(xdim:2).to_data_url) %>
+    <%= image_tag(Barby::Code128.new(shipment.zip.delete("^0-9")).to_image(xdim:2,height:80).to_data_url) %>
     <% end %>
   </ul>
 
