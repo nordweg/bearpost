@@ -3,10 +3,8 @@
 <% carrier = shipment.carrier %>
 <% total_packages = shipment.packages.size %>
 <style>
-body {  margin: 0 }
 .label {
   font-size: 18px;
-  font-family: helvetica;
   padding: 25px;
   line-height: 1.3;
 }
@@ -50,30 +48,31 @@ h4 {
 <div class="label">
 
   <div class="clearfix">
-
-
-  </div>
-
-  <div class="clearfix">
     <div class="float-left">
       <%= image_tag(Barby::DataMatrix.new(carrier.data_matrix(shipment)).to_image(xdim:2, margin:0).to_data_url) %>
     </div>
     <div class="float-left" style="margin-left:10px">
       <span style="font-size: 22px"><%= carrier.name %> <strong><%= shipment.shipping_method %></strong></span><br>
-      <span style="font-size: 17px">
-        Contrato: <%= carrier.carrier_setting.settings["contract"] %><br>
-        Pedido: <%= shipment.order_number %><br>
+      <span style="font-size: 16px">
+        <table>
+          <tr>
+            <td>Contrato</td>
+            <td><%= carrier.carrier_setting.settings["contract"] %></td>
+          </tr>
+          <tr>
+            <td>Pedido</td>
+            <td><%= shipment.order_number %></td>
+          </tr>
+          <tr>
+            <td>NF</td>
+            <td><%= shipment.invoice_number %></td>
+          </tr>
+        </table>
       </span>
     </div>
-    <div class="float-right text-right" style="margin-left:10px">
-      <%= wicked_pdf_image_tag "/correios/#{shipment.shipping_method}.png", size: "60" %><br>
-    </div>
-    <div class="float-right">
-      <span style="font-size: 17px">
-        NF: <%= shipment.invoice_number %><br>
-        Volume: <%= shipment.packages.index(package) + 1 %>/<%= total_packages %><br>
-        Peso (g)
-      </span>
+    <div class="float-right text-right" style="font-size: 16px">
+      <%= wicked_pdf_image_tag "/correios/#{shipment.shipping_method}.png", size: "58" %><br>
+      Volume</br> <%= shipment.packages.index(package) + 1 %>/<%= total_packages %></br>
     </div>
   </div>
 
