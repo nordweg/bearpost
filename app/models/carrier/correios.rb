@@ -530,7 +530,7 @@ class Carrier::Correios < Carrier
           invoice = shipment.invoice_xml ? Nokogiri::XML(shipment.invoice_xml) : nil
           package = shipment.packages.last
           xml.objeto_postal {
-            xml.numero_etiqueta shipment.tracking_number[0..9] + shipment.tracking_number[-2..-1]
+            xml.numero_etiqueta shipment.tracking_number
             xml.codigo_objeto_cliente
             xml.codigo_servico_postagem service_id
             xml.cubagem '0,00'
