@@ -83,12 +83,15 @@ class Carrier::Azul < Carrier
     "88" => {azul_status: 'RECUSA AGUARDANDO NEGOCIAÇÃO', bearpost_status: 'Problematic'},
     "91" => {azul_status: 'ENTREGA PROGRAMADA.', bearpost_status: 'On the way'},
     "92" => {azul_status: 'PROBLEMAS FISCAIS', bearpost_status: 'Problematic'},
+    "93" => {azul_status: 'FALTA PARCIAL DA CARGA', bearpost_status: 'Problematic'},
     "100" => {azul_status: 'EMISSAO DO CONHECIMENTO DE TRANSPORTE.', bearpost_status: 'On the way'},
+    "102" => {azul_status: 'IMPRESSÃO DO CONHECIMENTO DE TRANSPORTE', bearpost_status: 'On the way'},
     "104" => {azul_status: 'EMISSAO DE MANIFESTO DE SAIDA.', bearpost_status: 'On the way'},
     "106" => {azul_status: 'EMISSAO DA LISTAGEM DE ENTREGAS.', bearpost_status: 'On the way'},
     "107" => {azul_status: 'CANCELAMENTO DO CONHECIMENTO.', bearpost_status: 'On the way'},
     "108" => {azul_status: 'REIMPRESSAO DE CONHECIMENTO.', bearpost_status: 'On the way'},
     "112" => {azul_status: 'CARGA RECEBIDA EM VOO FORA DA ROTERIZAÇÃO', bearpost_status: 'On the way'},
+    "126" => {azul_status: 'EMISSÃO DA LISTAGEM DE ENTREGAS', bearpost_status: 'On the way'},
     "127" => {azul_status: 'UNITIZACAO DA CARGA.', bearpost_status: 'On the way'},
     "128" => {azul_status: 'DESUNITIZACAO DA CARGA', bearpost_status: 'On the way'},
     "133" => {azul_status: 'SAIDA DO VEICULO', bearpost_status: 'On the way'},
@@ -98,9 +101,13 @@ class Carrier::Azul < Carrier
     "138" => {azul_status: 'EMBARQUE DE CARGA NO VOO', bearpost_status: 'On the way'},
     "142" => {azul_status: 'CARREGAMENTO DO VEICULO', bearpost_status: 'On the way'},
     "144" => {azul_status: 'EM PROCESSO DE CONFERENCIA', bearpost_status: 'On the way'},
+    "171" => {azul_status: 'FECHAMENTO DE LISTAGEM DE CARGA DO VEICULO', bearpost_status: 'On the way'},
     "200" => {azul_status: 'POSICIONAMENTO DE CARGA EM LOCATION', bearpost_status: 'On the way'},
     "201" => {azul_status: 'CONEXAO IMEDIATA DE VOO.', bearpost_status: 'On the way'},
-    "517" => {azul_status: 'PASSAGEM PELA FISCALIZACAO', bearpost_status: 'On the way'}
+    "252" => {azul_status: 'CORTE DE CARGA DO VOO', bearpost_status: 'On the way'},
+    "513" => {azul_status: 'EXCESSO DE CHUVA', bearpost_status: 'On the way'},
+    "517" => {azul_status: 'PASSAGEM PELA FISCALIZACAO', bearpost_status: 'On the way'},
+    "525" => {azul_status: 'NOTA FISCAL LIBERADA DA FISCALIZAÇÃO', bearpost_status: 'On the way'}
   }
 
   # DEFAULT METHODS
