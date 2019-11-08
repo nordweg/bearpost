@@ -497,7 +497,7 @@ class Carrier::Correios < Carrier
     administrative_code = carrier_setting.settings["administrative_code"]
 
 
-    builder = Nokogiri::XML::Builder.new do |xml|
+    builder = Nokogiri::XML::Builder.new(:encoding => 'ISO-8859-1') do |xml|
       xml.correioslog {
         xml.tipo_arquivo 'Postagem'
         xml.versao_arquivo '2.3'
