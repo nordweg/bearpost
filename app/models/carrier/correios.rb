@@ -10,6 +10,28 @@ class Carrier::Correios < Carrier
   LIVE_URL = "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   SERVICES = ['PAC','SEDEX']
 
+  def self.settings
+    [
+      { field: 'sigep_user', type:'text' },
+      { field: 'sigep_password', type:'password' },
+      { field: 'tracking_user', type:'text' },
+      { field: 'tracking_password', type:'password' },
+      { field: 'administrative_code', type:'text' },
+      { field: 'contract', type:'text' },
+      { field: 'posting_card', type:'text' },
+      { field: 'cnpj', type:'text' },
+      { field: 'pac_label_minimum_quantity', type:'text' },
+      { field: 'pac_label_reorder_quantity', type:'text' },
+      { field: 'pac_service_id', type:'text' },
+      { field: 'pac_posting_code', type:'text' },
+      { field: 'sedex_label_minimum_quantity', type:'text' },
+      { field: 'sedex_label_reorder_quantity', type:'text'},
+      { field: 'sedex_service_id', type: 'text' },
+      { field: 'sedex_posting_code', type: 'text' },
+      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
+    ]
+  end
+
   ID_SERVICOS = {
     '40010' => "SEDEX sem contrato",
     '40045' => "SEDEX a Cobrar, sem contrato",
@@ -263,6 +285,37 @@ class Carrier::Correios < Carrier
     ["CMR", 1] => ["On the way", "Conferido", "", "Acompanhar"]
   }
 
+  NUMERO_DIRETORIA = {
+    ['ACRE','AC'] => '03',
+    ['ALAGOAS','AL'] => '04',
+    ['AMAPÁ','AP'] => '05',
+    ['AMAZONAS','AM'] => '06',
+    ['BAHIA','BA'] => '08',
+    ['BRASÍLIA','DF'] => '10',
+    ['CEARÁ','CE'] => '12',
+    ['ESPIRITO SANTO','ES'] => '14',
+    ['GOIÁS','GO'] => '16',
+    ['MARANHÃO','MA'] => '18',
+    ['MINAS GERAIS','MG'] => '20',
+    ['MATO GROSSO DO SUL','MS'] => '22',
+    ['MATO GROSSO','MT'] => '24',
+    ['PARÁ','PA'] => '28',
+    ['PARAÍBA','PB'] => '30',
+    ['PERNAMBUCO','PE'] => '32',
+    ['PIAUÍ','PI'] => '34',
+    ['PARANÁ','PR'] => '36',
+    ['RIO DE JANEIRO','RJ'] => '50',
+    ['RIO GRANDE DO NORTE','RN'] => '60',
+    ['RIO GRANDE DO SUL', 'RS'] => '64',
+    ['RONDONIA','RO'] => '26',
+    ['RORAIMA', 'RR'] => '65',
+    ['SANTA CATARINA', 'SC'] => '68',
+    ['SERGIPE', 'SE'] => '70',
+    ['TOCANTINS','TO'] => '75',
+    ['SÃO PAULO', 'SP'] => '72',
+    ['SÃO PAULO INTERIOR', 'SPI'] => '74'
+  }
+
   # DEFAULT METHODS
   # Define here the mandatory default methods that are going to be called by the core Bearpost application.
   # Use carrier.rb as a guideline to know which methods should be overwritten here.
@@ -277,31 +330,12 @@ class Carrier::Correios < Carrier
 
   def authenticate!
     services = available_services
-    message = "Estes são os serviços disponíveis para sua conta:"
+    message = "Estes são os serviços disponíveis para sua conta: <br>"
     services.each do |service|
-      message << "<br> #{service[:description].strip}: #{service[:id]}"
+      message << "<br>#{service[:description].strip}"
+      message << "<br>ID do Serviço: #{service[:service_id].strip}, Código de Postagem: #{service[:posting_code].strip}<br>"
     end
     message
-  end
-
-  def self.settings
-    [
-      { field: 'sigep_user', type:'text' },
-      { field: 'sigep_password', type:'password' },
-      { field: 'tracking_user', type:'text' },
-      { field: 'tracking_password', type:'password' },
-      { field: 'administrative_code', type:'text' },
-      { field: 'contract', type:'text' },
-      { field: 'posting_card', type:'text' },
-      { field: 'cnpj', type:'text' },
-      { field: 'pac_label_minimum_quantity', type:'text' },
-      { field: 'pac_label_reorder_quantity', type:'text' },
-      { field: 'pac_service_id', type:'text' },
-      { field: 'sedex_label_minimum_quantity', type:'text' },
-      { field:'sedex_label_reorder_quantity', type:'text'},
-      { field:'sedex_service_id', type: 'text' },
-      { field:'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
-    ]
   end
 
   def self.tracking_url
@@ -365,22 +399,22 @@ class Carrier::Correios < Carrier
 
   def transmit_shipments(shipments)
     response = []
-      grouped_shipments = group_shipments_by_shipping_method(shipments)
-      grouped_shipments.each do |shipping_method, shipments|
-        correios_response = create_plp(shipments)
-        plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
-        message = "Enviado na PLP #{plp_number}"
-        shipments.each do |shipment|
-          settings = shipment.settings
-          settings['plp'] = plp_number
-          shipment.update(settings:settings, transmitted_to_carrier:true)
-          response << {
-            shipment: shipment,
-            success: shipment.transmitted_to_carrier,
-            message: message
-          }
-        end
+    grouped_shipments = group_shipments_by_shipping_method(shipments)
+    grouped_shipments.each do |shipping_method, shipments|
+      correios_response = create_plp(shipments)
+      plp_number = correios_response.body.dig(:fecha_plp_varios_servicos_response,:return)
+      message = "Enviado na PLP #{plp_number}"
+      shipments.each do |shipment|
+        settings = shipment.settings
+        settings['plp'] = plp_number
+        shipment.update(settings:settings, transmitted_to_carrier:true)
+        response << {
+          shipment: shipment,
+          success: shipment.transmitted_to_carrier,
+          message: message
+        }
       end
+    end
     response
   end
 
@@ -470,14 +504,14 @@ class Carrier::Correios < Carrier
       labels << shipment.tracking_number[0..9] + shipment.tracking_number[-2..-1]
     end
     message = {
-      "xml" =>  xml,
-      "idPlpCliente" => 123123,
-      "cartaoPostagem" => posting_card,
-      "listaEtiquetas" => labels,
-      "usuario" => user,
-      "senha" => password,
+      :xml =>  xml,
+      :id_plp_cliente => 123123,
+      :cartao_postagem => posting_card,
+      :lista_etiquetas => labels,
+      :usuario => user,
+      :senha => password,
     }
-    connection.call(:fecha_plp_varios_servicos, message:message)
+    connection.call(:fecha_plp_varios_servicos, message: message)
   end
 
   def get_plp_xml(plp_number)
@@ -491,7 +525,7 @@ class Carrier::Correios < Carrier
 
   def build_xml(shipments)
     account  = shipments.first.account
-    service_id = carrier_setting.settings["#{shipments.first.shipping_method.downcase}_service_id"]
+    posting_code = carrier_setting.settings["#{shipments.first.shipping_method.downcase}_posting_code"]
     posting_card = carrier_setting.settings["posting_card"]
     contract = carrier_setting.settings["contract"]
     administrative_code = carrier_setting.settings["administrative_code"]
@@ -506,7 +540,7 @@ class Carrier::Correios < Carrier
           xml.valor_global
           xml.mcu_unidade_postagem
           xml.nome_unidade_postagem
-          xml.cartao_postagem posting_card
+          xml.cartao_postagem "00#{posting_card}"
         }
         xml.remetente {
           xml.numero_contrato contract
@@ -532,7 +566,7 @@ class Carrier::Correios < Carrier
           xml.objeto_postal {
             xml.numero_etiqueta shipment.tracking_number
             xml.codigo_objeto_cliente
-            xml.codigo_servico_postagem service_id
+            xml.codigo_servico_postagem posting_code
             xml.cubagem '0,00'
             xml.peso (package.weight * 1000).to_i
             xml.rt2
@@ -572,41 +606,11 @@ class Carrier::Correios < Carrier
         end
       }
     end
-    builder.to_xml
+    builder.to_xml(save_with:0).sub("\n","").encode('UTF-8')
   end
 
   def get_numero_diretoria(state)
-    hash = { # REFACTOR > Move to class constant on top
-      'ACRE'=> '03',
-      'ALAGOAS'=> '04',
-      'AMAZONAS'=> '06',
-      'AMAPÁ'=> '05',
-      'BAHIA'=> '08',
-      'BRASÍLIA'=> '10',
-      'CEARÁ'=> '12',
-      'ESPIRITO SANTO'=> '14',
-      'GOIÁS'=> '16',
-      'MARANHÃO'=> '18',
-      'MINAS GERAIS'=> '20',
-      'MATO GROSSO DO SUL'=> '22',
-      'MATO GROSSO'=> '24',
-      'PARÁ'=> '28',
-      'PARAÍBA'=> '30',
-      'PERNAMBUCO'=> '32',
-      'PIAUÍ'=> '34',
-      'PARANÁ'=> '36',
-      'RIO DE JANEIRO'=> '50',
-      'RIO GRANDE DO NORTE'=> '60',
-      'RONDONIA'=> '26',
-      'RORAIMA'=> '65',
-      'RIO GRANDE DO SUL'=> '64',
-      'SANTA CATARINA'=> '68',
-      'SERGIPE'=> '70',
-      'SÃO PAULO INTERIOR'=> '74',
-      'SÃO PAULO'=> '72',
-      'TOCANTINS'=> '75'
-    }
-    hash.find {|key,value| key.downcase.include?(state.downcase)}[1]
+    NUMERO_DIRETORIA.find {|key,value| key.include?(state.upcase)}[1]
   end
 
   # Method for getting available services and their IDs - Use it to find your pac_service_id and sedex_service_id
@@ -626,14 +630,16 @@ class Carrier::Correios < Carrier
 
     connection = Savon.client(wsdl: LIVE_URL, headers: { 'SOAPAction' => '' })
     response = connection.call(:busca_cliente, message:message)
-    response.body.dig(:busca_cliente_response, :return, :contratos, :cartoes_postagem, :servicos).map {|servico| {id:servico[:id], description:servico[:descricao]} }
+    response.body.dig(:busca_cliente_response, :return, :contratos, :cartoes_postagem, :servicos).map { |servico| { description: servico[:descricao], service_id: servico[:id], posting_code: servico[:codigo]  } }
   end
 
   def connection
     url = test_mode? ? TEST_URL : LIVE_URL
     Savon.client(
       wsdl: url,
-      headers: { 'SOAPAction' => '' }
+      headers: { 'SOAPAction' => '' },
+      pretty_print_xml: true,
+      log: Rails.env.development?,
     )
   end
 
