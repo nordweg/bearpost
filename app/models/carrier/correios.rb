@@ -540,73 +540,74 @@ class Carrier::Correios < Carrier
           xml.valor_global
           xml.mcu_unidade_postagem
           xml.nome_unidade_postagem
-          xml.cartao_postagem "00#{posting_card}"
+          xml.cartao_postagem posting_card.rjust(10,'0')
         }
         xml.remetente {
-          xml.numero_contrato contract
+          xml.numero_contrato contract.slice(0,10)
           xml.numero_diretoria get_numero_diretoria(account.state)
-          xml.codigo_administrativo administrative_code
-          xml.nome_remetente { xml.cdata account.name }
-          xml.logradouro_remetente { xml.cdata account.street }
-          xml.numero_remetente { xml.cdata account.number }
-          xml.complemento_remetente { xml.cdata account.complement }
-          xml.bairro_remetente { xml.cdata account.neighborhood }
-          xml.cep_remetente { xml.cdata account.zip.try(:numbers_only) }
-          xml.cidade_remetente { xml.cdata account.city }
-          xml.uf_remetente account.state
-          xml.telefone_remetente { xml.cdata account.phone.try(:numbers_only) }
-          xml.email_remetente { xml.cdata account.email }
-          xml.cpf_cnpj_remetente account.cnpj.try(:numbers_only)
+          xml.codigo_administrativo administrative_code.slice(0,8)
+          xml.nome_remetente { xml.cdata account.name.slice(0,50) }
+          xml.logradouro_remetente { xml.cdata account.street.slice(0,50) }
+          xml.numero_remetente { xml.cdata account.number.slice(0,5) }
+          xml.complemento_remetente { xml.cdata account.complement.slice(0,30) }
+          xml.bairro_remetente { xml.cdata account.neighborhood.slice(0,30) }
+          xml.cep_remetente { xml.cdata account.zip.numbers_only.slice(0,8) }
+          xml.cidade_remetente { xml.cdata account.city.slice(0,30) }
+          xml.uf_remetente account.state.slice(0,2)
+          xml.telefone_remetente { xml.cdata account.phone.numbers_only.slice(0,12) }
+          xml.email_remetente { xml.cdata account.email.slice(0,50) }
+          xml.cpf_cnpj_remetente account.cnpj.numbers_only.slice(0,14)
           xml.ciencia_conteudo_proibido 'S'
         }
         xml.forma_pagamento
         shipments.each do |shipment|
           invoice = shipment.invoice_xml ? Nokogiri::XML(shipment.invoice_xml) : nil
+          invoice_value = invoice ? invoice.at_css('vNF').content.sub(".",",") : nil
           package = shipment.packages.last
           xml.objeto_postal {
-            xml.numero_etiqueta shipment.tracking_number
+            xml.numero_etiqueta shipment.tracking_number.slice(0,13)
             xml.codigo_objeto_cliente
-            xml.codigo_servico_postagem posting_code
+            xml.codigo_servico_postagem posting_code.slice(0,5)
             xml.cubagem '0,00'
-            xml.peso (package.weight * 1000).to_i
+            xml.peso (package.weight * 1000).round.to_s.slice(0,5)
             xml.rt2
             xml.destinatario {
-              xml.nome_destinatario { xml.cdata shipment.full_name }
-              xml.celular_destinatario { xml.cdata shipment.phone.try(:numbers_only) }
-              xml.email_destinatario { xml.cdata shipment.email }
-              xml.logradouro_destinatario { xml.cdata shipment.street }
-              xml.complemento_destinatario { xml.cdata shipment.complement }
-              xml.numero_end_destinatario { xml.cdata shipment.number }
+              xml.nome_destinatario { xml.cdata shipment.full_name.slice(0,50) }
+              xml.celular_destinatario { xml.cdata shipment.phone.numbers_only.slice(0,12) }
+              xml.email_destinatario { xml.cdata shipment.email.slice(0,50) }
+              xml.logradouro_destinatario { xml.cdata shipment.street.slice(0,50) }
+              xml.complemento_destinatario { xml.cdata shipment.complement.slice(0,30) }
+              xml.numero_end_destinatario { xml.cdata shipment.number.slice(0,5) }
             }
             xml.nacional {
-              xml.bairro_destinatario { xml.cdata shipment.neighborhood }
-              xml.cidade_destinatario { xml.cdata shipment.city }
-              xml.uf_destinatario shipment.state
-              xml.cep_destinatario { xml.cdata shipment.zip.try(:numbers_only) }
-              xml.numero_nota_fiscal shipment.invoice_number
-              xml.serie_nota_fiscal shipment.invoice_series
+              xml.bairro_destinatario { xml.cdata shipment.neighborhood.slice(0,30) }
+              xml.cidade_destinatario { xml.cdata shipment.city.slice(0,30) }
+              xml.uf_destinatario shipment.state.slice(0,2)
+              xml.cep_destinatario { xml.cdata shipment.zip.numbers_only.slice(0,8) }
+              xml.numero_nota_fiscal shipment.invoice_number.to_s.slice(0,7)
+              xml.serie_nota_fiscal shipment.invoice_series.to_s.slice(0,20)
               xml.natureza_nota_fiscal
-              xml.valor_nota_fiscal invoice.at_css('vNF').content.gsub(".",",") if invoice
+              xml.valor_nota_fiscal invoice_value
             }
             xml.servico_adicional {
               xml.codigo_servico_adicional '025'
               if invoice
                 xml.codigo_servico_adicional '064'
-                xml.valor_declarado invoice.at_css('vNF').content.gsub(".",",")
+                xml.valor_declarado invoice_value
               end
             }
             xml.dimensao_objeto {
-              xml.tipo_objeto '002'
-              xml.dimensao_altura package.heigth.to_s.gsub(".",",")
-              xml.dimensao_largura package.width.to_s.gsub(".",",")
-              xml.dimensao_comprimento package.depth.to_s.gsub(".",",")
+              xml.tipo_objeto '002' # Pacote / Caixa
+              xml.dimensao_altura package.heigth.to_s.sub(".",",").slice(0,9)
+              xml.dimensao_largura package.width.to_s.sub(".",",").slice(0,9)
+              xml.dimensao_comprimento package.depth.to_s.sub(".",",").slice(0,9)
               xml.dimensao_diametro 0
             }
           }
         end
       }
     end
-    builder.to_xml(save_with:0).sub("\n","").encode('UTF-8')
+    builder.to_xml.encode('UTF-8')
   end
 
   def get_numero_diretoria(state)
