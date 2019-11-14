@@ -566,10 +566,10 @@ class Carrier::Correios < Carrier
           package = shipment.packages.last
           xml.objeto_postal {
             xml.numero_etiqueta shipment.tracking_number.slice(0,13)
-            xml.codigo_objeto_cliente.slice(0,20)
+            xml.codigo_objeto_cliente
             xml.codigo_servico_postagem posting_code.slice(0,5)
             xml.cubagem '0,00'
-            xml.peso (package.weight * 1000).round
+            xml.peso (package.weight * 1000).round.to_s.slice(0,5)
             xml.rt2
             xml.destinatario {
               xml.nome_destinatario { xml.cdata shipment.full_name.slice(0,50) }
@@ -584,8 +584,8 @@ class Carrier::Correios < Carrier
               xml.cidade_destinatario { xml.cdata shipment.city.slice(0,30) }
               xml.uf_destinatario shipment.state.slice(0,2)
               xml.cep_destinatario { xml.cdata shipment.zip.numbers_only.slice(0,8) }
-              xml.numero_nota_fiscal shipment.invoice_number.slice(0,7)
-              xml.serie_nota_fiscal shipment.invoice_series.slice(0,20)
+              xml.numero_nota_fiscal shipment.invoice_number.to_s.slice(0,7)
+              xml.serie_nota_fiscal shipment.invoice_series.to_s.slice(0,20)
               xml.natureza_nota_fiscal
               xml.valor_nota_fiscal invoice_value
             }
