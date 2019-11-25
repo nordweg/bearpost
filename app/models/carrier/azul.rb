@@ -190,12 +190,6 @@ class Carrier::Azul < Carrier
   # CARRIER ESPECIFIC METHODS
   # Define here internal carrier methods that are used by the default methods above.
 
-  def save_authentication_token(token)
-    carrier_setting.settings['authentication_token'] = token
-    carrier_setting.settings['token_expire_date'] = DateTime.now + 5.hours
-    carrier_setting.save
-  end
-
   def update_authentication_token
     credentials = {
         "Email" => carrier_setting.settings["email"],
@@ -206,9 +200,13 @@ class Carrier::Azul < Carrier
     if response.body["HasErrors"]
       raise Exception.new("Azul - Authentication Error: #{response.body["ErrorText"]}")
     else
-      token = response.body["Value"]
-      save_authentication_token(token)
-      token
+      new_token = response.body["Value"]
+      unless new_token == carrier_setting.settings['authentication_token']
+        carrier_setting.settings['authentication_token'] = new_token
+        carrier_setting.settings['token_expire_date'] = DateTime.now + 8.hours
+        carrier_setting.save
+      end
+      new_token
     end
   end
 
