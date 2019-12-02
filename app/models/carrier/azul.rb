@@ -131,7 +131,7 @@ class Carrier::Azul < Carrier
   end
 
   def self.tracking_url
-    "http://www.azulcargo.com.br/Rastreio.aspx?n={tracking}&tipoAwb=Nacional"
+    "http://www.azulcargoexpress.com.br/Rastreio/Rastreio?awb={tracking}"
   end
 
   def get_authenticated_token!
