@@ -29,6 +29,11 @@ Know how to [integrate with a new carrier](#).
 - [ ] Personalized pricing and delivery rules
 
 
+## API Documentation
+
+You can check the full documentation [here](https://documenter.getpostman.com/view/5260961/SWE3beWV).  
+Make sure to change YOUR-TOKEN to the api token created under settings, and YOUR-BEARPOST to the proper url.
+
 ## Sample Usage
 
 ### Starting a new request

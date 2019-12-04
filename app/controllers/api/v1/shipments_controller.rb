@@ -5,7 +5,6 @@ module Api::V1
       shipments = Shipment.filter(params).order(shipped_at: :desc)
       shipments = shipments.page(params[:page]) if params[:page]
       render json: shipments
-
     end
 
     def show
@@ -34,11 +33,17 @@ module Api::V1
       hande_save(shipment)
     end
 
-    def get_tracking_number
+    def save_tracking_number
+      shipment = get_shipment
+      shipment.get_tracking_number
+      hande_save(shipment)
+    end
+
+    def transmit_shipment_to_carrier
       shipment = get_shipment
       carrier  = get_carrier(shipment)
-      shipment.tracking_number = carrier.get_tracking_number(shipment)
-      hande_save(shipment)
+      response = carrier.transmit_shipments([shipment]).first
+      render json: response[:message]
     end
 
     def get_labels
