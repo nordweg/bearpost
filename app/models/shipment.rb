@@ -182,16 +182,21 @@ class Shipment < ApplicationRecord
       shipments = self.all
     end
     shipments = shipments.where(status:params[:status]) if params[:status].present?
-    if params[:carrier].present?
-      carrier_class = Carriers.find(params[:carrier]).to_s
-      shipments = shipments.where(carrier_class: carrier_class)
-    end
     shipments = shipments.where(params[:late] => true) if params[:late].present?
     shipments = shipments.where(carrier_delivery_days_used: params[:carrier_delivery_days_used]) if params[:carrier_delivery_days_used].present?
     shipments = shipments.where(shipping_method: params[:shipping_method]) if params[:shipping_method].present?
     shipments = shipments.where(account_id: params[:account_id]) if params[:account_id].present?
     shipments = shipments.where(transmitted_to_carrier: params[:transmitted_to_carrier]) if params[:transmitted_to_carrier].present?
     shipments = shipments.where(state: params[:state]) if params[:state].present?
+    shipments = shipments.where(carrier_class: params[:carrier_class]) if params[:carrier_class].present?
+    if params[:carrier].present?
+      carrier_class = Carriers.find(params[:carrier]).to_s
+      shipments = shipments.where(carrier_class: carrier_class)
+    end
+    if params[:account].present?
+      account = Account.find_by!(name:params[:account])
+      shipments = shipments.where(account: account)
+    end
     if params[:shipped_at_range].present?
       start_date = DateTime.parse(params[:shipped_at_range][0..9]).beginning_of_day
       end_date = DateTime.parse(params[:shipped_at_range][13..-1]).end_of_day
