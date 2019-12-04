@@ -46,11 +46,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :shipments do
         member do
-          get  'save_tracking_number',       to: "shipments#save_tracking_number"
-          get  'get_labels',                 to: "shipments#get_labels", format: :pdf
-          post 'transmit_shipment_to_carrier', to: "shipments#transmit_shipment_to_carrier"
-          post 'update_invoice_xml',         to: "shipments#update_invoice_xml"
-          post 'set_as_shipped',             to: "shipments#set_as_shipped"
+          get  'save_tracking_number'
+          get  'get_labels'
+          post 'transmit_shipment_to_carrier'
+          post 'update_invoice_xml'
+          post 'set_as_shipped'
         end
       end
       resources :shipping_methods

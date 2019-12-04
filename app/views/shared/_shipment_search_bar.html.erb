@@ -14,7 +14,7 @@
 
       <div class="col-md-2">
         <label>Transportadora</label>
-        <%= select_tag(:carrier, options_for_select(carriers_for_select.prepend(['Todas',nil]), selected: params[:carrier]), class:"form-control selectpicker") %>
+        <%= select_tag(:carrier_class, options_for_select(carriers_for_select.prepend(['Todas',nil]), selected: params[:carrier_class]), class:"form-control selectpicker") %>
       </div>
 
       <div class="col-md-2">
