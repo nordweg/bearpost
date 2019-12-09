@@ -25,7 +25,7 @@ module ApplicationHelper
   end
 
   def accounts_for_select
-    Account.all.map{|account| [account.name, account.id]}
+    Account.all.pluck(:name, :id)
   end
 
   def carriers_for_select

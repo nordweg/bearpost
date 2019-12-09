@@ -1,13 +1,10 @@
 class Carrier::Azul < Carrier
   cattr_reader :name
-
-  # GENERAL DEFINITIONS
-  # Define Carrier related constants here
-
   @@name = "Azul Cargo"
 
-  LIVE_URL = "http://ediapi.onlineapp.com.br"
+  # GENERAL DEFINITIONS
   TEST_URL = "http://hmg.onlineapp.com.br/WebAPI_EdiAzulCargo"
+  LIVE_URL = "http://ediapi.onlineapp.com.br"
   SERVICES = ['Standart']
 
   STATUS_CODES = {
@@ -149,9 +146,8 @@ class Carrier::Azul < Carrier
 
   def get_delivery_updates(shipment)
     get_authenticated_token!
-    check_tracking_number(shipment)
-    token = carrier_setting.settings['authentication_token'] # REFACTOR > Call it authentication_token. Had to read the rest of the code to figure out what token it is
-    response = connection.get("api/Ocorrencias/Consultar?Token=#{token}&AWB=#{shipment.tracking_number}")
+    authentication_token = carrier_setting.settings['authentication_token']
+    response = connection.get("api/Ocorrencias/Consultar?Token=#{authentication_token}&AWB=#{shipment.tracking_number}")
     check_response(response)
     events = response.body.dig("Value", 0, "Ocorrencias")
     delivery_updates = []
@@ -209,10 +205,6 @@ class Carrier::Azul < Carrier
       end
       new_token
     end
-  end
-
-  def check_tracking_number(shipment) # REFACTOR > Make this default for all instead of carrier defining this logic? Or could check for tracking automatically if not present. Probably enough logic to create an TrackingCodeChecker
-    raise Exception.new("Azul - Este envio não tem um código de rastreio (AWB)") if shipment.tracking_number.blank?
   end
 
   def check_response(response)

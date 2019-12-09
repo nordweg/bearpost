@@ -1,36 +1,11 @@
 class Carrier::Correios < Carrier
   cattr_reader :name
-
-  # GENERAL DEFINITIONS
-  # Define Carrier related constants here
-
   @@name = "Correios"
 
+  # GENERAL DEFINITIONS
   TEST_URL = "https://apphom.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   LIVE_URL = "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   SERVICES = ['PAC','SEDEX']
-
-  def self.settings
-    [
-      { field: 'sigep_user', type:'text' },
-      { field: 'sigep_password', type:'password' },
-      { field: 'tracking_user', type:'text' },
-      { field: 'tracking_password', type:'password' },
-      { field: 'administrative_code', type:'text' },
-      { field: 'contract', type:'text' },
-      { field: 'posting_card', type:'text' },
-      { field: 'cnpj', type:'text' },
-      { field: 'pac_label_minimum_quantity', type:'text' },
-      { field: 'pac_label_reorder_quantity', type:'text' },
-      { field: 'pac_service_id', type:'text' },
-      { field: 'pac_posting_code', type:'text' },
-      { field: 'sedex_label_minimum_quantity', type:'text' },
-      { field: 'sedex_label_reorder_quantity', type:'text'},
-      { field: 'sedex_service_id', type: 'text' },
-      { field: 'sedex_posting_code', type: 'text' },
-      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
-    ]
-  end
 
   ID_SERVICOS = {
     '40010' => "SEDEX sem contrato",
@@ -316,7 +291,29 @@ class Carrier::Correios < Carrier
     ['SÃO PAULO INTERIOR', 'SPI'] => '74'
   }
 
-  # DEFAULT METHODS
+  def self.settings
+    [
+      { field: 'sigep_user', type:'text' },
+      { field: 'sigep_password', type:'password' },
+      { field: 'tracking_user', type:'text' },
+      { field: 'tracking_password', type:'password' },
+      { field: 'administrative_code', type:'text' },
+      { field: 'contract', type:'text' },
+      { field: 'posting_card', type:'text' },
+      { field: 'cnpj', type:'text' },
+      { field: 'pac_label_minimum_quantity', type:'text' },
+      { field: 'pac_label_reorder_quantity', type:'text' },
+      { field: 'pac_service_id', type:'text' },
+      { field: 'pac_posting_code', type:'text' },
+      { field: 'sedex_label_minimum_quantity', type:'text' },
+      { field: 'sedex_label_reorder_quantity', type:'text'},
+      { field: 'sedex_service_id', type: 'text' },
+      { field: 'sedex_posting_code', type: 'text' },
+      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
+    ]
+  end
+
+  # REQUIRED METHODS
   # Define here the mandatory default methods that are going to be called by the core Bearpost application.
   # Use carrier.rb as a guideline to know which methods should be overwritten here.
 
@@ -361,7 +358,7 @@ class Carrier::Correios < Carrier
     tracking_number
   end
 
-  def prepare_label(shipment)
+  def before_get_label(shipment)
     if carrier_setting.settings['label_type'] == 'tracked_label' && shipment.tracking_number.blank?
       shipment.tracking_number = get_tracking_number(shipment)
       shipment.save
