@@ -6,6 +6,8 @@ class Carrier::Azul < Carrier
   TEST_URL = "http://hmg.onlineapp.com.br/WebAPI_EdiAzulCargo"
   LIVE_URL = "http://ediapi.onlineapp.com.br"
   SERVICES = ['Standart']
+  TRACKING_URL = "http://www.azulcargoexpress.com.br/Rastreio/Rastreio?awb={tracking}"
+
 
   STATUS_CODES = {
     "1" => {azul_status: 'ENTREGA REALIZADA NORMALMENTE', bearpost_status: 'Delivered'},
@@ -126,10 +128,6 @@ class Carrier::Azul < Carrier
 
   def self.shipping_methods
     ['Standart']
-  end
-
-  def self.tracking_url
-    "http://www.azulcargoexpress.com.br/Rastreio/Rastreio?awb={tracking}"
   end
 
   def get_authenticated_token!

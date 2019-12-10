@@ -6,6 +6,7 @@ class Carrier::Correios < Carrier
   TEST_URL = "https://apphom.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   LIVE_URL = "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   SERVICES = ['PAC','SEDEX']
+  TRACKING_URL = "https://rastreamentocorreios.info/consulta/{tracking}"
 
   ID_SERVICOS = {
     '40010' => "SEDEX sem contrato",
@@ -333,10 +334,6 @@ class Carrier::Correios < Carrier
       message << "<br>ID do Serviço: #{service[:service_id].strip}, Código de Postagem: #{service[:posting_code].strip}<br>"
     end
     message
-  end
-
-  def self.tracking_url
-    "https://rastreamentocorreios.info/consulta/{tracking}"
   end
 
   def get_tracking_number(shipment)
