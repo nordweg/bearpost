@@ -29,7 +29,7 @@ class Carrier
   # Define an array of general settings for the carrier
   def self.settings
     raise ::NotImplementedError, "#settings is not implemented for #{self.class.name}"
-    [
+    example = [
       {field:'email',    type:'text'},
       {field:'password', type:'password'}
     ]
@@ -38,12 +38,12 @@ class Carrier
   # Should return an array of DeliveryUpdate objects
   def get_delivery_updates(shipment)
     raise ::NotImplementedError, "#get_delivery_updates is not implemented for #{self.class.name}"
-    {
+    example = [{
       date: "", # DD-MM-YYYY HH:MM
       description: "",
       status_code: "", # Carrier status code
       bearpost_status: "" # Should be one of Shipment.statuses
-    }
+    }]
   end
 
   # Returns a tracking number for the shipment, as a string.
@@ -62,7 +62,7 @@ class Carrier
   # a boolean stating if the transmittion was successful, and a return message.
   def transmit_shipments(shipments)
     raise ::NotImplementedError, "#transmit_shipments is not implemented for #{self.class.name}"
-    [
+    example = [
       {
         shipment: shipment,
         success: false,
