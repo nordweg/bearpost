@@ -104,7 +104,7 @@ class Shipment < ApplicationRecord
       bearpost_status: status,
       category: status,
       date: DateTime.now,
-      changed_by: Current.connected
+      changed_by: Current.connected || "Bearpost"
     )
   end
 

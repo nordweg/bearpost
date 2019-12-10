@@ -79,12 +79,8 @@ class Carrier
   ## OPTIONAL METHODS ##
   # Overwrite as you see fit.
 
-  # All the hooks that are required before a label should be set here.
+  # All the hooks that should run before getting a label.
   def before_get_label(shipment)
-  end
-
-  # All the hooks that are required before getting delivery updates should be set here.
-  def before_get_delivery_updates(shipment)
   end
 
   # Any extra links to be shown on shipment show page options dropdown.

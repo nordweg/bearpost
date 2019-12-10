@@ -140,6 +140,7 @@ class Carrier::Azul < Carrier
 
   def get_delivery_updates(shipment)
     get_authenticated_token!
+    shipment.get_tracking_number if shipment.tracking_number.blank?
     authentication_token = carrier_setting.settings['authentication_token']
     response = connection.get("api/Ocorrencias/Consultar?Token=#{authentication_token}&AWB=#{shipment.tracking_number}")
     check_response(response)
@@ -154,10 +155,6 @@ class Carrier::Azul < Carrier
       }
     end
     delivery_updates
-  end
-
-  def before_get_delivery_updates(shipment)
-    shipment.get_tracking_number if shipment.tracking_number.blank?
   end
 
   def transmit_shipments(shipments)
