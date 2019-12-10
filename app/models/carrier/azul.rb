@@ -126,10 +126,6 @@ class Carrier::Azul < Carrier
     ]
   end
 
-  def self.shipping_methods
-    ['Standart']
-  end
-
   def get_authenticated_token!
     token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
     if token_expire_date.blank? || token_expire_date < DateTime.now

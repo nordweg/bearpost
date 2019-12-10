@@ -53,7 +53,7 @@ Rails.application.routes.draw do
           post 'set_as_shipped'
         end
       end
-      resources :shipping_methods
+      resources :carriers
     end
   end
 

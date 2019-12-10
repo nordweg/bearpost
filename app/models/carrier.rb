@@ -5,11 +5,10 @@ class Carrier
 
   ## GENERAL DEFINITIONS ##
   # Define Carrier related constants here
-
   TEST_URL = ""
   LIVE_URL = ""
-  TRACKING_URL = ""
   SERVICES = []
+  TRACKING_URL = ""
 
   ## DEFAULT BEHAVIOR ##
   # This is the behavior shared by all carriers. No need to change it.
@@ -58,8 +57,8 @@ class Carrier
   def transmit_shipments(shipments)
     response_example = [
       {
-        shipment: shipment
-        success: false
+        shipment: shipment,
+        success: false,
         message: 'Carrier Error: Package size is not valid'
       },
       {

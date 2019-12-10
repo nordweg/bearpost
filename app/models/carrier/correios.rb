@@ -317,11 +317,6 @@ class Carrier::Correios < Carrier
   # REQUIRED METHODS
   # Define here the mandatory default methods that are going to be called by the core Bearpost application.
   # Use carrier.rb as a guideline to know which methods should be overwritten here.
-
-  def self.shipping_methods
-    ['PAC','SEDEX']
-  end
-
   def self.custom_label_view
     'correios_label'
   end
