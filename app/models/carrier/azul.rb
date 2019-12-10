@@ -156,6 +156,10 @@ class Carrier::Azul < Carrier
     delivery_updates
   end
 
+  def before_get_delivery_updates(shipment)
+    shipment.get_tracking_number if shipment.tracking_number.blank?
+  end
+
   def transmit_shipments(shipments)
     response = []
     shipments.each do |shipment|

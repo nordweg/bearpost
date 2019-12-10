@@ -28,34 +28,41 @@ class Carrier
 
   # Define an array of general settings for the carrier
   def self.settings
+    raise ::NotImplementedError, "#settings is not implemented for #{self.class.name}"
     [
       {field:'email',    type:'text'},
       {field:'password', type:'password'}
     ]
-    raise ::NotImplementedError, "#settings is not implemented for #{self.class.name}"
   end
 
   # Should return an array of DeliveryUpdate objects
   def get_delivery_updates(shipment)
     raise ::NotImplementedError, "#get_delivery_updates is not implemented for #{self.class.name}"
+    {
+      date: "", # DD-MM-YYYY HH:MM
+      description: "",
+      status_code: "", # Carrier status code
+      bearpost_status: "" # Should be one of Shipment.statuses
+    }
   end
 
-  # This method should return a tracking number for the shipment, as a string.
+  # Returns a tracking number for the shipment, as a string.
   def get_tracking_number(shipment)
     raise ::NotImplementedError, "#get_tracking_number is not implemented for #{self.class.name}"
   end
 
-  # This method should authenticate the carrier with it's given credentials.
-  # If a string is returned, it will be displayed for the user after validating the credentials.
+  # Authenticates the carrier with it's given credentials.
+  # If no exception is raised and a string is returned,
+  # it will be displayed for the user after validating the credentials.
   def authenticate!
     raise ::NotImplementedError, "#authenticate! is not implemented for #{self.class.name}"
   end
 
-  # This method should respond with the an array of hashes, including the shipment,
-  # a boolean stating if the sync was successful, and any message (error or success) from the result of the process.
-  # It receives an array of shipments.
+  # Should return an array of hashes, with the shipment transmitted,
+  # a boolean stating if the transmittion was successful, and a return message.
   def transmit_shipments(shipments)
-    response_example = [
+    raise ::NotImplementedError, "#transmit_shipments is not implemented for #{self.class.name}"
+    [
       {
         shipment: shipment,
         success: false,
@@ -67,11 +74,10 @@ class Carrier
         message: 'Shipment transmitted'
       }
     ]
-    raise ::NotImplementedError, 'You must implement transmit_shipments method for this carrier.'
   end
 
   ## OPTIONAL METHODS ##
-  # Before methods, extra links and custom views. Overwrite as you see fit.
+  # Overwrite as you see fit.
 
   # All the hooks that are required before a label should be set here.
   def before_get_label(shipment)
@@ -96,13 +102,5 @@ class Carrier
   # overwrite if you want to use a personalized view instead.
   def self.custom_label_view
     'general_label'
-  end
-
-  # A shipments needs to have a tracking number to get delivery updates
-  extend ActiveModel::Callbacks
-  define_model_callbacks :get_delivery_updates
-  before_get_delivery_updates :check_tracking_number_presence
-  def check_tracking_number_presence(shipment)
-    raise Exception.new("#{self.class.name}: Este envio não tem rastreio") if shipment.tracking_number.blank?
   end
 end
