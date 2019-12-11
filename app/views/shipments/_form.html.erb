@@ -38,7 +38,7 @@
               <div class="col-lg-4">
                 <div class="form-group">
                   <%= form.label 'Conta' %>
-                  <%= form.select(:account_id, Account.all.pluck(:name, :id), {}, class: 'form-control') %> <!-- REFACTOR >> create helper options_for_account? -->
+                  <%= form.select(:account_id, accounts_for_select, {}, class: 'form-control') %>
                 </div>
               </div>
               <div class="col-lg-4">
@@ -135,7 +135,7 @@
               <div class="col-lg-6">
                 <div class="form-group">
                   <label>Aprovado em</label>
-                  <%= form.datetime_field :approved_at, class: "form-control" %>
+                  <%= form.datetime_field :approved_at, value:(@shipment.approved_at || DateTime.now).strftime("%Y-%m-%dT%H:%M"), class: "form-control" %>
                 </div>
               </div>
               <div class="col-lg-3">
@@ -159,6 +159,7 @@
   </div>
 
   <div class="col-md-6">
+
     <div class="kt-portlet">
       <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -272,6 +273,38 @@
         </div>
       </div>
     </div>
+
+    <div class="kt-portlet">
+      <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+          <h3 class="kt-portlet__head-title">
+            <a data-toggle="collapse" href="#extra_fields" class="text-reset">Avançado</a>
+          </h3>
+        </div>
+      </div>
+
+      <div class="collapse" id="extra_fields">
+        <div class="kt-portlet__body">
+          <div class="kt-portlet__content">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Data de envio</label>
+                  <%= form.datetime_field :shipped_at, class: "form-control" %>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label>Data da entrega</label>
+                  <%= form.datetime_field :delivered_at, class: "form-control" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -292,9 +325,10 @@
   })
   $('#shipment_carrier_class').on('change', function() { update_shipping_method_field() });
   function update_shipping_method_field() {
-    carriers_and_shipping_methods = <%= raw Carriers.shipping_methods.to_json %>;
+    carriers_and_services = <%= raw Carriers.names_and_services.to_json %>;
     selected_carrier = $('#shipment_carrier_class option:selected').text();
-    shipping_methods = carriers_and_shipping_methods[selected_carrier];
+    carrier = carriers_and_services.find(element => element.carrier == selected_carrier);
+    shipping_methods = carrier.services;
     $('#shipment_shipping_method').empty();
     $.each(shipping_methods, function (i, item) {
         $('#shipment_shipping_method').append($('<option>', {

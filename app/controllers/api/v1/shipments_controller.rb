@@ -51,7 +51,7 @@ module Api::V1
       require "barby/outputter/png_outputter"
       shipment = get_shipment
       carrier  = get_carrier(shipment)
-      carrier.prepare_label(shipment)
+      carrier.before_get_label(shipment)
       pdf_html = ActionController::Base.new.render_to_string(
         template: 'api/v1/labels.html.erb',
         locals: {shipment:shipment, carrier:carrier}

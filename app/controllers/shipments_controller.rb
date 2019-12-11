@@ -59,7 +59,7 @@ class ShipmentsController < ApplicationController
   def get_labels
     require "barby/barcode/code_128"
     require "barby/outputter/png_outputter"
-    @carrier.prepare_label(@shipment)
+    @carrier.before_get_label(@shipment)
     respond_to do |format|
       format.html { render layout: 'pdf' }
       format.pdf { render pdf: "Etiqueta-#{@shipment.shipment_number}", template: "shipments/get_labels.html.erb"}
@@ -121,9 +121,7 @@ class ShipmentsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def shipment_params
-    if params[:invoice_xml] # REFACTOR > Should be in a model, maybe before_save? It doesn't feel right here
-      params[:shipment][:invoice_xml] = params[:invoice_xml].read.strip
-    end
+    params[:shipment][:invoice_xml] = params[:invoice_xml].read.strip if params[:invoice_xml]
     params.require(:shipment).permit!
   end
 end

@@ -27,7 +27,6 @@ class DeliveryStatusUpdater
   end
 
   def self.get_delivery_updates(shipment)
-    shipment.get_tracking_number
     delivery_updates = shipment.carrier.get_delivery_updates(shipment)
     unknown_delivery_updates = delivery_updates.select { |delivery_update| delivery_update[:bearpost_status] == nil }
     unknown_delivery_updates.each do |delivery_update|

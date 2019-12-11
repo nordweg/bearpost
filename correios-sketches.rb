@@ -99,3 +99,21 @@ Shipment.where("shipped_at > ?", 2.days.ago).each do |shipment|
     shipment.update(shipped_at:shipment.created_at + 1.hour)
   end
 end
+
+
+require 'benchmark'
+
+n = 10_000
+Benchmark.bm do |benchmark|
+  benchmark.report("Pluck") do
+    n.times do
+      Account.all.pluck(:name, :id)
+    end
+  end
+
+  benchmark.report("Map") do
+    n.times do
+      Account.all.map{|account| [account.name, account.id]}
+    end
+  end
+end

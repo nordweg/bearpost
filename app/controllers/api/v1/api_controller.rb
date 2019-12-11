@@ -13,13 +13,13 @@ module Api::V1
       authenticate_token || render_unauthorized
     end
 
-    def authenticate_token # REFACTOR > Create Autheticator class?
+    def authenticate_token
       authenticate_with_http_token do |token, options|
         Setting.find_by(key: "api_key", value: token)
       end
     end
 
-    def set_current_attributes # REFACTOR >> What does this do? Set whoever is conecting? Would like to understand
+    def set_current_attributes
       Current.connected = "API"
     end
 

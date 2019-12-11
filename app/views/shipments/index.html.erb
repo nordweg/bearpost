@@ -118,12 +118,9 @@ Envios
     $('#transmit-selected-JS').click(function(){
       path = "<%= transmit_shipments_to_carriers_shipments_path %>"
       params = $("input[name='shipment_ids[]']:checked").serialize()
-      window.location.href = path + "?" + params
-      // $.ajax({
-      //   type: "GET",
-      //   url:  "<%= transmit_shipments_to_carriers_shipments_path %>",
-      //   data: $("input[name='shipment_ids[]']:checked").serialize()
-      // });
+      url = path + "?" + params
+      new_tab = window.open(url, '_blank')
+      new_tab.focus()
     })
 
     $('#update-selected-JS').click(function(){

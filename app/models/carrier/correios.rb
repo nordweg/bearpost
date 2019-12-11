@@ -1,36 +1,12 @@
 class Carrier::Correios < Carrier
   cattr_reader :name
-
-  # GENERAL DEFINITIONS
-  # Define Carrier related constants here
-
   @@name = "Correios"
 
+  # GENERAL DEFINITIONS
   TEST_URL = "https://apphom.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   LIVE_URL = "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   SERVICES = ['PAC','SEDEX']
-
-  def self.settings
-    [
-      { field: 'sigep_user', type:'text' },
-      { field: 'sigep_password', type:'password' },
-      { field: 'tracking_user', type:'text' },
-      { field: 'tracking_password', type:'password' },
-      { field: 'administrative_code', type:'text' },
-      { field: 'contract', type:'text' },
-      { field: 'posting_card', type:'text' },
-      { field: 'cnpj', type:'text' },
-      { field: 'pac_label_minimum_quantity', type:'text' },
-      { field: 'pac_label_reorder_quantity', type:'text' },
-      { field: 'pac_service_id', type:'text' },
-      { field: 'pac_posting_code', type:'text' },
-      { field: 'sedex_label_minimum_quantity', type:'text' },
-      { field: 'sedex_label_reorder_quantity', type:'text'},
-      { field: 'sedex_service_id', type: 'text' },
-      { field: 'sedex_posting_code', type: 'text' },
-      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
-    ]
-  end
+  TRACKING_URL = "https://rastreamentocorreios.info/consulta/{tracking}"
 
   ID_SERVICOS = {
     '40010' => "SEDEX sem contrato",
@@ -316,16 +292,29 @@ class Carrier::Correios < Carrier
     ['SÃO PAULO INTERIOR', 'SPI'] => '74'
   }
 
-  # DEFAULT METHODS
-  # Define here the mandatory default methods that are going to be called by the core Bearpost application.
+  # REQUIRED METHODS
   # Use carrier.rb as a guideline to know which methods should be overwritten here.
 
-  def self.shipping_methods
-    ['PAC','SEDEX']
-  end
-
-  def self.custom_label_view
-    'correios_label'
+  def self.settings
+    [
+      { field: 'sigep_user', type:'text' },
+      { field: 'sigep_password', type:'password' },
+      { field: 'tracking_user', type:'text' },
+      { field: 'tracking_password', type:'password' },
+      { field: 'administrative_code', type:'text' },
+      { field: 'contract', type:'text' },
+      { field: 'posting_card', type:'text' },
+      { field: 'cnpj', type:'text' },
+      { field: 'pac_label_minimum_quantity', type:'text' },
+      { field: 'pac_label_reorder_quantity', type:'text' },
+      { field: 'pac_service_id', type:'text' },
+      { field: 'pac_posting_code', type:'text' },
+      { field: 'sedex_label_minimum_quantity', type:'text' },
+      { field: 'sedex_label_reorder_quantity', type:'text'},
+      { field: 'sedex_service_id', type: 'text' },
+      { field: 'sedex_posting_code', type: 'text' },
+      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
+    ]
   end
 
   def authenticate!
@@ -336,36 +325,6 @@ class Carrier::Correios < Carrier
       message << "<br>ID do Serviço: #{service[:service_id].strip}, Código de Postagem: #{service[:posting_code].strip}<br>"
     end
     message
-  end
-
-  def self.tracking_url
-    "https://rastreamentocorreios.info/consulta/{tracking}"
-  end
-
-  def get_tracking_number(shipment)
-    shipping_method = shipment.shipping_method
-    check_tracking_number_availability(shipping_method)
-    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method)
-    current_range = shipping_method_settings['ranges'].first
-    prefix        = current_range['prefix']
-    number        = current_range['next_number']
-    sufix         = current_range['sufix']
-    verification_digit = get_verification_digit(number)
-    tracking_number    = "#{prefix}#{number}#{verification_digit}#{sufix}"
-    if current_range['next_number'] + 1 > current_range['last_number']
-      carrier_setting.settings['shipping_methods'][shipping_method]['ranges'].delete(current_range)
-    else
-      current_range['next_number'] += 1
-    end
-    carrier_setting.save
-    tracking_number
-  end
-
-  def prepare_label(shipment)
-    if carrier_setting.settings['label_type'] == 'tracked_label' && shipment.tracking_number.blank?
-      shipment.tracking_number = get_tracking_number(shipment)
-      shipment.save
-    end
   end
 
   def get_delivery_updates(shipment)
@@ -394,8 +353,24 @@ class Carrier::Correios < Carrier
     delivery_updates
   end
 
-  # CARRIER ESPECIFIC METHODS
-  # Define here internal carrier methods that are used by the default methods above.
+  def get_tracking_number(shipment)
+    shipping_method = shipment.shipping_method
+    check_tracking_number_availability(shipping_method)
+    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method)
+    current_range = shipping_method_settings['ranges'].first
+    prefix        = current_range['prefix']
+    number        = current_range['next_number']
+    sufix         = current_range['sufix']
+    verification_digit = get_verification_digit(number)
+    tracking_number    = "#{prefix}#{number}#{verification_digit}#{sufix}"
+    if current_range['next_number'] + 1 > current_range['last_number']
+      carrier_setting.settings['shipping_methods'][shipping_method]['ranges'].delete(current_range)
+    else
+      current_range['next_number'] += 1
+    end
+    carrier_setting.save
+    tracking_number
+  end
 
   def transmit_shipments(shipments)
     response = []
@@ -417,6 +392,23 @@ class Carrier::Correios < Carrier
     end
     response
   end
+
+  # OPTIONAL METHODS
+  # Use carrier.rb as a guideline to know which methods can be overwritten here.
+
+  def self.custom_label_view
+    'correios_label'
+  end
+
+  def before_get_label(shipment)
+    if carrier_setting.settings['label_type'] == 'tracked_label' && shipment.tracking_number.blank?
+      shipment.tracking_number = get_tracking_number(shipment)
+      shipment.save
+    end
+  end
+
+  # CARRIER SPECIFIC METHODS
+  # Internal carrier methods that are used by the required methods above.
 
   def group_shipments_by_shipping_method(shipments)
     grouped_shipments = {}
