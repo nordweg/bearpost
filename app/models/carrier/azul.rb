@@ -8,7 +8,6 @@ class Carrier::Azul < Carrier
   SERVICES = ['Standart']
   TRACKING_URL = "http://www.azulcargoexpress.com.br/Rastreio/Rastreio?awb={tracking}"
 
-
   STATUS_CODES = {
     "1" => {azul_status: 'ENTREGA REALIZADA NORMALMENTE', bearpost_status: 'Delivered'},
     "2" => {azul_status: 'ENTREGA FORA DA DATA PROGRAMADA', bearpost_status: 'Delivered'},
@@ -114,8 +113,7 @@ class Carrier::Azul < Carrier
     "533" => {azul_status: 'ENCAMINHADO PARA A SEFAZ', bearpost_status: 'On the way'}
   }
 
-  # DEFAULT METHODS
-  # Define here the mandatory default methods that are going to be called by the core Bearpost application.
+  # REQUIRED METHODS
   # Use carrier.rb as a guideline to know which methods should be overwritten here.
 
   def self.settings
@@ -124,14 +122,6 @@ class Carrier::Azul < Carrier
       {field:'password', type:'password'},
       {field:'cnpj', type:'text'}
     ]
-  end
-
-  def get_authenticated_token!
-    token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
-    if token_expire_date.blank? || token_expire_date < DateTime.now
-      update_authentication_token
-    end
-    carrier_setting.settings['authentication_token']
   end
 
   def authenticate!
@@ -157,6 +147,12 @@ class Carrier::Azul < Carrier
     delivery_updates
   end
 
+  def get_tracking_number(shipment)
+    get_authenticated_token!
+    check_invoice_xml(shipment)
+    get_awb(shipment)
+  end
+
   def transmit_shipments(shipments)
     response = []
     shipments.each do |shipment|
@@ -173,14 +169,16 @@ class Carrier::Azul < Carrier
     response
   end
 
-  def get_tracking_number(shipment)
-    get_authenticated_token!
-    check_invoice_xml(shipment)
-    get_awb(shipment)
-  end
-
   # CARRIER ESPECIFIC METHODS
   # Define here internal carrier methods that are used by the default methods above.
+
+  def get_authenticated_token!
+    token_expire_date = carrier_setting.settings['token_expire_date'].try(:to_datetime)
+    if token_expire_date.blank? || token_expire_date < DateTime.now
+      update_authentication_token
+    end
+    carrier_setting.settings['authentication_token']
+  end
 
   def update_authentication_token
     credentials = {

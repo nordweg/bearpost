@@ -1,17 +1,9 @@
 class Carrier
+  ## DEFAULT BEHAVIOR ##
+  # This is the behavior shared by all carriers. No need to change it.
   attr_reader   :test_mode
   alias_method  :test_mode?, :test_mode
   attr_accessor :carrier_setting, :settings
-
-  ## GENERAL DEFINITIONS ##
-  # Define Carrier related constants here
-  TEST_URL = ""
-  LIVE_URL = ""
-  SERVICES = []
-  TRACKING_URL = ""
-
-  ## DEFAULT BEHAVIOR ##
-  # This is the behavior shared by all carriers. No need to change it.
 
   def initialize(carrier_setting, test_mode = false)
     @carrier_setting = carrier_setting
@@ -21,6 +13,14 @@ class Carrier
   def self.shipments
     Shipment.where(carrier_class:self.to_s)
   end
+
+  ## GENERAL DEFINITIONS ##
+  # Define Carrier related constants here
+  TEST_URL = ""
+  LIVE_URL = ""
+  SERVICES = []
+  TRACKING_URL = ""
+
 
   ## REQUIRED METHODS ##
   # These are the mandatory default methods that are going to be called by the core Bearpost application.
@@ -33,6 +33,13 @@ class Carrier
       {field:'email',    type:'text'},
       {field:'password', type:'password'}
     ]
+  end
+
+  # Authenticates the carrier with it's given credentials.
+  # If no exception is raised and a string is returned,
+  # it will be displayed for the user after validating the credentials.
+  def authenticate!
+    raise ::NotImplementedError, "#authenticate! is not implemented for #{self.class.name}"
   end
 
   # Should return an array of DeliveryUpdate objects
@@ -49,13 +56,6 @@ class Carrier
   # Returns a tracking number for the shipment, as a string.
   def get_tracking_number(shipment)
     raise ::NotImplementedError, "#get_tracking_number is not implemented for #{self.class.name}"
-  end
-
-  # Authenticates the carrier with it's given credentials.
-  # If no exception is raised and a string is returned,
-  # it will be displayed for the user after validating the credentials.
-  def authenticate!
-    raise ::NotImplementedError, "#authenticate! is not implemented for #{self.class.name}"
   end
 
   # Should return an array of hashes, with the shipment transmitted,
