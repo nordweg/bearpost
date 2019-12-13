@@ -234,7 +234,7 @@ class Carrier::Azul < Carrier
   end
 
   def check_invoice_xml(shipment)
-    raise Exception.new("Azul - É necessário o XML da nota fiscal") if shipment.invoice_xml.blank?
+    raise Exception.new("Envio #{shipment.shipment_number} não possui XML da nota fiscal") if shipment.invoice_xml.blank?
   end
 
   def send_to_azul(invoice_xml)
