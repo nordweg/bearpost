@@ -110,7 +110,9 @@ class Carrier::Azul < Carrier
     "513" => {azul_status: 'EXCESSO DE CHUVA', bearpost_status: 'On the way'},
     "517" => {azul_status: 'PASSAGEM PELA FISCALIZACAO', bearpost_status: 'On the way'},
     "525" => {azul_status: 'NOTA FISCAL LIBERADA DA FISCALIZAÇÃO', bearpost_status: 'On the way'},
-    "533" => {azul_status: 'ENCAMINHADO PARA A SEFAZ', bearpost_status: 'On the way'}
+    "533" => {azul_status: 'ENCAMINHADO PARA A SEFAZ', bearpost_status: 'On the way'},
+    "534" => {azul_status: 'LIBERADO PELA SEFAZ', bearpost_status: 'On the way'},
+    "804" => {azul_status: 'EM ROTA PARA ENTREGA', bearpost_status: 'On the way'}
   }
 
   # REQUIRED METHODS
