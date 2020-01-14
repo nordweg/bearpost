@@ -94,21 +94,19 @@
         <div class="kt-section">
           <div class="kt-section__body">
             <div class="row">
-              <div class="col-lg-6">
+              <div class="col-lg-4">
                 <div class="form-group">
                   <%= form.label 'Transportadora' %>
                   <%= form.select(:carrier_class, carriers_for_select, {}, class: 'form-control', required:true) %>
                 </div>
               </div>
-              <div class="col-lg-6">
+              <div class="col-lg-4">
                 <div class="form-group">
                   <%= form.label 'Método de envio' %>
                   <%= form.select(:shipping_method, [], {}, class: 'form-control') %>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-6">
+              <div class="col-lg-4">
                 <div class="form-group">
                   <label>Rastreio</label>
                   <%= form.text_field :tracking_number, class: "form-control" %>
@@ -208,7 +206,7 @@
             </div>
           </div>
 
-          <div class="kt-separator kt-separator--border-dashed kt-separator--space-lg"></div>
+          <hr><br>
 
           <div class="row">
             <div class="col-lg-8">

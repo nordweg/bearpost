@@ -15,6 +15,7 @@ class Shipment < ApplicationRecord
 
   has_many    :packages
   has_many    :histories
+  has_many    :notes
   belongs_to  :account, optional: true
   accepts_nested_attributes_for :packages
 

@@ -207,34 +207,60 @@
               </div>
             </div>
           </div>
+          <!-- End of Destinatário -->
+
+          <div class="kt-portlet">
+            <div class="kt-portlet__head">
+              <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+                  Observações
+                </h3>
+              </div>
+              <div class="kt-portlet__head-toolbar">
+                <%= link_to "#", { data: { toggle:'modal', target:'#newNoteModal' }, class: "btn btn-sm btn-outline-brand btn-elevate btn-circle btn-icon" } do %>
+                  <i class="la la-plus"></i>
+                <% end %>
+              </div>
+            </div>
+            <div class="kt-portlet__body">
+              <div class="kt-portlet__content" style="line-height: 1.7;">
+                <% @shipment.notes.each do |note| %>
+                <div style='font-size: 0.9rem;'>
+                   <span style="font-weight: 600;"><%= note.user.full_name %></span>
+                   <%= l(note.created_at, format: :week_day_with_time) %>
+                </div>
+                <span style="font-size: 1.05rem;"><%= simple_format(note.description) %></span>
+                <% end %>
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- End of Destinatário -->
 
       </div>
 
       <% total_shipments = @shipment.packages.size %>
       <div class="row">
+
         <% @shipment.packages.each do |package| %>
         <div class="col-md-6">
           <div class="kt-portlet">
             <div class="kt-portlet__head">
               <div class="kt-portlet__head-label">
                 <h3 class="kt-portlet__head-title">
-                </i> Pacote <%= @shipment.packages.index(package) + 1 %>
-              </h3>
+                  Pacote <%= @shipment.packages.index(package) + 1 %>
+                </h3>
+              </div>
+              <div class="kt-portlet__head-toolbar">
+                <%= link_to "Editar", edit_package_path(package), class: "float-right kt-link" %>
+              </div>
             </div>
-            <div class="kt-portlet__head-toolbar">
-              <%= link_to "Editar", edit_package_path(package), class: "float-right kt-link" %>
-            </div>
-          </div>
-          <div class="kt-portlet__body">
-            <div class="kt-portlet__content">
-              <%= render 'packages/table', package: package %>
+            <div class="kt-portlet__body">
+              <div class="kt-portlet__content">
+                <%= render 'packages/table', package: package %>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
       <% end %>
     </div>
 
@@ -330,6 +356,29 @@
         <%= link_to shipment_path(@shipment, shipment: {status: status}), method:'patch' do %>
         <div class="my-3"><%= status_label(status) %></div>
         <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New note modal -->
+<div class="modal fade" id="newNoteModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Adicionar uma observação</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= form_for :note, url: shipment_notes_path(@shipment) do |f| %>
+          <%= f.hidden_field :shipment_id, value: @shipment.id %>
+          <div class="form-group">
+            <%= f.text_area :description, class: "form-control", rows: "6" %>
+          </div>
+          <%= f.submit "Salvar", class:"btn btn-primary" %>
         <% end %>
       </div>
     </div>
