@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   end
 
   resources :shipments do
+    resources :notes
     collection do
       post 'new_from_xml'
       get  'update_all_shipments_delivery_status'
