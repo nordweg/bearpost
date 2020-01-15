@@ -173,6 +173,7 @@ class Shipment < ApplicationRecord
         OR regexp_replace(cpf, '\\D', '', 'g') ILIKE regexp_replace(:search, '\\D', '', 'g')
         OR order_number ILIKE :search
         OR shipment_number ILIKE :search
+        OR tracking_number ILIKE :search
         OR state ILIKE :search
         OR zip ILIKE :search
         OR city ILIKE :search",
