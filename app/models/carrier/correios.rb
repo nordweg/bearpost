@@ -356,15 +356,15 @@ class Carrier::Correios < Carrier
   def get_tracking_number(shipment)
     shipping_method = shipment.shipping_method
     check_tracking_number_availability(shipping_method)
-    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method)
+    shipping_method_settings = carrier_setting.settings[shipping_method]
     current_range = shipping_method_settings['ranges'].first
     prefix        = current_range['prefix']
-    number        = current_range['next_number']
+    number        = current_range['next_number'].rjust(8,"0")
     sufix         = current_range['sufix']
     verification_digit = get_verification_digit(number)
     tracking_number    = "#{prefix}#{number}#{verification_digit}#{sufix}"
     if current_range['next_number'] + 1 > current_range['last_number']
-      carrier_setting.settings['shipping_methods'][shipping_method]['ranges'].delete(current_range)
+      carrier_setting.settings[shipping_method]['ranges'].delete(current_range)
     else
       current_range['next_number'] += 1
     end
@@ -420,8 +420,7 @@ class Carrier::Correios < Carrier
   end
 
   def get_ranges_from_correios(shipping_method)
-    reorder_quantity = carrier_setting.settings.dig('shipping_methods',shipping_method,'label_reorder_quantity')
-    reorder_quantity = '10' if reorder_quantity.blank?
+    reorder_quantity = carrier_setting.settings["#{shipping_method.downcase}_label_reorder_quantity"] || "10"
     message = {
       "tipoDestinatario" =>  "C",
       "identificador" => carrier_setting.settings["cnpj"],
@@ -430,15 +429,15 @@ class Carrier::Correios < Carrier
       "usuario" => carrier_setting.settings["sigep_user"],
       "senha" => carrier_setting.settings["sigep_password"],
     }
-    response = connection.call(:solicita_etiquetas, message:message)
-    ranges   = response.body.dig(:solicita_etiquetas_response,:return)
+    response = connection.call(:solicita_etiquetas, message: message)
+    ranges   = response.body.dig(:solicita_etiquetas_response, :return)
     ranges.split(',')
   end
 
   def save_new_range(shipping_method)
     ranges_array = get_ranges_from_correios(shipping_method)
-    next_number  = ranges_array[0][2..9]
-    last_number  = ranges_array[-1][2..9]
+    next_number  = ranges_array[0].numbers_only
+    last_number  = ranges_array[1].numbers_only
     prefix       = ranges_array[0][0..1]
     sufix        = ranges_array[0][-2..-1]
     range_hash   = {
@@ -448,27 +447,25 @@ class Carrier::Correios < Carrier
       "last_number": last_number.to_i,
       "sufix":       sufix,
     }
-    carrier_setting.settings['shipping_methods'] ||= {}
-    carrier_setting.settings['shipping_methods'][shipping_method] ||= {}
-    carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] ||= []
-    carrier_setting.settings['shipping_methods'][shipping_method]['ranges'] << range_hash
+    carrier_setting.settings[shipping_method] ||= {}
+    carrier_setting.settings[shipping_method]['ranges'] ||= []
+    carrier_setting.settings[shipping_method]['ranges'] << range_hash
     carrier_setting.save
   end
 
   def count_available_labels(shipping_method)
-    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method) || {}
-    return 0 if shipping_method_settings['ranges'].blank?
+    ranges = carrier_setting.settings.dig(shipping_method,'ranges')
+    return 0 unless ranges.present?
     total = 0
-    shipping_method_settings['ranges'].each do |range|
+    ranges.each do |range|
       total += range['last_number'] - range['next_number'] + 1
     end
     total
   end
 
   def check_tracking_number_availability(shipping_method)
-    shipping_method_settings = carrier_setting.settings.dig('shipping_methods',shipping_method) || {}
-    ranges = shipping_method_settings['ranges'] || []
-    if count_available_labels(shipping_method) < carrier_setting.settings["#{shipping_method.downcase}_label_minimum_quantity"].to_i
+    minimum_quantity = carrier_setting.settings["#{shipping_method.downcase}_label_minimum_quantity"].to_i
+    if count_available_labels(shipping_method) < minimum_quantity
       save_new_range(shipping_method)
     end
   end
