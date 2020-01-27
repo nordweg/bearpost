@@ -226,7 +226,7 @@ class Carrier::Azul < Carrier
     token = carrier_setting.settings['authentication_token']
     response = connection.get("api/Ocorrencias/Consultar?token=#{token}&ChaveNFE=#{nfe_key}")
     check_response(response)
-    response.body.dig("Value",0,"Awb")
+    response.body.dig("Value",0,"Awb").try(:numbers_only)
   end
 
   def check_for_updates
