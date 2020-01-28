@@ -359,7 +359,7 @@ class Carrier::Correios < Carrier
     shipping_method_settings = carrier_setting.settings[shipping_method]
     current_range = shipping_method_settings['ranges'].first
     prefix        = current_range['prefix']
-    number        = current_range['next_number'].rjust(8,"0")
+    number        = current_range['next_number'].to_s.rjust(8,"0")
     sufix         = current_range['sufix']
     verification_digit = get_verification_digit(number)
     tracking_number    = "#{prefix}#{number}#{verification_digit}#{sufix}"
