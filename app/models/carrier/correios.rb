@@ -644,7 +644,7 @@ class Carrier::Correios < Carrier
     multipliers = [8, 6, 4, 2, 3, 5, 9, 7]
     total = 0
 
-    number.to_s.chars.map(&:to_i).each_with_index do |number,index|
+    number.to_s.rjust(8,"0").chars.map(&:to_i).each_with_index do |number,index|
       total += number * multipliers[index]
     end
     remainder = total % 11
