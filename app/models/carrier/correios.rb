@@ -581,7 +581,8 @@ class Carrier::Correios < Carrier
             xml.servico_adicional {
               xml.codigo_servico_adicional '025'
               if invoice
-                xml.codigo_servico_adicional '064'
+                xml.codigo_servico_adicional '064' if shipment.shipping_method == "PAC"
+                xml.codigo_servico_adicional '019' if shipment.shipping_method == "SEDEX"
                 xml.valor_declarado invoice_value
               end
             }
