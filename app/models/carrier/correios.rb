@@ -560,6 +560,7 @@ class Carrier::Correios < Carrier
             xml.cubagem '0,00'
             xml.peso (package.weight * 1000).round.to_s.slice(0,5)
             xml.rt2
+            xml.restricao_anac 'S'
             xml.destinatario {
               xml.nome_destinatario { xml.cdata shipment.full_name.slice(0,50) }
               xml.celular_destinatario { xml.cdata shipment.phone.numbers_only.slice(0,12) }
