@@ -560,6 +560,7 @@ class Carrier::Correios < Carrier
             xml.cubagem '0,00'
             xml.peso (package.weight * 1000).round.to_s.slice(0,5)
             xml.rt2
+            xml.restricao_anac 'S'
             xml.destinatario {
               xml.nome_destinatario { xml.cdata shipment.full_name.slice(0,50) }
               xml.celular_destinatario { xml.cdata shipment.phone.numbers_only.slice(0,12) }
@@ -567,6 +568,7 @@ class Carrier::Correios < Carrier
               xml.logradouro_destinatario { xml.cdata shipment.street.slice(0,50) }
               xml.complemento_destinatario { xml.cdata shipment.complement.slice(0,30) }
               xml.numero_end_destinatario { xml.cdata shipment.number.slice(0,5) }
+              xml.cpf_cnpj_destinatario shipment.cpf.try(:numbers_only)
             }
             xml.nacional {
               xml.bairro_destinatario { xml.cdata shipment.neighborhood.slice(0,30) }
@@ -593,6 +595,10 @@ class Carrier::Correios < Carrier
               xml.dimensao_comprimento package.depth.to_s.sub(".",",").slice(0,9)
               xml.dimensao_diametro 0
             }
+            xml.data_postagem_sara
+            xml.status_processamento '0'
+            xml.numero_comprovante_postagem
+            xml.valor_cobrado
           }
         end
       }
