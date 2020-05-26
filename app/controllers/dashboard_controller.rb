@@ -56,7 +56,7 @@ class DashboardController < ApplicationController
   def get_shipments_per_state(shipments)
     data = [["Estado", "Envios"]]
     grouped_shipments = shipments.group(:state).count
-    grouped_shipments.each { |state, number| data << [state, number]}
+    grouped_shipments.each { |state, number| data << [ApplicationController.helpers.state_name_from_abbr(state), number]}
     data
   end
 
