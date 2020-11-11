@@ -117,3 +117,12 @@ Benchmark.bm do |benchmark|
     end
   end
 end
+
+# delete_correios_ranges
+
+shipment = Shipment.find(2836) # Emme shipment
+carrier_setting = shipment.carrier_settings
+Carrier::Correios::SERVICES.each do |shipping_method|
+  carrier_setting.settings[shipping_method]['ranges'] = []
+end
+carrier_setting.save
