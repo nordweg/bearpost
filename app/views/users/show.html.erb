@@ -11,7 +11,7 @@
           </div>
           <div class="kt-profile__main-info">
             <div class="kt-profile__main-info-name"><%= @user.full_name %></div>
-            <div class="kt-profile__main-info-position">Lead Designer</div>
+            <div class="kt-profile__main-info-position">Bearpost user</div>
           </div>
         </div>
       </div>
@@ -19,7 +19,7 @@
         <div class="kt-profile__contact">
           <a href="#" class="kt-profile__contact-item">
             <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-whatsup"><i class="flaticon-whatsapp"></i></span>
-            <span class="kt-profile__contact-item-text">44 8475 804342</span>
+            <span class="kt-profile__contact-item-text"></span>
           </a>
           <a href="#" class="kt-profile__contact-item">
             <span class="kt-profile__contact-item-icon"><i class="flaticon-email-black-circular-button kt-font-danger"></i></span>
@@ -27,7 +27,7 @@
           </a>
           <a href="#" class="kt-profile__contact-item">
             <span class="kt-profile__contact-item-icon kt-profile__contact-item-icon-twitter"><i class="flaticon-twitter-logo-button"></i></span>
-            <span class="kt-profile__contact-item-text">@brianjohnson</span>
+            <span class="kt-profile__contact-item-text"></span>
           </a>
         </div>
       </div>
@@ -159,12 +159,12 @@
                           <%= form.text_field :last_name, class: "form-control", placeholder: "Sobrenome" %>
                         </div>
                       </div>
-                      <div class="form-group row">
+                      <div class="form-group row d-none">
                         <label class="col-xl-3 col-lg-3 col-form-label">Telefone</label>
                         <div class="col-lg-9 col-xl-6">
                           <div class="input-group">
                             <div class="input-group-prepend"><span class="input-group-text"><i class="la la-phone"></i></span></div>
-                            <input type="text" class="form-control" value="+45678967456" placeholder="Phone" aria-describedby="basic-addon1">
+                            <input type="text" class="form-control" value="" placeholder="Phone" aria-describedby="basic-addon1">
                           </div>
                         </div>
                       </div>
@@ -180,7 +180,7 @@
                       <div class="form-group row kt-margin-t-10 kt-margin-b-10">
                         <label class="col-xl-3 col-lg-3 col-form-label"></label>
                         <div class="col-lg-9 col-xl-6">
-                          <button type="button" class="btn btn-outline-danger btn-sm kt-margin-t-5 kt-margin-b-5">Desativar conta?</button>
+                          <%= link_to "Apagar conta?", @user, method: :delete, data: { confirm: 'tem certeza que deseja apagar esta conta?' }, class: 'btn btn-outline-danger btn-sm kt-margin-t-5 kt-margin-b-5'  %>
                         </div>
                       </div>
                     </div>
