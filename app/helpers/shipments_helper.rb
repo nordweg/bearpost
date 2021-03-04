@@ -27,6 +27,28 @@ module ShipmentsHelper
     end
   end
 
+  def step_label(shipment, step)
+    case step
+    when "handling"
+      late = shipment.handling_late?
+      on_time = !late && shipment.shipped_at?
+    when "carrier_delivery"
+      late = shipment.carrier_delivery_late
+      on_time = !late && shipment.delivered_at?
+    when "client_delivery"
+      late = shipment.client_delivery_late
+      on_time = !late && shipment.delivered_at?
+    end
+
+    if late
+      "<span class='kt-badge kt-badge--inline kt-badge--pill kt-badge--danger'>#{ I18n.t(step, scope: :abbr) }</span>".html_safe
+    elsif on_time
+      "<span class='kt-badge kt-badge--inline kt-badge--pill kt-badge--metal'>#{ I18n.t(step, scope: :abbr) }</span>".html_safe
+    else # Pending
+      "<span class='kt-badge kt-badge--inline kt-badge--pill kt-badge--info'>#{ I18n.t(step, scope: :abbr) }</span>".html_safe
+    end
+  end
+
   def expected_shipping_info(shipment)
     html_content = ""
     if shipment.shipping_due_at
