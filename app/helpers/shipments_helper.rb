@@ -43,9 +43,9 @@ module ShipmentsHelper
     if late
       "<span class='kt-badge kt-badge--inline kt-badge--pill kt-badge--danger'>#{ I18n.t(step, scope: :abbr) }</span>".html_safe
     elsif on_time
-      "<span class='kt-badge kt-badge--inline kt-badge--pill kt-badge--metal'>#{ I18n.t(step, scope: :abbr) }</span>".html_safe
-    else # Pending
       "<span class='kt-badge kt-badge--inline kt-badge--pill kt-badge--info'>#{ I18n.t(step, scope: :abbr) }</span>".html_safe
+    else # Pending
+      "<span class='kt-badge kt-badge--inline kt-badge--pill kt-badge--metal'>#{ I18n.t(step, scope: :abbr) }</span>".html_safe
     end
   end
 
