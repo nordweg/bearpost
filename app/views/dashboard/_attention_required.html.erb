@@ -15,6 +15,7 @@
               <th>Transportadora</th>
               <th>Cidade</th>
               <th>Status</th>
+              <th>Etapas</th>
             </tr>
           </thead>
           <tbody>
@@ -24,6 +25,11 @@
               <td><%= shipment.carrier.name %></td>
               <td><%= shipment.city %> / <%= shipment.state %></td>
               <td><%= status_label(shipment.status) %></td>
+              <td>
+                <%= step_label(shipment, "handling") %>
+                <%= step_label(shipment, "carrier_delivery") %>
+                <%= step_label(shipment, "client_delivery") %>
+              </td>
             </tr>
             <% end %>
           </tbody>

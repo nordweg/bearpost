@@ -6,6 +6,10 @@ pt-BR:
         signed_in: Login efetuado com sucesso!
     failure:
       already_authenticated: Você já está autenticado!
+  abbr:
+    handling: ENV
+    carrier_delivery: TRA
+    client_delivery: CLI
   "Pending": Pendente
   "Ready for shipping": Pronto para envio
   "On the way": A caminho
