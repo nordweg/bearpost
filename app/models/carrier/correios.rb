@@ -5,7 +5,7 @@ class Carrier::Correios < Carrier
   # GENERAL DEFINITIONS
   TEST_URL = "https://apphom.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
   LIVE_URL = "https://apps.correios.com.br/SigepMasterJPA/AtendeClienteService/AtendeCliente?wsdl"
-  SERVICES = ['PAC','SEDEX']
+  SERVICES = ['PAC','SEDEX','MINI ENVIOS']
   TRACKING_URL = "https://rastreamentocorreios.info/consulta/{tracking}"
 
   ID_SERVICOS = {
@@ -299,21 +299,30 @@ class Carrier::Correios < Carrier
     [
       { field: 'sigep_user', type:'text' },
       { field: 'sigep_password', type:'password' },
+      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]},
+
       { field: 'tracking_user', type:'text' },
       { field: 'tracking_password', type:'password' },
       { field: 'administrative_code', type:'text' },
+
       { field: 'contract', type:'text' },
       { field: 'posting_card', type:'text' },
       { field: 'cnpj', type:'text' },
-      { field: 'pac_label_minimum_quantity', type:'text' },
-      { field: 'pac_label_reorder_quantity', type:'text' },
+
       { field: 'pac_service_id', type:'text' },
       { field: 'pac_posting_code', type:'text' },
-      { field: 'sedex_label_minimum_quantity', type:'text' },
-      { field: 'sedex_label_reorder_quantity', type:'text'},
+      { field: 'pac_label_minimum_quantity', type:'text' },
+      { field: 'pac_label_reorder_quantity', type:'text' },
+
       { field: 'sedex_service_id', type: 'text' },
       { field: 'sedex_posting_code', type: 'text' },
-      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]}
+      { field: 'sedex_label_minimum_quantity', type:'text' },
+      { field: 'sedex_label_reorder_quantity', type:'text'},
+
+      { field: 'mini_envios_service_id', type: 'text' },
+      { field: 'mini_envios_posting_code', type: 'text' },
+      { field: 'mini_envios_label_minimum_quantity', type:'text' },
+      { field: 'mini_envios_label_reorder_quantity', type:'text'},
     ]
   end
 
@@ -420,11 +429,11 @@ class Carrier::Correios < Carrier
   end
 
   def get_ranges_from_correios(shipping_method)
-    reorder_quantity = carrier_setting.settings["#{shipping_method.downcase}_label_reorder_quantity"] || "10"
+    reorder_quantity = carrier_setting.settings["#{shipping_method.parameterize(separator:'_')}_label_reorder_quantity"] || "10"
     message = {
       "tipoDestinatario" =>  "C",
       "identificador" => carrier_setting.settings["cnpj"],
-      "idServico" => carrier_setting.settings["#{shipping_method.downcase}_service_id"],
+      "idServico" => carrier_setting.settings["#{shipping_method.parameterize(separator:'_')}_service_id"],
       "qtdEtiquetas" => reorder_quantity,
       "usuario" => carrier_setting.settings["sigep_user"],
       "senha" => carrier_setting.settings["sigep_password"],
@@ -464,7 +473,7 @@ class Carrier::Correios < Carrier
   end
 
   def check_tracking_number_availability(shipping_method)
-    minimum_quantity = carrier_setting.settings["#{shipping_method.downcase}_label_minimum_quantity"].to_i
+    minimum_quantity = carrier_setting.settings["#{shipping_method.parameterize(separator:'_')}_label_minimum_quantity"].to_i
     if count_available_labels(shipping_method) < minimum_quantity
       save_new_range(shipping_method)
     end
@@ -514,7 +523,7 @@ class Carrier::Correios < Carrier
 
   def build_xml(shipments)
     account  = shipments.first.account
-    posting_code = carrier_setting.settings["#{shipments.first.shipping_method.downcase}_posting_code"]
+    posting_code = carrier_setting.settings["#{shipments.first.shipping_method.parameterize(separator:'_')}_posting_code"]
     posting_card = carrier_setting.settings["posting_card"]
     contract = carrier_setting.settings["contract"]
     administrative_code = carrier_setting.settings["administrative_code"]
@@ -690,7 +699,7 @@ class Carrier::Correios < Carrier
     str += shipment.tracking_number
     str += "250000000000"
     str += carrier_setting.settings['posting_card']
-    str += carrier_setting.settings["#{shipment.shipping_method.downcase}_service_id"]
+    str += carrier_setting.settings["#{shipment.shipping_method.parameterize(separator:'_')}_service_id"]
     str += "00"
     str += shipment.number.rjust(5, "0")
     str += shipment.complement.rjust(20, " ")
