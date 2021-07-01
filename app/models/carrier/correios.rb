@@ -299,30 +299,25 @@ class Carrier::Correios < Carrier
     [
       { field: 'sigep_user', type:'text' },
       { field: 'sigep_password', type:'password' },
-      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]},
-
       { field: 'tracking_user', type:'text' },
       { field: 'tracking_password', type:'password' },
       { field: 'administrative_code', type:'text' },
-
       { field: 'contract', type:'text' },
       { field: 'posting_card', type:'text' },
       { field: 'cnpj', type:'text' },
-
-      { field: 'pac_service_id', type:'text' },
-      { field: 'pac_posting_code', type:'text' },
       { field: 'pac_label_minimum_quantity', type:'text' },
       { field: 'pac_label_reorder_quantity', type:'text' },
-
-      { field: 'sedex_service_id', type: 'text' },
-      { field: 'sedex_posting_code', type: 'text' },
+      { field: 'pac_service_id', type:'text' },
+      { field: 'pac_posting_code', type:'text' },
       { field: 'sedex_label_minimum_quantity', type:'text' },
       { field: 'sedex_label_reorder_quantity', type:'text'},
-
+      { field: 'sedex_service_id', type: 'text' },
+      { field: 'sedex_posting_code', type: 'text' },
+      { field: 'label_type', type: 'dropdown', options:["simple_label", "tracked_label"]},
       { field: 'mini_envios_service_id', type: 'text' },
       { field: 'mini_envios_posting_code', type: 'text' },
       { field: 'mini_envios_label_minimum_quantity', type:'text' },
-      { field: 'mini_envios_label_reorder_quantity', type:'text'},
+      { field: 'mini_envios_label_reorder_quantity', type:'text'}
     ]
   end
 
